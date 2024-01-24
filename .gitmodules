@@ -1,0 +1,12 @@
+[submodule "Libs/libparams"]
+	path = Libs/libparams
+	url = git@github.com:PonomarevDA/libparams.git
+[submodule "scripts/tools"]
+	path = scripts/tools
+	url = git@github.com:PonomarevDA/tools.git
+[submodule "Libs/Dronecan"]
+	path = Libs/Dronecan
+	url = git@github.com:PonomarevDA/dronecan_application.git
+[submodule "Libs/stm32-cube-project"]
+	path = Libs/stm32-cube-project
+	url = git@github.com:Innopolis-UAV-Team/vtol-lights-ioc.git
