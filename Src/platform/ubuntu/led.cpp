@@ -4,6 +4,17 @@
 
 #include "periphery/led/led.hpp"
 
+uint16_t LedPortsINT::port_red = 0;
+uint16_t LedPortsINT::port_green = 1;
+uint16_t LedPortsINT::port_blue = 2;
+
+
+uint16_t LedPortsEXT::port_red = 3;
+uint16_t LedPortsEXT::port_green = 4;
+uint16_t LedPortsEXT::port_blue = 5;
+
+LedData led_conf;
+
 void LedPeriphery::toggle_internal(LedColor color){}
 void LedPeriphery::toggle_external(LedColor color){}
 

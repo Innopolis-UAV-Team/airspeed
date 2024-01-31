@@ -24,10 +24,13 @@ void application_entry_point() {
 
     uint8_t int_intensity = 50;
     uint8_t int_max_intensity = 100;
-    LedPeriphery::max_int_intensity = int_max_intensity;
-    LedPeriphery::max_ext_intensity = int_max_intensity;
-    LedPeriphery::blink_period = 1000;
-    LedPeriphery::duty_cycle = 50;
+    extern LedData led_conf;
+
+    led_conf.max_int_intensity = int_max_intensity;
+    led_conf.max_ext_intensity = int_max_intensity;
+    led_conf.blink_period = 1000;
+    led_conf.duty_cycle = 50;
+
     uavcanInitApplication(node_id);
     uint32_t last_intensity_change = HAL_GetTick();
 
@@ -37,7 +40,7 @@ void application_entry_point() {
             if (int_intensity >= 100){
                 int_intensity = 20;
             }
-            LedPeriphery::set_internal(LedColor::BLUE_COLOR, int_intensity);
+            LedPeriphery::set_internal(LedColor::WHITE_COLOR, int_intensity);
             int_intensity+=20;
             last_intensity_change = HAL_GetTick();
         }

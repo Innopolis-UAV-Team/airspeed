@@ -28,11 +28,6 @@ enum LedPinColor{
     ALL
 };
 
-enum class PortType {
-    PWM,
-    GPIO,
-    UINT_16
-};
 
 class LedInterface {
 public:
@@ -114,12 +109,11 @@ private:
 };
 #endif
 #else
-// #ifdef STM32F103xB
 class LedPortsINT : public LedInterface{
 public:
     static uint16_t port_red;
-    static uint16_t* port_green;
-    static uint16_t* pin_blue;
+    static uint16_t port_green;
+    static uint16_t port_blue;
 
     void set(LedPinColor color, uint8_t intensity, GPIO_PinState state) override;
     void reset(LedPinColor color) override;
@@ -143,50 +137,47 @@ public:
     void reset(LedPinColor color) override;
 
 private:
-    void set_red(uint8_t intensity,  GPIO_PinState state) {};
-    void set_blue(uint8_t intensity,  GPIO_PinState state) {};
-    void set_green(uint8_t intensity,  GPIO_PinState state) {};
+    void set_red(uint8_t intensity,  GPIO_PinState state){};
+    void set_blue(uint8_t intensity,  GPIO_PinState state){};
+    void set_green(uint8_t intensity,  GPIO_PinState state){};
     void reset_red(){};
     void reset_blue(){};
     void reset_green(){};
 };
 #endif
 
-class LedPeriphery {
-public:
-    // int8_t init(bool is_internal, uint8_t led_max_intensity, uint32_t led_blink_period, uint8_t led_duty_cycle, bool use_pwm = false);
-    // void reset(LedPortsOut led_pin_out);
-    // static bool int_led_is_defined;
-    // static bool ext_led_is_defined;
-    static LedPortsINT int_led_pin_out;
-    static LedPortsEXT ext_led_pin_out;
+struct LedData
+{
+    Logger _led_logger;
+
+    LedPortsINT int_led_pin_out=LedPortsINT();
+    LedPortsEXT ext_led_pin_out = LedPortsEXT();
+
+    uint8_t max_int_intensity;
+    uint8_t max_ext_intensity;
+
+    uint32_t blink_period = 1000;
+    uint8_t duty_cycle = 50;
+};
+
+
+namespace LedPeriphery{
 
     // internal
     // toggle_internal()
     // set_internal()
 
     // external
-    
-    Logger _logger;
 
-    static void toggle_internal(LedColor color);
-    static void toggle_external(LedColor color);
+    void toggle_internal(LedColor color);
+    void toggle_external(LedColor color);
 
-    static void set_internal(LedColor color, uint8_t intensity = max_int_intensity);
-    static void set_external(LedColor color, uint8_t intensity = max_int_intensity);
+    void set_internal(LedColor color, uint8_t intensity);
+    void set_external(LedColor color, uint8_t intensity);
 
-    static void reset_internal(LedPinColor pin_color);
-    static void reset_external(LedPinColor pin_color);
-
-    static uint8_t max_int_intensity;
-    static uint8_t max_ext_intensity;
-
-    static uint32_t blink_period;
-    static uint8_t duty_cycle;
-    static uint32_t _last_publish_time;
-private:
+    void reset_internal(LedPinColor pin_color);
+    void reset_external(LedPinColor pin_color);
     void set_intensity(uint8_t intensity, bool to_internal);
-    void reset(PortType port, uint16_t pin);
 };
 
 
