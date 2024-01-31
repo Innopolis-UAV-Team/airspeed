@@ -22,11 +22,27 @@ void application_entry_point() {
     paramsSetStringValue(node_name_param_idx, 19, (const uint8_t*)node_name);
     uavcanSetNodeName(node_name);
 
-    LedPeriphery::reset();
+    uint8_t int_intensity = 50;
+    uint8_t int_max_intensity = 100;
+    LedPeriphery::max_int_intensity = int_max_intensity;
+    LedPeriphery::max_ext_intensity = int_max_intensity;
+    LedPeriphery::blink_period = 1000;
+    LedPeriphery::duty_cycle = 50;
     uavcanInitApplication(node_id);
+    uint32_t last_intensity_change = HAL_GetTick();
 
     while(true) {
-        LedPeriphery::toggle(LedColor::BLUE_COLOR);
+        
+        if ( HAL_GetTick() - last_intensity_change>1000){
+            if (int_intensity >= 100){
+                int_intensity = 20;
+            }
+            LedPeriphery::set_internal(LedColor::BLUE_COLOR, int_intensity);
+            int_intensity+=20;
+            last_intensity_change = HAL_GetTick();
+        }
+        
+        // led.toggle(LedColor::GREEN_COLOR);
         uavcanSpinOnce();
 
 #ifdef HAL_IWDG_MODULE_ENABLED

@@ -6,6 +6,7 @@
 #define SRC_APPLICATION_PERIPHERY_PWM_HPP_
 
 #include <stdint.h>
+#include "logger.hpp"
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,19 +16,23 @@ extern "C" {
  * @note PWM pinout related to RaccoonLab Mini v2 node
  */
 enum class PwmPin {
-    PWM_1,      // PB7
-    PWM_2,      // PB6
-    PWM_3,      // PB4
-    PWM_4,      // PB5
+    PWM_1,      // PA8 TIM1_CH1 INT_LED_GREEN
+    PWM_2,      // PA15 TIM2_CH1
+    PWM_3,      // PB0 TIM3_CH3, TIM1_CH2N
+    PWM_4,      // PB4 TIM3_CH1
+    PWM_5,      // PB5 TIM3_CH2
     PWM_AMOUNT,
 };
 
 
 class PwmPeriphery {
+    static Logger _logger;
 public:
-    static int8_t init(PwmPin pin);
-    static void set_duration(const PwmPin pin, uint32_t duration_us);
-    static uint32_t get_duration(PwmPin pin);
+    // static int8_t init(PwmPin pin);
+    static void set_duration(const PwmPin pwm_pin, uint32_t duration_us);
+    static uint32_t get_duration(PwmPin pwm_pin);
+    static void set_duty_cycle(PwmPin pwm_pin, uint8_t duty_cycle_pct);
+    static void reset(PwmPin pwm_pin);
 };
 
 #ifdef __cplusplus

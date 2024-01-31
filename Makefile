@@ -10,6 +10,9 @@ IS_SUBMODULE_INITIALIZED := $(shell find Libs/libparams -mindepth 1 | wc -l)
 dronecan: check_submodules clean autogenerate_git_related_headers
 	mkdir -p ${BUILD_OBJ_DIR}
 	cd ${BUILD_OBJ_DIR} && cmake -DUSE_DRONECAN=1 ../.. && make
+dronecan_debug: check_submodules clean autogenerate_git_related_headers
+	mkdir -p ${BUILD_OBJ_DIR}
+	cd ${BUILD_OBJ_DIR} && cmake -DUSE_DRONECAN=1 -DCMAKE_BUILD_TYPE=Debug ../.. && make
 sitl_dronecan: check_submodules clean autogenerate_git_related_headers
 	mkdir -p ${BUILD_OBJ_DIR}
 	cd ${BUILD_OBJ_DIR} && cmake -DUSE_DRONECAN=1 -DUSE_PLATFORM_UBUNTU=1 ../.. && make
