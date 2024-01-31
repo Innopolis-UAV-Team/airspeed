@@ -9,6 +9,8 @@
 extern "C" {
 #endif
 
+#include <cstdint>
+
 static inline uint32_t HAL_GetUIDw0() {return 0;}
 static inline uint32_t HAL_GetUIDw1() {return 0;}
 static inline uint32_t HAL_GetUIDw2() {return 0;}
@@ -17,7 +19,11 @@ uint32_t HAL_GetTick();
 void HAL_NVIC_SystemReset();
 
 uint32_t uavcanGetTimeMs();
-
+typedef enum
+{
+  GPIO_PIN_RESET = 0u,
+  GPIO_PIN_SET
+} GPIO_PinState;
 #ifdef __cplusplus
 }
 #endif

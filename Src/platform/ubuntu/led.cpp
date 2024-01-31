@@ -4,10 +4,11 @@
 
 #include "periphery/led/led.hpp"
 
-void LedPeriphery::reset() {
-    // not nothing
-}
+void LedPeriphery::toggle_internal(LedColor color){}
+void LedPeriphery::toggle_external(LedColor color){}
 
-void LedPeriphery::toggle(LedColor led_color) {
-    (void)led_color;
-}
+void LedPeriphery::set_internal(LedColor color, uint8_t intensity){}
+void LedPeriphery::set_external(LedColor color, uint8_t intensity){}
+
+void LedPeriphery::reset_internal(LedPinColor pin_color){}
+void LedPeriphery::reset_external(LedPinColor pin_color){}

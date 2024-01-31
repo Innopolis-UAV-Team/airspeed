@@ -57,6 +57,7 @@ set(EXECUTABLE ${PROJECT_NAME}.out)
 add_executable(${EXECUTABLE}
     ${libparams}
     ${stm32CubeMxGeneratedFiles}
+    ${libsSourceCode}
     ${applicationSourceCode}
     ${BUILD_SRC_DIR}/params.cpp
     ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/pwm.cpp
