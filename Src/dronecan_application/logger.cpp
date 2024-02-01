@@ -5,6 +5,10 @@
 
 #include "logger.hpp"
 
+Logger::Logger(const char* source){
+    set_source(this->_msg, source);
+}
+
 int8_t Logger::init(const char* source = ""){
     return set_source(this->_msg, source);
 }

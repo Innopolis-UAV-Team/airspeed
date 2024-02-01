@@ -31,133 +31,77 @@ enum LedPinColor{
 
 class LedInterface {
 public:
-    virtual void set_red(uint8_t intensity, GPIO_PinState state) = 0;
-    virtual void set_blue(uint8_t intensity, GPIO_PinState state) = 0;
-    virtual void set_green(uint8_t intensity, GPIO_PinState state) = 0;
-    virtual void set(LedPinColor color, uint8_t intensity, GPIO_PinState state) = 0;
-
-    virtual void reset_red() = 0;
-    virtual void reset_blue() = 0;
-    virtual void reset_green() = 0;
+    virtual void toggle(GPIO_PinState states [3])=0;
+    virtual void set(LedPinColor color, uint8_t intensity) = 0;
     virtual void reset(LedPinColor color) = 0;
 };
 
+struct LedPWMPins {
+    PwmPin pwm_pin_red;
+    PwmPin pwm_pin_green;
+    PwmPin pwm_pin_blue;
+
+};
+
 #ifdef STM32F103xB
-class LedPortsINT: public LedInterface{
-public:
-    static PwmPin port_red;
-    static GPIO_TypeDef* port_green;
-    static GPIO_TypeDef* port_blue;
+struct LedGPIOPins {
+    uint16_t pin_red;
+    uint16_t pin_green;
+    uint16_t pin_blue;
 
-    static uint16_t pin_red;
-    static uint16_t pin_green;
-    static uint16_t pin_blue;
-
-    void set(LedPinColor color, uint8_t intensity, GPIO_PinState state) override;
-    void reset(LedPinColor color) override;
-
-private:
-    void set_red(uint8_t intensity, GPIO_PinState state) override;
-    void set_blue(uint8_t intensity, GPIO_PinState state) override;
-    void set_green(uint8_t intensity, GPIO_PinState state) override;
-
-    void reset_red() override;
-    void reset_blue() override;
-    void reset_green() override;
+    GPIO_TypeDef* gpio_port_red;
+    GPIO_TypeDef* gpio_port_green;
+    GPIO_TypeDef* gpio_port_blue;
 };
 
-#ifdef EXT_RGB_LED_RED_GPIO_Port
-class LedPortsEXT : public LedInterface{
+class LedPorts: public LedInterface{
 public:
-    static GPIO_TypeDef* port_red;
-    static GPIO_TypeDef* port_green;
-    static GPIO_TypeDef* port_blue;
+    LedPWMPins pwm_pins={};
+    LedGPIOPins gpio_pins={};
 
-    static uint16_t pin_red;
-    static uint16_t pin_green;
-    static uint16_t pin_blue;
-    
-    void set(LedPinColor color, uint8_t intensity, GPIO_PinState state) override;
-    void reset(LedPinColor color) override;
-private:
-    void set_red(uint8_t intensity, GPIO_PinState state){};
-    void set_blue(uint8_t intensity, GPIO_PinState state){};
-    void set_green(uint8_t intensity, GPIO_PinState state){};
-
-    void reset_red(){};
-    void reset_blue(){};
-    void reset_green(){};
+    LedPorts(bool is_internal = true);
+    void set(LedPinColor color, uint8_t intensity) override;
+    void reset(LedPinColor color= LedPinColor::ALL) override;
+    void toggle(GPIO_PinState states [3]) override;
 };
+
 #else
-class LedPortsEXT : public LedInterface{
-public:
-    static PwmPin port_red;
-    static PwmPin port_green;
-    static PwmPin port_blue;
+struct LedGPIOPins {
+    uint16_t pin_red;
+    uint16_t pin_green;
+    uint16_t pin_blue;
 
-    void set(LedPinColor color, uint8_t intensity, GPIO_PinState state) override;
-    void reset(LedPinColor color) override;
-
-private:
-    void set_red(uint8_t intensity, GPIO_PinState state) {};
-    void set_blue(uint8_t intensity, GPIO_PinState state) {};
-    void set_green(uint8_t intensity, GPIO_PinState state) {};
-
-    void reset_red(){};
-    void reset_blue(){};
-    void reset_green(){};
-};
-#endif
-#else
-class LedPortsINT : public LedInterface{
-public:
-    static uint16_t port_red;
-    static uint16_t port_green;
-    static uint16_t port_blue;
-
-    void set(LedPinColor color, uint8_t intensity, GPIO_PinState state) override;
-    void reset(LedPinColor color) override;
-
-private:
-    void set_red(uint8_t intensity,  GPIO_PinState state) {};
-    void set_blue(uint8_t intensity,  GPIO_PinState state) {};
-    void set_green(uint8_t intensity,  GPIO_PinState state) {};
-    void reset_red(){};
-    void reset_blue(){};
-    void reset_green(){};
+    uint16_t gpio_port_red;
+    uint16_t gpio_port_green;
+    uint16_t gpio_port_blue;
 };
 
-class LedPortsEXT : public LedInterface{
+class LedPorts : public LedInterface{
 public:
-    static uint16_t port_red;
-    static uint16_t port_green;
-    static uint16_t port_blue;
+    LedPWMPins pwm_pins={};
+    LedGPIOPins gpio_pins={};
 
-    void set(LedPinColor color, uint8_t intensity, GPIO_PinState state) override;
-    void reset(LedPinColor color) override;
-
-private:
-    void set_red(uint8_t intensity,  GPIO_PinState state){};
-    void set_blue(uint8_t intensity,  GPIO_PinState state){};
-    void set_green(uint8_t intensity,  GPIO_PinState state){};
-    void reset_red(){};
-    void reset_blue(){};
-    void reset_green(){};
+    LedPorts(bool is_internal = true);
+    void set(LedPinColor color, uint8_t intensity) override;
+    void reset(LedPinColor color = LedPinColor::ALL) override;
+    void toggle(GPIO_PinState states [3]) override;
 };
+
 #endif
 
 struct LedData
 {
-    Logger _led_logger;
+    Logger _led_logger = Logger("LED");
 
-    LedPortsINT int_led_pin_out=LedPortsINT();
-    LedPortsEXT ext_led_pin_out = LedPortsEXT();
+    LedPorts int_led_pin_out;
+    LedPorts ext_led_pin_out;
 
     uint8_t max_int_intensity;
     uint8_t max_ext_intensity;
 
-    uint32_t blink_period = 1000;
-    uint8_t duty_cycle = 50;
+    uint16_t blink_period = 1000;
+    float duty_cycle_ptc = 100; // 0.5 * 1000
+    uint16_t duty_cycle = 1000;
 };
 
 
@@ -172,12 +116,15 @@ namespace LedPeriphery{
     void toggle_internal(LedColor color);
     void toggle_external(LedColor color);
 
-    void set_internal(LedColor color, uint8_t intensity);
-    void set_external(LedColor color, uint8_t intensity);
+    void set_internal(uint8_t intensity);
+    void set_external(uint8_t intensity);
 
-    void reset_internal(LedPinColor pin_color);
-    void reset_external(LedPinColor pin_color);
+    void reset_internal(LedPinColor pin_color=LedPinColor::ALL);
+    void reset_external(LedPinColor pin_color=LedPinColor::ALL);
+    
     void set_intensity(uint8_t intensity, bool to_internal);
+    void set_duty_cycle(float duty_cycle_fraction);
+    void set_blink_period(uint16_t period);
 };
 
 
