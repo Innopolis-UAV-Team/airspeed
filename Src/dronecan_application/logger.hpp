@@ -13,6 +13,7 @@
 
 class Logger {
 public:
+    Logger(const char* source);
     /**
      * @brief Optionally init source and len fields if the source is provided
      * It can be a brief task/module name or something that can't be changed later.

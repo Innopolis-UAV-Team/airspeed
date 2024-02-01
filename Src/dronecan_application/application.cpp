@@ -28,24 +28,29 @@ void application_entry_point() {
 
     led_conf.max_int_intensity = int_max_intensity;
     led_conf.max_ext_intensity = int_max_intensity;
-    led_conf.blink_period = 1000;
-    led_conf.duty_cycle = 50;
+    led_conf.duty_cycle_ptc = 100;
+    LedPeriphery::set_blink_period(1000);
+    led_conf._led_logger = Logger("LED");
 
     uavcanInitApplication(node_id);
     uint32_t last_intensity_change = HAL_GetTick();
-
+    LedPeriphery::reset_internal();
+    LedPeriphery::set_internal(1);
+    char buffer[90];
+    
     while(true) {
         
         if ( HAL_GetTick() - last_intensity_change>1000){
-            if (int_intensity >= 100){
-                int_intensity = 20;
-            }
-            LedPeriphery::set_internal(LedColor::WHITE_COLOR, int_intensity);
-            int_intensity+=20;
+            // int_intensity+=500;
+            // if (int_intensity > 1000){
+            //     int_intensity = 0;
+            // }
             last_intensity_change = HAL_GetTick();
+            sprintf(buffer, "%d %.2f", led_conf.duty_cycle, led_conf.duty_cycle_ptc);
+            led_conf._led_logger.log_info(buffer);
         }
         
-        // led.toggle(LedColor::GREEN_COLOR);
+        LedPeriphery::toggle_internal(LedColor::RED_COLOR);
         uavcanSpinOnce();
 
 #ifdef HAL_IWDG_MODULE_ENABLED
