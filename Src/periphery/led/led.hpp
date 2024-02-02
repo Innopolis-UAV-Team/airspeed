@@ -32,7 +32,7 @@ enum LedPinColor{
 class LedInterface {
 public:
     virtual void toggle(GPIO_PinState states [3])=0;
-    virtual void set(LedPinColor color, uint16_t intensity) = 0;
+    virtual void set(LedPinColor color, uint8_t intensity_ptc) = 0;
     virtual void reset(LedPinColor color) = 0;
 };
 
@@ -49,9 +49,9 @@ struct LedGPIOPins {
     uint16_t pin_green;
     uint16_t pin_blue;
 
-    GPIO_TypeDef* gpio_port_red;
-    GPIO_TypeDef* gpio_port_green;
-    GPIO_TypeDef* gpio_port_blue;
+    GPIO_TypeDef* gpio_port_red = nullptr;
+    GPIO_TypeDef* gpio_port_green = nullptr;
+    GPIO_TypeDef* gpio_port_blue = nullptr;
 };
 
 class LedPorts: public LedInterface{
@@ -60,9 +60,9 @@ public:
     LedGPIOPins gpio_pins={};
 
     LedPorts(bool is_internal = true);
-    void set(LedPinColor color, uint16_t intensity) override;
+    void set(LedPinColor color, uint8_t intensity_ptc) override;
     void reset(LedPinColor color= LedPinColor::ALL) override;
-    void toggle(GPIO_PinState states [3]) override;
+    void toggle(GPIO_PinState states [3]){};
 };
 
 #else
@@ -82,9 +82,9 @@ public:
     LedGPIOPins gpio_pins={};
 
     LedPorts(bool is_internal = true);
-    void set(LedPinColor color, uint16_t intensity) override;
+    void set(LedPinColor color, uint8_t intensity_ptc) override;
     void reset(LedPinColor color = LedPinColor::ALL) override;
-    void toggle(GPIO_PinState states [3]) override;
+    void toggle(GPIO_PinState states [3]){};
 };
 
 #endif
@@ -96,12 +96,12 @@ struct LedData
     LedPorts int_led_pin_out;
     LedPorts ext_led_pin_out;
 
-    uint16_t max_int_intensity;
-    uint16_t max_ext_intensity;
+    uint8_t max_int_intensity_ptc;
+    uint8_t max_ext_intensity_ptc;
 
-    uint16_t blink_period = 1000;
-    float duty_cycle_ptc = 100; // 0.5 * 1000
-    uint16_t duty_cycle = 1000;
+    uint32_t blink_period = 1000;
+    uint8_t duty_cycle_ptc = 100;
+    uint32_t duty_cycle = 1000;
 
     LedColor int_current_color;
     LedColor ext_current_color;
@@ -110,24 +110,18 @@ struct LedData
 
 namespace LedPeriphery{
 
-    // internal
-    // toggle_internal()
-    // set_internal()
-
-    // external
-
     void toggle_internal(LedColor color);
     void toggle_external(LedColor color);
 
-    void set_internal(uint16_t intensity);
-    void set_external(uint16_t intensity);
+    void set_internal(uint8_t intensity_ptc);
+    void set_external(uint8_t intensity_ptc);
 
     void reset_internal(LedPinColor pin_color=LedPinColor::ALL);
     void reset_external(LedPinColor pin_color=LedPinColor::ALL);
     
-    void set_intensity(uint16_t intensity, bool to_internal);
+    void set_intensity(uint8_t intensity_ptc, bool to_internal);
     void set_duty_cycle(float duty_cycle_fraction);
-    void set_blink_period(uint16_t period);
+    void set_blink_period(uint32_t period);
 };
 
 

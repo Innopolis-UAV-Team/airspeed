@@ -16,21 +16,21 @@ system.name:
 
 lights.max_intensity:
   type: Integer
-  note: Defines the max intensity of the lights.
+  note: Defines the max intensity of the lights [%].
   enum: PARAM_LIGHTS_MAX_INTENSITY
   flags: mutable
-  default: 0
+  default: 50
   min: 0
-  max: 255
+  max: 100
 
 lights.default_color:
   type: Integer
   note: Defines a default color of the lights.
   enum: PARAM_LIGHTS_DEFAULT_COLOR
   flags: mutable
-  default: 0
+  default: 6
   min: 0
-  max: 255
+  max: 6
 
 lights.type:
   type: Integer
@@ -46,15 +46,16 @@ lights.blink_period_ms:
   note: Defines a blink period of the lights [ms].
   enum: PARAM_LIGHTS_BLINK_PERIOD_MS
   flags: mutable
-  default: 0
+  default: 1000
   min: 0
-  max: 255
+  max: 65535
+
 
 lights.duty_cycle_pct:
   type: Integer
   note: Defines a duty cycle of the lights [%].
   enum: PARAM_LIGHTS_DUTY_CYCLE_PTC
   flags: mutable
-  default: 0
+  default: 50
   min: 0
-  max: 255
+  max: 100
