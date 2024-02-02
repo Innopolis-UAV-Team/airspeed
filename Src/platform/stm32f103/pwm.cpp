@@ -22,7 +22,7 @@ Logger PwmPeriphery::_logger = Logger("PWM");
 void PwmPeriphery::set_duration(const PwmPin pwm_pin, uint32_t duration_us) {
     switch (pwm_pin) {
         case PwmPin::PWM_1:
-            TIM1->CCR2 = duration_us;
+            TIM1->CCR1 = duration_us;
             break;
 
         case PwmPin::PWM_2:
@@ -45,6 +45,9 @@ void PwmPeriphery::set_duration(const PwmPin pwm_pin, uint32_t duration_us) {
         default:
             break;
     }
+    // char buffer[90];
+    // sprintf(buffer, "%d", duration_us);
+    // _logger.log_info(buffer);
 }
 
 uint32_t PwmPeriphery::get_duration(PwmPin pwm_pin) {
@@ -127,17 +130,19 @@ void PwmPeriphery::reset(PwmPin pwm_pin){
 
     switch (pwm_pin) {
         case PwmPin::PWM_1:
-            TIM1->CCR1 = 1;
+            // TIM1->CCR1 = 1;
 
             // HAL_TIM_PWM_Stop_IT(&htim1, TIM_CHANNEL_1);
-            // __HAL_TIM_DISABLE_IT(&htim1, TIM_CHANNEL_1);
+            __HAL_TIM_DISABLE_IT(&htim1, TIM_CHANNEL_1);
             // HAL_TIM_PWM_Start_IT(&htim1, TIM_CHANNEL_1);
             break;
         
         case PwmPin::PWM_2:
-            TIM2->CCR1 = 1;
+            // TIM2->CCR1 = 1;
 
             // #ifdef htim2
+            __HAL_TIM_DISABLE_IT(&htim1, TIM_CHANNEL_1);
+
             // HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_1);
             // HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
 

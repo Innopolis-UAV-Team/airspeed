@@ -7,11 +7,14 @@
 
 
 LedGPIOPins int_gpio_led_pins = {
-    .pin_red = INT_RGB_LED_RED_Pin, 
+    #ifdef INT_RGB_LED_RED_Pin
+    .pin_red = INT_RGB_LED_RED_Pin,
+    #endif 
     .pin_green = INT_RGB_LED_GREEN_Pin, 
     .pin_blue = INT_RGB_LED_BLUE_Pin,
-
+    #ifdef INT_RGB_LED_RED_Pin
     .gpio_port_red = INT_RGB_LED_RED_GPIO_Port,
+    #endif
     .gpio_port_green = INT_RGB_LED_GREEN_GPIO_Port,
     .gpio_port_blue = INT_RGB_LED_BLUE_GPIO_Port,
 };
@@ -36,7 +39,6 @@ LedPWMPins ext_pwm_led_pins = {
     .pwm_pin_green = PwmPin::PWM_5,
     .pwm_pin_blue = PwmPin::PWM_3,
 };
-
 
 LedPorts::LedPorts(bool is_internal){
     if (is_internal){
@@ -79,6 +81,21 @@ void LedPorts::toggle(GPIO_PinState states [3]){
     HAL_GPIO_WritePin(gpio_pins.gpio_port_red, gpio_pins.pin_red, states[0]);
     HAL_GPIO_WritePin(gpio_pins.gpio_port_green, gpio_pins.pin_green, states[1]);
     HAL_GPIO_WritePin(gpio_pins.gpio_port_blue, gpio_pins.pin_blue, states[2]);
+    if (states[0]==GPIO_PIN_RESET){
+        PwmPeriphery::reset(pwm_pins.pwm_pin_red);
+    } else {
+        PwmPeriphery::set_duration(pwm_pins.pwm_pin_red, led_conf.duty_cycle);
+    }
+    if (states[1]==GPIO_PIN_RESET){
+        PwmPeriphery::reset(pwm_pins.pwm_pin_green);
+    } else {
+        PwmPeriphery::set_duration(pwm_pins.pwm_pin_green, led_conf.duty_cycle);
+    }
+    if (states[2]==GPIO_PIN_RESET){
+        PwmPeriphery::reset(pwm_pins.pwm_pin_blue);
+    } else {
+        PwmPeriphery::set_duration(pwm_pins.pwm_pin_blue, led_conf.duty_cycle);
+    }
 }
 
 void LedPorts::set(LedPinColor color, uint8_t intensity){
@@ -110,6 +127,13 @@ void LedPeriphery::reset_external(LedPinColor pin_color){
 
 void LedPeriphery::set_internal(uint8_t intensity){
     led_conf.int_led_pin_out.set(LedPinColor::ALL, intensity);
+    char buffer[90];
+    #ifndef NDEBUG
+    sprintf(buffer, "TIM1->ARR, TIM1->CCR1: %d %d", TIM1->ARR, TIM1->CCR1);
+    led_conf._led_logger.log_debug(buffer);
+    sprintf(buffer, "TIM2->ARR, TIM2->CCR1: %d %d", TIM2->ARR, TIM2->CCR1);
+    led_conf._led_logger.log_debug(buffer);
+    #endif
 }
 
 void LedPeriphery::set_external(uint8_t intensity){

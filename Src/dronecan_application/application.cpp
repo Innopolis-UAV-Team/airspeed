@@ -35,21 +35,23 @@ void application_entry_point() {
     uavcanInitApplication(node_id);
     uint32_t last_intensity_change = HAL_GetTick();
     LedPeriphery::reset_internal();
-    LedPeriphery::set_internal(1);
+    LedPeriphery::set_internal(400);
     char buffer[90];
-    
+
     while(true) {
         
         if ( HAL_GetTick() - last_intensity_change>1000){
-            // int_intensity+=500;
-            // if (int_intensity > 1000){
-            //     int_intensity = 0;
-            // }
+
+            int_intensity+=500;
+            if (int_intensity > 1000){
+                int_intensity = 0;
+            }
+            LedPeriphery::set_internal(int_intensity);
             last_intensity_change = HAL_GetTick();
-            sprintf(buffer, "%d %.2f", led_conf.duty_cycle, led_conf.duty_cycle_ptc);
-            led_conf._led_logger.log_info(buffer);
+
+
         }
-        
+
         LedPeriphery::toggle_internal(LedColor::RED_COLOR);
         uavcanSpinOnce();
 
