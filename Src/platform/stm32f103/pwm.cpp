@@ -5,11 +5,6 @@
 #include "periphery/pwm/pwm.hpp"
 #include "main.h"
 
-// #ifdef htim2
-extern TIM_HandleTypeDef htim2;
-// #endif
-extern TIM_HandleTypeDef htim1;
-extern TIM_HandleTypeDef htim3;
 
 // PWM_1,      // PA8 TIM1_CH1 INT_LED_GREEN
 // PWM_2,      // PA15 TIM2_CH1 INT_LED_RED
@@ -19,16 +14,14 @@ extern TIM_HandleTypeDef htim3;
     
 Logger PwmPeriphery::_logger = Logger("PWM");
 
-void PwmPeriphery::set_duration(const PwmPin pwm_pin, uint32_t duration_us) {
+void PwmPeriphery::set_duration(const PwmPin pwm_pin, uint16_t duration_us) {
     switch (pwm_pin) {
         case PwmPin::PWM_1:
             TIM1->CCR1 = duration_us;
             break;
 
         case PwmPin::PWM_2:
-            #ifdef htim2
             TIM2->CCR1 = duration_us;
-            #endif
             break;
 
         case PwmPin::PWM_3:
@@ -59,9 +52,7 @@ uint32_t PwmPeriphery::get_duration(PwmPin pwm_pin) {
             break;
 
         case PwmPin::PWM_2:
-            #ifdef htim2
             pwm_duration = TIM2->CCR1;
-            #endif
             break;
 
         case PwmPin::PWM_3:
@@ -84,7 +75,7 @@ uint32_t PwmPeriphery::get_duration(PwmPin pwm_pin) {
     return pwm_duration;
 }
 
-void PwmPeriphery::set_duty_cycle(PwmPin pwm_pin, uint8_t duty_cycle_pct){
+void PwmPeriphery::set_duty_cycle(PwmPin pwm_pin, uint16_t duty_cycle_pct){
     
     if (duty_cycle_pct > 100){
         return;
@@ -100,15 +91,12 @@ void PwmPeriphery::set_duty_cycle(PwmPin pwm_pin, uint8_t duty_cycle_pct){
 
         case PwmPin::PWM_2:
             // _HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, (int) fraction * TIM4->ARR - 1);
-            // #ifdef htim2
             TIM2->CCR1 = (int) fraction * TIM2->ARR - 1;
-            // #endif
             break;
 
         case PwmPin::PWM_3:
             // _HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, (int) fraction * TIM3->ARR - 1);
             TIM3->CCR3 = (int) fraction * TIM3->ARR - 1;
-
             break;
 
         case PwmPin::PWM_4:
@@ -130,44 +118,25 @@ void PwmPeriphery::reset(PwmPin pwm_pin){
 
     switch (pwm_pin) {
         case PwmPin::PWM_1:
-            // TIM1->CCR1 = 1;
-
-            // HAL_TIM_PWM_Stop_IT(&htim1, TIM_CHANNEL_1);
-            __HAL_TIM_DISABLE_IT(&htim1, TIM_CHANNEL_1);
-            // HAL_TIM_PWM_Start_IT(&htim1, TIM_CHANNEL_1);
+            TIM1->CCR1 = 0;
             break;
         
         case PwmPin::PWM_2:
-            // TIM2->CCR1 = 1;
-
-            // #ifdef htim2
-            __HAL_TIM_DISABLE_IT(&htim1, TIM_CHANNEL_1);
-
-            // HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_1);
-            // HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
-
-            // #endif
+            TIM2->CCR1 = 0;
             break;
 
         case PwmPin::PWM_3:
-            HAL_TIM_PWM_Stop_IT(&htim3, TIM_CHANNEL_3);
-            HAL_TIM_PWM_Start_IT(&htim3, TIM_CHANNEL_3);
-
-
-
+            TIM3->CCR3 = 0;
             break;
 
         case PwmPin::PWM_4:
-            HAL_TIM_PWM_Stop_IT(&htim3, TIM_CHANNEL_1);
-            HAL_TIM_PWM_Start_IT(&htim3, TIM_CHANNEL_1);
-
+            TIM3->CCR1 = 0;
             break;
 
         case PwmPin::PWM_5:
-            HAL_TIM_PWM_Stop_IT(&htim3, TIM_CHANNEL_2);
-            HAL_TIM_PWM_Start_IT(&htim3, TIM_CHANNEL_2);
-            
+            TIM3->CCR2 = 0;
             break;
+
         default:
             _logger.log_debug("No such PIN");
             break;

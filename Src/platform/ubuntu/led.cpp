@@ -36,10 +36,10 @@ LedData led_conf = {.int_led_pin_out = LedPorts(true), .ext_led_pin_out=LedPorts
 
 void LedPorts::reset(LedPinColor color){}
 void LedPorts::toggle(GPIO_PinState states [3]){}
-void LedPorts::set(LedPinColor color, uint8_t intensity){}
+void LedPorts::set(LedPinColor color, uint16_t intensity){}
 void LedPeriphery::reset_internal(LedPinColor pin_color){}
 void LedPeriphery::reset_external(LedPinColor pin_color){}
-void LedPeriphery::set_internal(uint8_t intensity){}
+void LedPeriphery::set_internal(uint16_t intensity){}
 void LedPeriphery::set_external(uint8_t intensity){}
 void LedPeriphery::toggle_external(LedColor color){}
 void LedPeriphery::toggle_internal(LedColor color){}

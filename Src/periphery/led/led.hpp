@@ -32,7 +32,7 @@ enum LedPinColor{
 class LedInterface {
 public:
     virtual void toggle(GPIO_PinState states [3])=0;
-    virtual void set(LedPinColor color, uint8_t intensity) = 0;
+    virtual void set(LedPinColor color, uint16_t intensity) = 0;
     virtual void reset(LedPinColor color) = 0;
 };
 
@@ -60,7 +60,7 @@ public:
     LedGPIOPins gpio_pins={};
 
     LedPorts(bool is_internal = true);
-    void set(LedPinColor color, uint8_t intensity) override;
+    void set(LedPinColor color, uint16_t intensity) override;
     void reset(LedPinColor color= LedPinColor::ALL) override;
     void toggle(GPIO_PinState states [3]) override;
 };
@@ -82,7 +82,7 @@ public:
     LedGPIOPins gpio_pins={};
 
     LedPorts(bool is_internal = true);
-    void set(LedPinColor color, uint8_t intensity) override;
+    void set(LedPinColor color, uint16_t intensity) override;
     void reset(LedPinColor color = LedPinColor::ALL) override;
     void toggle(GPIO_PinState states [3]) override;
 };
@@ -96,12 +96,15 @@ struct LedData
     LedPorts int_led_pin_out;
     LedPorts ext_led_pin_out;
 
-    uint8_t max_int_intensity;
-    uint8_t max_ext_intensity;
+    uint16_t max_int_intensity;
+    uint16_t max_ext_intensity;
 
     uint16_t blink_period = 1000;
     float duty_cycle_ptc = 100; // 0.5 * 1000
     uint16_t duty_cycle = 1000;
+
+    LedColor int_current_color;
+    LedColor ext_current_color;
 };
 
 
@@ -116,13 +119,13 @@ namespace LedPeriphery{
     void toggle_internal(LedColor color);
     void toggle_external(LedColor color);
 
-    void set_internal(uint8_t intensity);
-    void set_external(uint8_t intensity);
+    void set_internal(uint16_t intensity);
+    void set_external(uint16_t intensity);
 
     void reset_internal(LedPinColor pin_color=LedPinColor::ALL);
     void reset_external(LedPinColor pin_color=LedPinColor::ALL);
     
-    void set_intensity(uint8_t intensity, bool to_internal);
+    void set_intensity(uint16_t intensity, bool to_internal);
     void set_duty_cycle(float duty_cycle_fraction);
     void set_blink_period(uint16_t period);
 };
