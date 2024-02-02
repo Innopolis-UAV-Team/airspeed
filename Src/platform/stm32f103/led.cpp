@@ -63,7 +63,7 @@ LedData led_conf = {.int_led_pin_out = LedPorts(true), .ext_led_pin_out=LedPorts
 void LedPorts::reset(LedPinColor color){
     switch (color) {
     case RED:
-        if (gpio_pins.gpio_port_red){
+        if (gpio_pins.gpio_port_red != nullptr){
             HAL_GPIO_WritePin(gpio_pins.gpio_port_red, gpio_pins.pin_red, GPIO_PIN_SET);
         } else {
             PwmPeriphery::reset(pwm_pins.pwm_pin_red);
@@ -71,7 +71,7 @@ void LedPorts::reset(LedPinColor color){
         break;
 
     case GREEN:
-        if (gpio_pins.gpio_port_green){
+        if (gpio_pins.gpio_port_green != nullptr){
             HAL_GPIO_WritePin(gpio_pins.gpio_port_green, gpio_pins.pin_green, GPIO_PIN_SET);
         } else {
             PwmPeriphery::reset(pwm_pins.pwm_pin_green);
@@ -79,32 +79,16 @@ void LedPorts::reset(LedPinColor color){
         break;
 
     case BLUE:
-        if (gpio_pins.gpio_port_green){
+        if (gpio_pins.gpio_port_blue != nullptr){
             HAL_GPIO_WritePin(gpio_pins.gpio_port_blue, gpio_pins.pin_blue, GPIO_PIN_SET);
         } else {
             PwmPeriphery::reset(pwm_pins.pwm_pin_blue);
         }
         break;
-
     case ALL:
-        if (gpio_pins.gpio_port_red){
-            HAL_GPIO_WritePin(gpio_pins.gpio_port_red, gpio_pins.pin_red, GPIO_PIN_SET);
-        } else {
-            PwmPeriphery::reset(pwm_pins.pwm_pin_red);
-        }
-        if (gpio_pins.gpio_port_green){
-            HAL_GPIO_WritePin(gpio_pins.gpio_port_green, gpio_pins.pin_green, GPIO_PIN_SET);
-        } else {
-            PwmPeriphery::reset(pwm_pins.pwm_pin_green);
-        }
-        if (gpio_pins.gpio_port_green){
-            HAL_GPIO_WritePin(gpio_pins.gpio_port_blue, gpio_pins.pin_blue, GPIO_PIN_SET);
-        } else {
-            PwmPeriphery::reset(pwm_pins.pwm_pin_blue);
-        }
-        // HAL_GPIO_WritePin(gpio_pins.gpio_port_red, gpio_pins.pin_red, GPIO_PIN_SET);
-        // HAL_GPIO_WritePin(gpio_pins.gpio_port_green, gpio_pins.pin_green, GPIO_PIN_SET);
-        // HAL_GPIO_WritePin(gpio_pins.gpio_port_blue, gpio_pins.pin_blue, GPIO_PIN_SET);
+        LedPorts::reset(LedPinColor::RED);
+        LedPorts::reset(LedPinColor::GREEN);
+        LedPorts::reset(LedPinColor::BLUE);
         break;
 
     default:
@@ -112,45 +96,39 @@ void LedPorts::reset(LedPinColor color){
     }
 }
 
-void LedPorts::toggle(GPIO_PinState states [3]){
-    // HAL_GPIO_WritePin(gpio_pins.gpio_port_red, gpio_pins.pin_red, states[0]);
-    // HAL_GPIO_WritePin(gpio_pins.gpio_port_green, gpio_pins.pin_green, states[1]);
-    HAL_GPIO_WritePin(gpio_pins.gpio_port_blue, gpio_pins.pin_blue, states[2]);
-    if (states[0]==GPIO_PIN_SET){
-        // PwmPeriphery::set_duration(pwm_pins.pwm_pin_red, 0);
-
-        PwmPeriphery::reset(pwm_pins.pwm_pin_red);
-    } else {
-        PwmPeriphery::set_duration(pwm_pins.pwm_pin_red, led_conf.max_int_intensity);
-    }
-    if (states[1]==GPIO_PIN_SET){
-        // PwmPeriphery::set_duration(pwm_pins.pwm_pin_red, 0);
-        PwmPeriphery::reset(pwm_pins.pwm_pin_green);
-    } else {
-        PwmPeriphery::set_duration(pwm_pins.pwm_pin_green, led_conf.max_int_intensity);
-    }
-    // if (states[2]==GPIO_PIN_RESET){
-    //     PwmPeriphery::reset(pwm_pins.pwm_pin_blue);
-    // } else {
-    //     PwmPeriphery::set_duration(pwm_pins.pwm_pin_blue, 0);
-    // }
-}
-
-void LedPorts::set(LedPinColor color, uint16_t intensity){
+void LedPorts::set(LedPinColor color, uint8_t intensity){
     switch (color) {
     case RED:
-        PwmPeriphery::set_duration(pwm_pins.pwm_pin_red, intensity);
+        if (gpio_pins.gpio_port_red != nullptr){
+            led_conf._led_logger.log_debug("GPIO RED");
+            HAL_GPIO_WritePin(gpio_pins.gpio_port_red, gpio_pins.pin_red, GPIO_PIN_RESET);
+        } else {
+            PwmPeriphery::set_duty_cycle(pwm_pins.pwm_pin_red, intensity);
+        }
         break;
+
     case GREEN:
-        PwmPeriphery::set_duration(pwm_pins.pwm_pin_green, intensity);
+        if (gpio_pins.gpio_port_green != nullptr){
+            HAL_GPIO_WritePin(gpio_pins.gpio_port_green, gpio_pins.pin_green, GPIO_PIN_RESET);
+            led_conf._led_logger.log_debug("GPIO GREEN");
+        } else {
+            PwmPeriphery::set_duty_cycle(pwm_pins.pwm_pin_green, intensity);
+        }
         break;
+
     case BLUE:
-        PwmPeriphery::set_duration(pwm_pins.pwm_pin_blue, intensity);
+        if (gpio_pins.gpio_port_blue != nullptr){
+            HAL_GPIO_WritePin(gpio_pins.gpio_port_blue, gpio_pins.pin_blue, GPIO_PIN_RESET);
+        } else {
+            led_conf._led_logger.log_debug("PWM BLUE");
+            PwmPeriphery::set_duty_cycle(pwm_pins.pwm_pin_blue, intensity);
+        }
         break;
+
     case ALL:
-        PwmPeriphery::set_duration(pwm_pins.pwm_pin_red, intensity);
-        PwmPeriphery::set_duration(pwm_pins.pwm_pin_green, intensity);
-        PwmPeriphery::set_duration(pwm_pins.pwm_pin_blue, intensity);
+        set(LedPinColor::RED, intensity);
+        set(LedPinColor::BLUE, intensity);
+        set(LedPinColor::GREEN, intensity);
     default:
         break;
     }
@@ -163,12 +141,12 @@ void LedPeriphery::reset_external(LedPinColor pin_color){
     led_conf.ext_led_pin_out.reset(pin_color);
 }
 
-void LedPeriphery::set_internal(uint16_t intensity){
+void LedPeriphery::set_internal(uint8_t intensity){
     led_conf.int_led_pin_out.set(LedPinColor::ALL, intensity);
     
 }
 
-void LedPeriphery::set_external(uint16_t intensity){
+void LedPeriphery::set_external(uint8_t intensity){
     led_conf.ext_led_pin_out.set(LedPinColor::ALL, intensity);
 }
 
@@ -219,41 +197,50 @@ void LedPeriphery::toggle_internal(LedColor color){
     auto crnt_time_ms = HAL_GetTick();
     GPIO_PinState state = (crnt_time_ms % led_conf.blink_period > led_conf.duty_cycle) ? GPIO_PIN_SET : GPIO_PIN_RESET;
     GPIO_PinState states [3] = {GPIO_PIN_SET, GPIO_PIN_SET, GPIO_PIN_SET};
-    switch (color)
-    {
+    if (state==GPIO_PIN_SET){
+        led_conf.int_led_pin_out.reset(LedPinColor::ALL);
+        return;
+    }
+    switch (color) {
     case LedColor::RED_COLOR:
-        states[0] = state;
+        led_conf.int_led_pin_out.set(LedPinColor::RED, led_conf.max_int_intensity_ptc);
+        led_conf.int_led_pin_out.reset(LedPinColor::GREEN);
+        led_conf.int_led_pin_out.reset(LedPinColor::BLUE);
         break;
     case LedColor::GREEN_COLOR:
-        states[1] = state;
+        led_conf.int_led_pin_out.reset(LedPinColor::RED);
+        led_conf.int_led_pin_out.set(LedPinColor::GREEN, led_conf.max_int_intensity_ptc);
+        led_conf.int_led_pin_out.reset(LedPinColor::BLUE);
         break;
     case LedColor::BLUE_COLOR:
-        states[2] = state;
+        led_conf.int_led_pin_out.reset(LedPinColor::RED);
+        led_conf.int_led_pin_out.reset(LedPinColor::GREEN);
+        led_conf.int_led_pin_out.set(LedPinColor::BLUE, led_conf.max_int_intensity_ptc);
         break;
     case LedColor::CYAN_COLOR:
-        states[1] = state;
-        states[2] = state;
+        led_conf.int_led_pin_out.reset(LedPinColor::RED);
+        led_conf.int_led_pin_out.set(LedPinColor::GREEN, led_conf.max_int_intensity_ptc);
+        led_conf.int_led_pin_out.set(LedPinColor::BLUE, led_conf.max_int_intensity_ptc);
         break;
 
     case LedColor::MAGENTA_COLOR:
-        states[0] = state;
-        states[2] = state;
+        led_conf.int_led_pin_out.set(LedPinColor::RED, led_conf.max_int_intensity_ptc);
+        led_conf.int_led_pin_out.reset(LedPinColor::GREEN);
+        led_conf.int_led_pin_out.set(LedPinColor::BLUE, led_conf.max_int_intensity_ptc);
         break;
 
     case LedColor::YELLOW_COLOR:
-        states[0] = state;
-        states[1] = state;
+        led_conf.int_led_pin_out.set(LedPinColor::RED, led_conf.max_int_intensity_ptc);
+        led_conf.int_led_pin_out.set(LedPinColor::GREEN, led_conf.max_int_intensity_ptc);
+        led_conf.int_led_pin_out.reset(LedPinColor::BLUE);
         break;
 
     case LedColor::WHITE_COLOR:
-        states[0] = state;
-        states[1] = state;
-        states[2] = state;
+        led_conf.int_led_pin_out.set(LedPinColor::ALL, led_conf.max_int_intensity_ptc);
         break;
     default:
         return;
     }
-    led_conf.int_led_pin_out.toggle(states);
 }
 
 void LedPeriphery::set_duty_cycle(float duty_cycle_fraction){
@@ -261,9 +248,9 @@ void LedPeriphery::set_duty_cycle(float duty_cycle_fraction){
     led_conf.duty_cycle = led_conf.blink_period * duty_cycle_fraction;
 }
 
-void LedPeriphery::set_blink_period(uint16_t period){
+void LedPeriphery::set_blink_period(uint32_t period){
     led_conf.blink_period = period;
-    set_duty_cycle(led_conf.duty_cycle_ptc/100.0);
+    set_duty_cycle(led_conf.duty_cycle_ptc / 100.0);
 }
 
 

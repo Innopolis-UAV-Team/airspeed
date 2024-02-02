@@ -4,7 +4,7 @@ The node has the following registers:
 | -- | ----------------------- | ----------- |
 |  1 | uavcan.node.id          | Defines a node-ID. Allowed values [0,127]. |
 |  2 | system.name             | Defines custom node name. If empty, the node will use the default name. |
-|  3 | lights.max_intensity    | Defines the max intensity of the lights. |
+|  3 | lights.max_intensity    | Defines the max intensity of the lights [%]. |
 |  4 | lights.default_color    | Defines a default color of the lights. |
 |  5 | lights.type             | Defines an intensity transition rate of the lights. |
 |  6 | lights.blink_period_ms  | Defines a blink period of the lights [ms]. |
