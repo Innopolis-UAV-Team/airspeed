@@ -15,7 +15,7 @@ uint16_t PwmPeriphery::get_duration(PwmPin pwm_pin) {
     (void)pwm_pin;
     return 0;
 }
-void PwmPeriphery::set_duty_cycle(PwmPin pwm_pin, uint8_t duty_cycle_pct){
+void PwmPeriphery::set_duty_cycle_pct(PwmPin pwm_pin, uint8_t duty_cycle_pct){
     (void)pwm_pin;
 }
 void PwmPeriphery::reset(PwmPin pwm_pin){
