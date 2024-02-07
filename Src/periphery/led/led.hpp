@@ -18,7 +18,7 @@ enum class LedColor {
     MAGENTA_COLOR,
     YELLOW_COLOR,
     WHITE_COLOR,
-    COLORS_AMOUNT,
+    COLORS_AMOUNT = 7,
 };
 
 enum LedPinColor{
@@ -99,6 +99,10 @@ struct LedData
     uint8_t max_int_intensity_ptc;
     uint8_t max_ext_intensity_ptc;
 
+    uint8_t max_red = 31;
+    uint8_t max_green = 63;
+    uint8_t max_blue = 31;
+
     uint32_t blink_period = 1000;
     uint8_t duty_cycle_ptc = 100;
     uint32_t duty_cycle = 1000;
@@ -113,6 +117,9 @@ namespace LedPeriphery{
     void toggle_internal(LedColor color);
     void toggle_external(LedColor color);
 
+    void toggle_rgb_internal(uint8_t red, uint8_t green, uint8_t blue);
+    void toggle_rgb_external(uint8_t red, uint8_t green, uint8_t blue);
+
     void set_internal(uint8_t intensity_ptc);
     void set_external(uint8_t intensity_ptc);
 
@@ -120,7 +127,7 @@ namespace LedPeriphery{
     void reset_external(LedPinColor pin_color=LedPinColor::ALL);
     
     void set_intensity(uint8_t intensity_ptc, bool to_internal);
-    void set_duty_cycle(float duty_cycle_fraction);
+    void set_duty_cycle_pct(float duty_cycle_fraction);
     void set_blink_period(uint32_t period);
 };
 

@@ -42,5 +42,5 @@ void LedPeriphery::set_internal(uint8_t intensity_ptc){}
 void LedPeriphery::set_external(uint8_t intensity_ptc){}
 void LedPeriphery::toggle_external(LedColor color){}
 void LedPeriphery::toggle_internal(LedColor color){}
-void LedPeriphery::set_duty_cycle(float duty_cycle_fraction){}
+void LedPeriphery::set_duty_cycle_pct(float duty_cycle_fraction){}
 void LedPeriphery::set_blink_period(uint32_t period){}

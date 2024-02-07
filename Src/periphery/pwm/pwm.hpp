@@ -31,7 +31,7 @@ public:
     // static int8_t init(PwmPin pin);
     static void set_duration(const PwmPin pwm_pin, uint16_t duration_us);
     static uint16_t get_duration(PwmPin pwm_pin);
-    static void set_duty_cycle(PwmPin pwm_pin, uint8_t duty_cycle_pct);
+    static void set_duty_cycle_pct(PwmPin pwm_pin, uint8_t duty_cycle_pct);
     static void reset(PwmPin pwm_pin);
 };
 

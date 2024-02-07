@@ -75,7 +75,7 @@ uint16_t PwmPeriphery::get_duration(PwmPin pwm_pin) {
     return pwm_duration;
 }
 
-void PwmPeriphery::set_duty_cycle(PwmPin pwm_pin, uint8_t duty_cycle_pct){
+void PwmPeriphery::set_duty_cycle_pct(PwmPin pwm_pin, uint8_t duty_cycle_pct){
     
     if (duty_cycle_pct > 100){
         return;
@@ -91,22 +91,22 @@ void PwmPeriphery::set_duty_cycle(PwmPin pwm_pin, uint8_t duty_cycle_pct){
 
         case PwmPin::PWM_2:
             // _HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, (int) fraction * TIM4->ARR - 1);
-            TIM2->CCR1 = (fraction * TIM1->ARR);
+            TIM2->CCR1 = (fraction * TIM2->ARR);
             break;
 
         case PwmPin::PWM_3:
             // _HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, (int) fraction * TIM3->ARR - 1);
-            TIM3->CCR3 = (fraction * TIM1->ARR);
+            TIM3->CCR3 = (fraction * TIM3->ARR);
             break;
 
         case PwmPin::PWM_4:
             // _HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, (int) fraction * TIM3->ARR - 1);
-            TIM3->CCR1 = (fraction * TIM1->ARR);
+            TIM3->CCR1 = (fraction * TIM3->ARR);
             break;
 
         case PwmPin::PWM_5:
             // _HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, (int) fraction * TIM3->ARR - 1);
-            TIM3->CCR2 = (fraction * TIM1->ARR);
+            TIM3->CCR2 = (fraction * TIM3->ARR);
             break;
         default:
             _logger.log_debug("No such PIN");
@@ -126,15 +126,15 @@ void PwmPeriphery::reset(PwmPin pwm_pin){
             break;
 
         case PwmPin::PWM_3:
-            TIM3->CCR3 = 0;
+            TIM3->CCR3 = TIM3->ARR;
             break;
 
         case PwmPin::PWM_4:
-            TIM3->CCR1 = 0;
+            TIM3->CCR1 = TIM3->ARR;
             break;
 
         case PwmPin::PWM_5:
-            TIM3->CCR2 = 0;
+            TIM3->CCR2 = TIM3->ARR;
             break;
 
         default:

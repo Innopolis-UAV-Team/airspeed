@@ -19,7 +19,7 @@ lights.max_intensity:
   note: Defines the max intensity of the lights [%].
   enum: PARAM_LIGHTS_MAX_INTENSITY
   flags: mutable
-  default: 50
+  default: 10
   min: 0
   max: 100
 
