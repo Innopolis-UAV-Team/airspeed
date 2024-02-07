@@ -44,3 +44,7 @@ void LedPeriphery::toggle_external(LedColor color){}
 void LedPeriphery::toggle_internal(LedColor color){}
 void LedPeriphery::set_duty_cycle_pct(float duty_cycle_fraction){}
 void LedPeriphery::set_blink_period(uint32_t period){}
+
+void LedPeriphery::toggle_rgb_internal(uint8_t red, uint8_t green, uint8_t blue){}
+
+void LedPeriphery::toggle_rgb_external(uint8_t red, uint8_t green, uint8_t blue){}
