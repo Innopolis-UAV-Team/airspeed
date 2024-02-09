@@ -5,23 +5,23 @@
 #include "periphery/led/led.hpp"
 #include "main.h"
 
-extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 
 LedGPIOPins int_gpio_led_pins = {
     #ifdef INT_RGB_LED_RED_Pin
-    .pin_red = INT_RGB_LED_RED_Pin,
+    // .pin_red = INT_RGB_LED_RED_Pin,
     #endif 
     #ifdef INT_RGB_LED_GREEN_Pin
-    .pin_green = INT_RGB_LED_GREEN_Pin, 
+    // .pin_green = INT_RGB_LED_GREEN_Pin, 
     #endif
     .pin_blue = INT_RGB_LED_BLUE_Pin,
     #ifdef INT_RGB_LED_RED_Pin
-    .gpio_port_red = INT_RGB_LED_RED_GPIO_Port,
+    // .gpio_port_red = INT_RGB_LED_RED_GPIO_Port,
     #endif
     #ifdef INT_RGB_LED_GREEN_Pin
-    .gpio_port_green = INT_RGB_LED_GREEN_GPIO_Port,
+    // .gpio_port_green = INT_RGB_LED_GREEN_GPIO_Port,
     #endif
     .gpio_port_blue = INT_RGB_LED_BLUE_GPIO_Port,
 };
@@ -32,25 +32,25 @@ LedPWMPins int_pwm_led_pins = {
 };
 
 LedGPIOPins ext_gpio_led_pins = {
-    #ifdef EXT_RGB_LED_RED_Pin
-    .pin_red = EXT_RGB_LED_RED_Pin,
-    #endif
-    #ifdef EXT_RGB_LED_GREEN_Pin
-    .pin_green = EXT_RGB_LED_GREEN_Pin, 
-    #endif
-    #ifdef EXT_RGB_LED_BLUE_Pin
-    .pin_blue = EXT_RGB_LED_BLUE_Pin,
-    #endif
-    #ifdef EXT_RGB_LED_RED_Pin
-    .gpio_port_red = EXT_RGB_LED_RED_GPIO_Port,
-    #endif
-    #ifdef EXT_RGB_LED_GREEN_Pin
+//     #ifdef EXT_RGB_LED_RED_Pin
+//     .pin_red = EXT_RGB_LED_RED_Pin,
+//     #endif
+//     #ifdef EXT_RGB_LED_GREEN_Pin
+//     .pin_green = EXT_RGB_LED_GREEN_Pin, 
+//     #endif
+//     #ifdef EXT_RGB_LED_BLUE_Pin
+//     .pin_blue = EXT_RGB_LED_BLUE_Pin,
+//     #endif
+//     #ifdef EXT_RGB_LED_RED_Pin
+//     .gpio_port_red = EXT_RGB_LED_RED_GPIO_Port,
+//     #endif
+//     #ifdef EXT_RGB_LED_GREEN_Pin
 
-    .gpio_port_green = EXT_RGB_LED_GREEN_GPIO_Port,
-    #endif
-    #ifdef EXT_RGB_LED_BLUE_Pin
-    .gpio_port_blue = EXT_RGB_LED_BLUE_GPIO_Port,
-    #endif
+//     .gpio_port_green = EXT_RGB_LED_GREEN_GPIO_Port,
+//     #endif
+//     #ifdef EXT_RGB_LED_BLUE_Pin
+//     .gpio_port_blue = EXT_RGB_LED_BLUE_GPIO_Port,
+//     #endif
 };
 
 LedPWMPins ext_pwm_led_pins = {
@@ -65,7 +65,7 @@ LedPorts::LedPorts(bool is_internal){
         gpio_pins=int_gpio_led_pins;
     } else {
         pwm_pins=ext_pwm_led_pins;
-        gpio_pins=ext_gpio_led_pins;
+        gpio_pins={};
     }
 }
 
@@ -75,6 +75,7 @@ void LedPorts::reset(LedPinColor color){
     switch (color) {
     case RED:
         if (gpio_pins.gpio_port_red != nullptr){
+            led_conf._led_logger.log_debug("RED");
             HAL_GPIO_WritePin(gpio_pins.gpio_port_red, gpio_pins.pin_red, GPIO_PIN_SET);
         } else {
             PwmPeriphery::reset(pwm_pins.pwm_pin_red);
@@ -83,6 +84,7 @@ void LedPorts::reset(LedPinColor color){
 
     case GREEN:
         if (gpio_pins.gpio_port_green != nullptr){
+            led_conf._led_logger.log_debug("GREEN");
             HAL_GPIO_WritePin(gpio_pins.gpio_port_green, gpio_pins.pin_green, GPIO_PIN_SET);
         } else {
             PwmPeriphery::reset(pwm_pins.pwm_pin_green);
@@ -92,6 +94,7 @@ void LedPorts::reset(LedPinColor color){
     case BLUE:
         if (gpio_pins.gpio_port_blue != nullptr){
             HAL_GPIO_WritePin(gpio_pins.gpio_port_blue, gpio_pins.pin_blue, GPIO_PIN_SET);
+            led_conf._led_logger.log_debug("BLUE");
         } else {
             PwmPeriphery::reset(pwm_pins.pwm_pin_blue);
         }
@@ -168,6 +171,7 @@ void LedPeriphery::toggle_external(LedColor color){
         led_conf.ext_led_pin_out.reset(LedPinColor::ALL);
         return;
     }
+    
     switch (color) {
     case LedColor::RED_COLOR:
         led_conf.ext_led_pin_out.set(LedPinColor::RED, led_conf.max_ext_intensity_ptc);
@@ -271,6 +275,13 @@ void LedPeriphery::set_blink_period(uint32_t period){
 }
 
 void LedPeriphery::toggle_rgb_internal(uint8_t red, uint8_t green, uint8_t blue){
+    auto crnt_time_ms = HAL_GetTick();
+    GPIO_PinState state = (crnt_time_ms % led_conf.blink_period > led_conf.duty_cycle) ? GPIO_PIN_SET : GPIO_PIN_RESET;
+    if (state==GPIO_PIN_SET){
+        led_conf.int_led_pin_out.reset(LedPinColor::ALL);
+        return;
+    }
+
     uint8_t int_red     = float(red * led_conf.max_int_intensity_ptc) / (led_conf.max_red);
     uint8_t int_green   = float(green* led_conf.max_int_intensity_ptc) / (led_conf.max_green);
     uint8_t int_blue    = float(blue * led_conf.max_int_intensity_ptc) / (led_conf.max_blue);
@@ -295,6 +306,13 @@ void LedPeriphery::toggle_rgb_internal(uint8_t red, uint8_t green, uint8_t blue)
 
 
 void LedPeriphery::toggle_rgb_external(uint8_t red, uint8_t green, uint8_t blue){
+    auto crnt_time_ms = HAL_GetTick();
+    GPIO_PinState state = (crnt_time_ms % led_conf.blink_period > led_conf.duty_cycle) ? GPIO_PIN_SET : GPIO_PIN_RESET;
+    if (state==GPIO_PIN_SET){
+        led_conf.int_led_pin_out.reset(LedPinColor::ALL);
+        return;
+    }
+    
     uint8_t ext_red     = float(red * led_conf.max_ext_intensity_ptc) / (led_conf.max_red);
     uint8_t ext_green   = float(green* led_conf.max_ext_intensity_ptc) / (led_conf.max_green);
     uint8_t ext_blue    = float(blue * led_conf.max_ext_intensity_ptc) / (led_conf.max_blue);
@@ -303,11 +321,13 @@ void LedPeriphery::toggle_rgb_external(uint8_t red, uint8_t green, uint8_t blue)
     } else {
         led_conf.ext_led_pin_out.set(LedPinColor::RED, ext_red);
     }
+
     if (ext_green == 0){
         led_conf.ext_led_pin_out.reset(LedPinColor::GREEN);
     } else {
         led_conf.ext_led_pin_out.set(LedPinColor::GREEN, ext_green);
     }
+
     if (ext_blue == 0){
         led_conf.ext_led_pin_out.reset(LedPinColor::BLUE);
     } else {

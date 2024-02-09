@@ -21,7 +21,6 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim1;
 #endif
 Logger logger = Logger("APP");
-auto last_res = HAL_GetTick();
 int8_t res_prev = 0;
 bool error = false;
 LightsCommand_t command = {};
@@ -40,6 +39,18 @@ void callback(CanardRxTransfer* transfer) {
     }
 }
 
+void change_color(LedColor &color){
+    int a = HAL_GetTick() % 6000;
+    if (a == 2000){
+        color = LedColor::BLUE_COLOR;
+    } else if (a==4000) {
+        color = LedColor::GREEN_COLOR;
+
+    } else if (a==0) {
+        color = LedColor::RED_COLOR;
+    }
+}
+
 void application_entry_point() {
     char buffer[90];
 
@@ -55,24 +66,45 @@ void application_entry_point() {
 
     extern LedData led_conf;
     auto blink_period = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_BLINK_PERIOD_MS);
-    led_conf.max_int_intensity_ptc = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_MAX_INTENSITY);
     led_conf.max_ext_intensity_ptc = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_MAX_INTENSITY);
     led_conf.duty_cycle_ptc =  paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_DUTY_CYCLE_PTC);
+    
     LedPeriphery::set_blink_period(blink_period);
+
+    led_conf.max_int_intensity_ptc = 100;
     led_conf._led_logger = Logger("LED");
 
     uavcanInitApplication(node_id);
    
-    LedPeriphery::reset_internal();
-    LedPeriphery::reset_external();
+
     #ifdef STM32F103xB
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+    HAL_StatusTypeDef status = HAL_OK;
+    status = HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+    if (status != HAL_OK){
+        logger.log_error("HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1)");
+    }
+    status =  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+    if (status != HAL_OK){
+        logger.log_error("HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1)");
+    }
+    status = HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+    if (status != HAL_OK){
+        logger.log_error("HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1)");
+    }
     HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+    if (status != HAL_OK){
+        logger.log_error("HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3)");
+    }
+    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+    if (status != HAL_OK){
+        logger.log_error("HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2)");
+    }
+
     #endif
 
+    LedPeriphery::reset_internal();
+    LedPeriphery::reset_external();
     LedColor color =LedColor::RED_COLOR;
 
     auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND, callback);
@@ -82,41 +114,26 @@ void application_entry_point() {
     }
 
     auto last_send = HAL_GetTick();
-    while(true) {
-        
-        // int a = HAL_GetTick() % 6000;
-        // if (a == 2000){
-        //     color = LedColor::BLUE_COLOR;
-        // } else if (a==4000)
-        // {
-        //     color = LedColor::GREEN_COLOR;
-        // } else if (a==1){
-        //     color = LedColor::RED_COLOR;
-        // }
 
+    while(true) {
+
+        // change_color(color);
         auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND, callback);
-        // float frac_red = (command.commands[0].color.red + 30.0) / (led_conf.max_red);
         if (sub_id < 0) {
-            if (HAL_GetTick() - last_send > 1000) {
-                // sprintf(buffer, );
-                // logger.log_info(buffer);
-                if (error){
-                    logger.log_error("AAAA");
-                }
-                last_send = HAL_GetTick();
+            if (error){
+                logger.log_debug("Msg deserialization");
             }
-            // Handle an initialization error
+            last_send = HAL_GetTick();
         }
-        color = LedColor::RED_COLOR;
 
         LedPeriphery::toggle_rgb_internal(command.commands[0].color.red, command.commands[0].color.green, command.commands[0].color.blue);
         LedPeriphery::toggle_rgb_external(command.commands[0].color.red, command.commands[0].color.green, command.commands[0].color.blue);
         // LedPeriphery::toggle_external(color);
         // LedPeriphery::toggle_internal(color);
         uavcanSpinOnce();
+}
 
 #ifdef HAL_IWDG_MODULE_ENABLED
         HAL_IWDG_Refresh(&hiwdg);
 #endif  // HAL_IWDG_MODULE_ENABLED
-    }
 }
