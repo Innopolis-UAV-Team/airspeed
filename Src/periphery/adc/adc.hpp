@@ -14,6 +14,7 @@ enum class AdcChannel : uint8_t {
     ADC_VIN,
     ADC_5V,
     ADC_VERSION,
+    ADC_yes,
     ADC_TEMPERATURE,
     ADC_NUMBER_OF_CNANNELS,
 };
