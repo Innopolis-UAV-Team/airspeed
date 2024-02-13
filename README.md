@@ -10,7 +10,7 @@
 
 | View | Drw |
 | ---- | ------ |
-| <img src="assets/view.png" alt="drawing" height="200"> | ... |
+| <img src="assets/view.png" alt="drawing" height="200"> | <img src="assets/pinout.png" alt="drawing" height="200"> |
 
 ### 3. Application interface
 
