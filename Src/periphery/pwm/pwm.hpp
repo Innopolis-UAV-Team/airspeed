@@ -17,10 +17,11 @@ extern "C" {
  */
 enum class PwmPin {
     PWM_1,      // PA8 TIM1_CH1 INT_LED_GREEN
-    PWM_2,      // PA15 TIM2_CH1
-    PWM_3,      // PB0 TIM3_CH3, TIM1_CH2N BLUE
-    PWM_4,      // PB4 TIM3_CH1 RED
-    PWM_5,      // PB5 TIM3_CH2 GREEN
+    PWM_2,      // PA15 TIM2_CH1 INT_LED_RED
+    PWM_3,      // PB0 TIM3_CH3 EXT_BLUE
+    PWM_4,      // PB4 TIM3_CH1 EXT_RED
+    PWM_5,      // PB5 TIM3_CH2 EXT_GREEN
+    PWM_6,      // PB3 TIM2_CH2 PWM5
     PWM_AMOUNT,
 };
 

@@ -20,10 +20,9 @@ extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim1;
-// # TODO: delete
-extern ADC_HandleTypeDef hadc1;
-
 #endif
+
+
 Logger logger = Logger("APP");
 int8_t res_prev = 0;
 bool error = false;
@@ -109,17 +108,19 @@ void application_entry_point() {
         logger.log_error("HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2)");
     }
 
+    #else
+    int status = 0;
     #endif
 
     LedPeriphery::reset_internal();
     LedPeriphery::reset_external();
     LedColor color = LedColor(default_color);
 
-    // auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND, callback);
-    // if (sub_id < 0) {
-    //     logger.log_error("sub_id < 0");
-    //     // Handle an initialization error
-    // }
+    auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND, callback);
+    if (sub_id < 0) {
+        logger.log_error("sub_id < 0");
+        // Handle an initialization error
+    }
 
     auto last_send = HAL_GetTick();
 
@@ -137,17 +138,21 @@ void application_entry_point() {
     while(true) {
 
         if (HAL_GetTick()%1000==0){
-            if (in_status != 0){
+            if (in_status != 0 | status!=0){
+            LedPeriphery::toggle_internal(LedColor::RED_COLOR);
             logger.log_error(buffer);
+
             } else {
-                uint16_t temp = adc.get(AdcChannel::ADC_TEMPERATURE);
+                uint16_t temp = adc.get(AdcChannel::ADC_CURRENT);
                 sprintf(buffer, "temp: %d", temp);
                 logger.log_info(buffer);
             }
             
         }
+
+        LedPeriphery::toggle_rgb_internal(command.commands[0].color.red, command.commands[0].color.green, command.commands[0].color.blue);
         LedPeriphery::toggle_external(color);
-        LedPeriphery::toggle_internal(color);
+        // LedPeriphery::toggle_internal(color);
         
         uavcanSpinOnce();
     }
