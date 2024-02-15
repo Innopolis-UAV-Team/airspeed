@@ -126,21 +126,21 @@ void PwmPeriphery::reset(PwmPin pwm_pin){
             break;
 
         case PwmPin::PWM_3:
-            TIM3->CCR3 = 0;
+            TIM3->CCR3 = TIM3->ARR;
             break;
 
         case PwmPin::PWM_4:
-            TIM3->CCR1 = 0;
+            TIM3->CCR1 = TIM3->ARR;
             break;
 
         case PwmPin::PWM_5:
-            TIM3->CCR2 = 0;
+            TIM3->CCR2 = TIM3->ARR;
             break;
 
         case PwmPin::PWM_6:
-            TIM3->CCR2 = 0;
+            TIM2->CCR2 = TIM2->ARR;
             break;
-            
+
         default:
             _logger.log_debug("No such PIN");
             break;

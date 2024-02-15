@@ -4,6 +4,8 @@
 
 #include "periphery/led/led.hpp"
 
+LedColor ext_curr_color=LedColor::RED_COLOR;
+LedColor int_curr_color=LedColor::RED_COLOR;
 
 LedGPIOPins int_gpio_led_pins = {};
 
@@ -40,11 +42,14 @@ void LedPeriphery::reset_internal(LedPinColor pin_color){}
 void LedPeriphery::reset_external(LedPinColor pin_color){}
 void LedPeriphery::set_internal(uint8_t intensity_ptc){}
 void LedPeriphery::set_external(uint8_t intensity_ptc){}
-void LedPeriphery::toggle_external(LedColor color){}
-void LedPeriphery::toggle_internal(LedColor color){}
+void LedPeriphery::toggle_external(LedColor color){
+    ext_curr_color = color;
+}
+void LedPeriphery::toggle_internal(LedColor color){
+    ext_curr_color = color;
+}
 void LedPeriphery::set_duty_cycle_pct(float duty_cycle_fraction){}
 void LedPeriphery::set_blink_period(uint32_t period){}
-
 void LedPeriphery::toggle_rgb_internal(uint8_t red, uint8_t green, uint8_t blue){}
-
 void LedPeriphery::toggle_rgb_external(uint8_t red, uint8_t green, uint8_t blue){}
+void LedPeriphery::update_ext_intensity(uint8_t max_intensity){}

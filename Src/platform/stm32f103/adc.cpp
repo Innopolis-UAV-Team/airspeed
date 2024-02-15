@@ -26,8 +26,15 @@ uint16_t AdcPeriphery::get(AdcChannel channel) {
     if (!_is_adc_already_inited || channel >= AdcChannel::ADC_NUMBER_OF_CNANNELS) {
         return 0;
     }
-
     return adc_dma_buffer[static_cast<uint8_t>(channel)];
+}
+
+float AdcPeriphery::stm32Current(uint16_t curr){
+    return (curr - 2048.00) / 90;
+}
+
+float AdcPeriphery::stm32Temperature(uint16_t temp){
+    return stm32TemperatureParse(temp);
 }
 
 #ifdef HAL_ADC_MODULE_ENABLED
