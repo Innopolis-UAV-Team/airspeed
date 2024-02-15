@@ -5,7 +5,7 @@
 #define SRC_PERIPHERY_ADC_ADC_HPP_
 
 #include <stdint.h>
-
+#include "periphery/temperature_sensor/temperature_sensor.hpp"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -13,8 +13,8 @@ extern "C" {
 enum class AdcChannel : uint8_t {
     ADC_VIN, 
     ADC_5V,
-    ADC_VERSION,
     ADC_CURRENT,
+    ADC_VERSION,
     ADC_TEMPERATURE,
     ADC_NUMBER_OF_CNANNELS,
 };
@@ -23,6 +23,8 @@ class AdcPeriphery {
 public:
     static int8_t init();
     static uint16_t get(AdcChannel channel);
+    static float stm32Temperature(uint16_t temp);
+    static float stm32Current(uint16_t curr);
 private:
     static inline bool _is_adc_already_inited = false;
 };

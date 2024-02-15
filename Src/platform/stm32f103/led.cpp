@@ -11,17 +11,17 @@ extern TIM_HandleTypeDef htim3;
 
 LedGPIOPins int_gpio_led_pins = {
     #ifdef INT_RGB_LED_RED_Pin
-    // .pin_red = INT_RGB_LED_RED_Pin,
+    .pin_red = INT_RGB_LED_RED_Pin,
     #endif 
     #ifdef INT_RGB_LED_GREEN_Pin
-    // .pin_green = INT_RGB_LED_GREEN_Pin, 
+    .pin_green = INT_RGB_LED_GREEN_Pin, 
     #endif
     .pin_blue = INT_RGB_LED_BLUE_Pin,
     #ifdef INT_RGB_LED_RED_Pin
-    // .gpio_port_red = INT_RGB_LED_RED_GPIO_Port,
+    .gpio_port_red = INT_RGB_LED_RED_GPIO_Port,
     #endif
     #ifdef INT_RGB_LED_GREEN_Pin
-    // .gpio_port_green = INT_RGB_LED_GREEN_GPIO_Port,
+    .gpio_port_green = INT_RGB_LED_GREEN_GPIO_Port,
     #endif
     .gpio_port_blue = INT_RGB_LED_BLUE_GPIO_Port,
 };
@@ -61,7 +61,7 @@ LedPWMPins ext_pwm_led_pins = {
 
 LedPorts::LedPorts(bool is_internal){
     if (is_internal){
-        pwm_pins=int_pwm_led_pins;
+        pwm_pins={};
         gpio_pins=int_gpio_led_pins;
     } else {
         pwm_pins=ext_pwm_led_pins;
@@ -75,30 +75,32 @@ void LedPorts::reset(LedPinColor color){
     switch (color) {
     case RED:
         if (gpio_pins.gpio_port_red != nullptr){
-            led_conf._led_logger.log_debug("RED");
             HAL_GPIO_WritePin(gpio_pins.gpio_port_red, gpio_pins.pin_red, GPIO_PIN_SET);
         } else {
+            if (HAL_GetTick() %1000 ==0){
+            }            
             PwmPeriphery::reset(pwm_pins.pwm_pin_red);
         }
         break;
 
     case GREEN:
         if (gpio_pins.gpio_port_green != nullptr){
-            led_conf._led_logger.log_debug("GREEN");
             HAL_GPIO_WritePin(gpio_pins.gpio_port_green, gpio_pins.pin_green, GPIO_PIN_SET);
         } else {
             PwmPeriphery::reset(pwm_pins.pwm_pin_green);
+            if (HAL_GetTick() %1000 ==0){
+            }
         }
         break;
 
     case BLUE:
         if (gpio_pins.gpio_port_blue != nullptr){
             HAL_GPIO_WritePin(gpio_pins.gpio_port_blue, gpio_pins.pin_blue, GPIO_PIN_SET);
-            led_conf._led_logger.log_debug("BLUE");
         } else {
             PwmPeriphery::reset(pwm_pins.pwm_pin_blue);
         }
         break;
+
     case ALL:
         LedPorts::reset(LedPinColor::RED);
         LedPorts::reset(LedPinColor::GREEN);
@@ -313,9 +315,9 @@ void LedPeriphery::toggle_rgb_external(uint8_t red, uint8_t green, uint8_t blue)
         return;
     }
     
-    uint8_t ext_red     = float(red * led_conf.max_ext_intensity_ptc) / (led_conf.max_red);
-    uint8_t ext_green   = float(green* led_conf.max_ext_intensity_ptc) / (led_conf.max_green);
-    uint8_t ext_blue    = float(blue * led_conf.max_ext_intensity_ptc) / (led_conf.max_blue);
+    uint8_t ext_red     = float(red * led_conf.red_intensity) / (led_conf.max_red);
+    uint8_t ext_green   = float(green* led_conf.green_intensity) / (led_conf.max_green);
+    uint8_t ext_blue    = float(blue * led_conf.blue_intensity) / (led_conf.max_blue);
     if (ext_red == 0){
         led_conf.ext_led_pin_out.reset(LedPinColor::RED);
     } else {
@@ -335,5 +337,12 @@ void LedPeriphery::toggle_rgb_external(uint8_t red, uint8_t green, uint8_t blue)
     }
 }
 
+void LedPeriphery::update_ext_intensity(uint8_t max_intensity){
+    led_conf.max_ext_intensity_ptc = max_intensity;
+    led_conf.red_intensity = max_intensity;
+    // led_conf.red_intensity = max_intensity/2;
+    led_conf.green_intensity = max_intensity;
+    led_conf.blue_intensity = max_intensity;
+}
 //  TODO: delete state and color from the set(), and just use toggle gpio version instead to set a color. 
 //  TODO: delete versions of LedPorts classes, since they are identical.

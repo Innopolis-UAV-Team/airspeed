@@ -109,6 +109,10 @@ struct LedData
 
     LedColor int_current_color;
     LedColor ext_current_color;
+
+    uint8_t red_intensity;
+    uint8_t blue_intensity;
+    uint8_t green_intensity;
 };
 
 
@@ -129,6 +133,7 @@ namespace LedPeriphery{
     void set_intensity(uint8_t intensity_ptc, bool to_internal);
     void set_duty_cycle_pct(float duty_cycle_fraction);
     void set_blink_period(uint32_t period);
+    void update_ext_intensity(uint8_t max_intensity);
 };
 
 
