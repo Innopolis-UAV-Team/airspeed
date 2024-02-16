@@ -37,6 +37,9 @@ float AdcPeriphery::stm32Temperature(uint16_t temp){
     return stm32TemperatureParse(temp);
 }
 
+float AdcPeriphery::stm32Voltage(uint16_t vol){
+    return vol/64.0;
+}
 #ifdef HAL_ADC_MODULE_ENABLED
 /**
  * @note We assume that hadc->Instance == ADC1 always!
