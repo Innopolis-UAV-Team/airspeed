@@ -23,7 +23,6 @@ extern LedData led_conf;
 
 bool publish_error = false;
 LightsCommand_t command = {};
-Logger logger = Logger("LED");
 
 
 void callback(CanardRxTransfer* transfer) {
@@ -53,7 +52,6 @@ LedColor change_color(LedColor color){
 }
 
 void application_entry_point() {
-    char buffer[90];
 
     led_conf._led_logger = Logger("LED");
     CircuitStatus_t circuit_status = {};
@@ -65,6 +63,7 @@ void application_entry_point() {
     auto node_id = paramsGetIntegerValue(IntParamsIndexes::PARAM_UAVCAN_NODE_ID);
 
     const auto node_name = "co.raccoonlab.mini";
+    Logger logger = Logger(node_name);
     auto node_name_param_idx = static_cast<ParamIndex_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT);
 
     paramsSetStringValue(node_name_param_idx, 19, (const uint8_t*)node_name);
@@ -114,7 +113,6 @@ void application_entry_point() {
 
     if (adc_status != 0){
         logger.log_error("ADC");
-        color_int = LedColor::RED_COLOR;
     } else {
         temp_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
         temp = stm32TemperatureParse(temp_raw);
@@ -125,8 +123,6 @@ void application_entry_point() {
         circuit_status_pub_id +=1;
     }
 
-    LedPeriphery::toggle_internal(color_int);
-    
     while(true) {
 
         color_int = LedColor::YELLOW_COLOR;
@@ -154,11 +150,9 @@ void application_entry_point() {
         if (HAL_GetTick()%1000 == 0){
             temp_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
             temp = AdcPeriphery::stm32Temperature(temp_raw);
-            temperature_status.temperature = 22.0;
+            temperature_status.temperature = temp;
             
             publish_error = dronecan_equipment_temperature_publish(&temperature_status, &temperature_pub_id);
-            sprintf(buffer, "temp: %d K", int(temp));
-            logger.log_info(buffer);
             if (!publish_error) {
                 temperature_pub_id ++;
             }
@@ -177,8 +171,9 @@ void application_entry_point() {
                 circuit_status_pub_id ++;
             }
         }
+        LedPeriphery::toggle_rgb_internal(command.commands[0].color.red, command.commands[0].color.green, command.commands[0].color.blue);
 
-        LedPeriphery::toggle_internal(color_int);
+        // LedPeriphery::toggle_internal(color_int);
         
         uavcanSpinOnce();
     }

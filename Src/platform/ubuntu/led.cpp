@@ -4,11 +4,6 @@
 
 #include "periphery/led/led.hpp"
 
-LedColor ext_curr_color=LedColor::RED_COLOR;
-LedColor int_curr_color=LedColor::RED_COLOR;
-
-LedGPIOPins int_gpio_led_pins = {};
-
 LedPWMPins int_pwm_led_pins = {
     .pwm_pin_red = PwmPin::PWM_2,
     .pwm_pin_green = PwmPin::PWM_1,
@@ -35,10 +30,10 @@ LedPorts::LedPorts(bool is_internal){
 
 LedData led_conf = {.int_led_pin_out = LedPorts(true), .ext_led_pin_out=LedPorts(false)};
 
-void LedPorts::reset(LedPinColor color){}
-void LedPorts::set(LedPinColor color, uint8_t intensity_ptc){}
-void LedPeriphery::reset_internal(LedPinColor pin_color){}
-void LedPeriphery::reset_external(LedPinColor pin_color){}
+void LedPorts::reset(RgbSimpleColor color){}
+void LedPorts::set(RgbSimpleColor color, uint8_t intensity_ptc){}
+void LedPeriphery::reset_internal(RgbSimpleColor pin_color){}
+void LedPeriphery::reset_external(RgbSimpleColor pin_color){}
 // void LedPeriphery::set_internal(uint8_t intensity_ptc){}
 // void LedPeriphery::set_external(uint8_t intensity_ptc){}
 void LedPeriphery::set_duty_cycle_pct(float duty_cycle_fraction){}
