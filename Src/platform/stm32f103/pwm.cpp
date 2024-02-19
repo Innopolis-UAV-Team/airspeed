@@ -6,12 +6,6 @@
 #include "main.h"
 
 
-// PWM_1,      // PA8 TIM1_CH1 INT_LED_GREEN
-// PWM_2,      // PA15 TIM2_CH1 INT_LED_RED
-// PWM_3,      // PB0 TIM3_CH3, TIM1_CH2N
-// PWM_4,      // PB4 TIM3_CH1
-// PWM_5,      // PB5 TIM3_CH2
-    
 Logger PwmPeriphery::_logger = Logger("PWM");
 
 void PwmPeriphery::set_duration(const PwmPin pwm_pin, uint16_t duration_us) {
@@ -25,7 +19,7 @@ void PwmPeriphery::set_duration(const PwmPin pwm_pin, uint16_t duration_us) {
             break;
 
         case PwmPin::PWM_3:
-            TIM3->CCR3 = duration_us;
+            TIM3->CCR2 = duration_us;
             break;
 
         case PwmPin::PWM_4:
@@ -33,11 +27,13 @@ void PwmPeriphery::set_duration(const PwmPin pwm_pin, uint16_t duration_us) {
             break;        
 
         case PwmPin::PWM_5:
-            TIM3->CCR2 = duration_us;
-            break;
-        case PwmPin::PWM_6:
             TIM2->CCR2 = duration_us;
             break;
+
+        case PwmPin::PWM_6:
+            TIM3->CCR3 = duration_us;
+            break;
+
         default:
             break;
     }
@@ -56,19 +52,21 @@ uint16_t PwmPeriphery::get_duration(PwmPin pwm_pin) {
             break;
 
         case PwmPin::PWM_3:
-            pwm_duration = TIM3->CCR3;
+            pwm_duration = TIM3->CCR2;
             break;
-
+            
         case PwmPin::PWM_4:
             pwm_duration = TIM3->CCR1;
             break;        
         
         case PwmPin::PWM_5:
-            pwm_duration = TIM3->CCR2;
-            break;
-        case PwmPin::PWM_6:
             pwm_duration = TIM2->CCR2;
             break;
+        
+        case PwmPin::PWM_6:
+            pwm_duration = TIM3->CCR3;
+            break;
+
         default:
             pwm_duration = 0;
             break;
@@ -95,19 +93,21 @@ void PwmPeriphery::set_duty_cycle_pct(PwmPin pwm_pin, uint8_t duty_cycle_pct){
             break;
 
         case PwmPin::PWM_3:
-            TIM3->CCR3 = (fraction * TIM3->ARR);
+            TIM3->CCR2 = (fraction * TIM3->ARR);
             break;
 
         case PwmPin::PWM_4:
             TIM3->CCR1 = (fraction * TIM3->ARR);
             break;
-
+      
         case PwmPin::PWM_5:
-            TIM3->CCR2 = (fraction * TIM3->ARR);
-            break;
-        case PwmPin::PWM_6:
             TIM2->CCR2 = (fraction * TIM2->ARR);
             break;
+
+        case PwmPin::PWM_6:
+            TIM3->CCR3 = (fraction * TIM3->ARR);
+            break;
+
         default:
             _logger.log_debug("No such PIN");
             break;
@@ -126,7 +126,7 @@ void PwmPeriphery::reset(PwmPin pwm_pin){
             break;
 
         case PwmPin::PWM_3:
-            TIM3->CCR3 = TIM3->ARR;
+            TIM3->CCR2 = TIM3->ARR;
             break;
 
         case PwmPin::PWM_4:
@@ -134,13 +134,12 @@ void PwmPeriphery::reset(PwmPin pwm_pin){
             break;
 
         case PwmPin::PWM_5:
-            TIM3->CCR2 = TIM3->ARR;
-            break;
-
-        case PwmPin::PWM_6:
             TIM2->CCR2 = TIM2->ARR;
             break;
 
+        case PwmPin::PWM_6:
+            TIM3->CCR3 = TIM3->ARR;
+            break;
         default:
             _logger.log_debug("No such PIN");
             break;

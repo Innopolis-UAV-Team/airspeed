@@ -26,6 +26,7 @@ public:
     static float stm32Temperature(uint16_t temp);
     static float stm32Current(uint16_t curr);
     static float stm32Voltage(uint16_t vol);
+    static float stm32Voltage5V(uint16_t vol);
 private:
     static inline bool _is_adc_already_inited = false;
 };

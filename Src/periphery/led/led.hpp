@@ -124,8 +124,8 @@ namespace LedPeriphery{
     void toggle_rgb_internal(uint8_t red, uint8_t green, uint8_t blue);
     void toggle_rgb_external(uint8_t red, uint8_t green, uint8_t blue);
 
-    void set_internal(uint8_t intensity_ptc);
-    void set_external(uint8_t intensity_ptc);
+    // void set_internal(uint8_t intensity_ptc);
+    // void set_external(uint8_t intensity_ptc);
 
     void reset_internal(LedPinColor pin_color=LedPinColor::ALL);
     void reset_external(LedPinColor pin_color=LedPinColor::ALL);

@@ -39,8 +39,8 @@ void LedPorts::reset(LedPinColor color){}
 void LedPorts::set(LedPinColor color, uint8_t intensity_ptc){}
 void LedPeriphery::reset_internal(LedPinColor pin_color){}
 void LedPeriphery::reset_external(LedPinColor pin_color){}
-void LedPeriphery::set_internal(uint8_t intensity_ptc){}
-void LedPeriphery::set_external(uint8_t intensity_ptc){}
+// void LedPeriphery::set_internal(uint8_t intensity_ptc){}
+// void LedPeriphery::set_external(uint8_t intensity_ptc){}
 void LedPeriphery::set_duty_cycle_pct(float duty_cycle_fraction){}
 void LedPeriphery::set_blink_period(uint32_t period){}
 void LedPeriphery::toggle_rgb_internal(uint8_t red, uint8_t green, uint8_t blue){}
