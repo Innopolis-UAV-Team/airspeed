@@ -6,7 +6,45 @@
 #include "main.h"
 
 
+extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
+
+
 Logger PwmPeriphery::_logger = Logger("PWM");
+
+void PwmPeriphery::init(PwmPin pin){
+    switch (pin) {
+    case PwmPin::PWM_1:
+        HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+        break;
+
+    case PwmPin::PWM_2:
+        HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+        break;
+
+    case PwmPin::PWM_3:
+        HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+        break;
+
+    case PwmPin::PWM_4:
+        HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+        break;        
+
+    case PwmPin::PWM_5:
+        HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+        break;
+
+    case PwmPin::PWM_6:
+        HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+        break;
+
+    default:
+        break;
+    }
+}
+
+
 
 void PwmPeriphery::set_duration(const PwmPin pwm_pin, uint16_t duration_us) {
     switch (pwm_pin) {
