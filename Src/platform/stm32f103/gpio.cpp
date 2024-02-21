@@ -47,6 +47,22 @@ void GPIOPeriphery::reset() {
     HAL_GPIO_WritePin(INT_RGB_LED_BLUE_GPIO_Port, INT_RGB_LED_BLUE_Pin, GPIO_PIN_SET);
 }
 
+void GPIOPeriphery::reset(GPIOPin gpio_pin) {
+    switch (gpio_pin) {
+        case GPIOPin::INT_RGB_LED_RED :
+            HAL_GPIO_WritePin(INT_RGB_LED_RED_GPIO_Port, INT_RGB_LED_RED_Pin, GPIO_PIN_SET);
+            break;
+        case GPIOPin::INT_RGB_LED_GREEN :
+            HAL_GPIO_WritePin(INT_RGB_LED_GREEN_GPIO_Port, INT_RGB_LED_GREEN_Pin, GPIO_PIN_SET);
+            break;
+        case GPIOPin::INT_RGB_LED_BLUE :
+            HAL_GPIO_WritePin(INT_RGB_LED_BLUE_GPIO_Port, INT_RGB_LED_BLUE_Pin, GPIO_PIN_SET);
+            break;
+        default:
+            break;
+    }
+}
+
 
 void GPIOPeriphery::toggle(GPIOPin gpio_pin, uint32_t blink_period, uint32_t duty_cycle){
     auto crnt_time_ms = HAL_GetTick();

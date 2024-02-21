@@ -16,6 +16,8 @@ set(applicationSourceCode
     ${libparamsSrc}
     ${DRONECAN_SOURCES}
     ${ROOT_DIR}/Src/dronecan_application/logger.cpp
+    ${ROOT_DIR}/Src/dronecan_application/modules/LightsModule.cpp
+    ${ROOT_DIR}/Src/dronecan_application/modules/CircuitStatusModule.cpp
     ${ROOT_DIR}/Src/dronecan_application/application.cpp
 )
 set(applicationHeaders
