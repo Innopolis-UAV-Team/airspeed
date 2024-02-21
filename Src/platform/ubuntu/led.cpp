@@ -4,46 +4,19 @@
 
 #include "periphery/led/led.hpp"
 
-LedPWMPins int_pwm_led_pins = {
-    .pwm_pin_red = PwmPin::PWM_2,
-    .pwm_pin_green = PwmPin::PWM_1,
-};
-
-LedGPIOPins ext_gpio_led_pins = {};
-
-LedPWMPins ext_pwm_led_pins = {
-    .pwm_pin_red = PwmPin::PWM_4,
-    .pwm_pin_green = PwmPin::PWM_5,
-    .pwm_pin_blue = PwmPin::PWM_3,
-};
-
-
-LedPorts::LedPorts(bool is_internal){
-    if (is_internal){
-        pwm_pins=int_pwm_led_pins;
-        gpio_pins=int_gpio_led_pins;
-    } else {
-        pwm_pins=ext_pwm_led_pins;
-        gpio_pins=ext_gpio_led_pins;
-    }
-}
-
-LedData led_conf = {.int_led_pin_out = LedPorts(true), .ext_led_pin_out=LedPorts(false)};
-
-void LedPorts::reset(RgbSimpleColor color){}
-void LedPorts::set(RgbSimpleColor color, uint8_t intensity_ptc){}
-void LedPeriphery::reset_internal(RgbSimpleColor pin_color){}
-void LedPeriphery::reset_external(RgbSimpleColor pin_color){}
-// void LedPeriphery::set_internal(uint8_t intensity_ptc){}
-// void LedPeriphery::set_external(uint8_t intensity_ptc){}
-void LedPeriphery::set_duty_cycle_pct(float duty_cycle_fraction){}
-void LedPeriphery::set_blink_period(uint32_t period){}
-void LedPeriphery::toggle_rgb_internal(uint8_t red, uint8_t green, uint8_t blue){}
-void LedPeriphery::toggle_rgb_external(uint8_t red, uint8_t green, uint8_t blue){}
-void LedPeriphery::update_ext_intensity(uint8_t max_intensity){}
-void LedPeriphery::toggle_external(LedColor color){
-    ext_curr_color = color;
-}
-void LedPeriphery::toggle_internal(LedColor color){
-    ext_curr_color = color;
-}
+void PwmRgbLedDriver::init(uint16_t duty_cycle, uint16_t blink_period){}
+PwmRgbLedDriver::PwmRgbLedDriver(){}
+PwmRgbLedDriver::PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin){}
+void PwmRgbLedDriver::reset(LedColor color){}
+void PwmRgbLedDriver::toggle(){}
+void PwmRgbLedDriver::set(Rgb565Color color){}
+void PwmRgbLedDriver::set(RgbSimpleColor color){}
+void PwmRgbLedDriver::set_intensity(uint8_t intensity){}
+void GPIORgbLedDriver::init(uint16_t duty_cycle, uint16_t blink_period){}
+GPIORgbLedDriver::GPIORgbLedDriver(){}
+GPIORgbLedDriver::GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin){}
+void GPIORgbLedDriver::set(Rgb565Color color){}
+void GPIORgbLedDriver::set(RgbSimpleColor color){}
+void GPIORgbLedDriver::reset(LedColor color){}
+void GPIORgbLedDriver::set_intensity(uint8_t intensity){}
+void GPIORgbLedDriver::toggle(){}

@@ -1,5 +1,8 @@
-#ifndef SRC_APPLICATION_PERIPHERY_PWM_HPP_
-#define SRC_APPLICATION_PERIPHERY_PWM_HPP_
+// Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+// Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+
+#ifndef SRC_PERIPHERY_GPIO_HPP_
+#define SRC_PERIPHERY_GPIO_HPP_
 
 #include <stdint.h>
 #include "logger.hpp"
@@ -24,10 +27,11 @@ public:
     static GPIO_PinState get(const GPIOPin gpio_pin);
     static void toggle(GPIOPin gpio_pin, uint32_t blink_period, uint32_t duty_cycle);
     static void reset(GPIOPin gpio_pin);
+    static void reset();
 };
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // SRC_APPLICATION_PERIPHERY_PWM_HPP_
+#endif  // SRC_PERIPHERY_GPIO_HPP_

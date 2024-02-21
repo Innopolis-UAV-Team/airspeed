@@ -1,79 +1,96 @@
-#include "params.hpp"
-#include "main.h"
-#include "dronecan.h"
-#include "logger.hpp"
+#include "LightsModule.hpp"
 
-#include "periphery/led/led.hpp"
-#include "uavcan/equipment/indication/LightsCommand.h"
+LightsModule* LightsModule::entity = nullptr;
+LightsCommand_t* LightsModule::command_ptr = nullptr;
+LightsCommand_t LightsModule::command = {};
+bool LightsModule::publish_error = 0;
+Logger LightsModule::logger = Logger("LightsModule");
 
-extern LedData led_conf;
-LightsCommand_t command = {};
-bool publish_error = false;
-Logger logger = Logger("LED");
-LedColor color_int = LedColor::BLUE_COLOR;
+LightsModule::LightsModule(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val){
+    entity = this;
+    blink_period = blink_period_val;
+    duty_cycle_ptc = duty_cycle_ptc_val;
+    max_intensity = max_intensity_val;
+    duty_cycle = blink_period * (duty_cycle_ptc/100.0);
+    default_color = default_color;
+    init();
+}
 
-void callback(CanardRxTransfer* transfer) {
+LightsModule *LightsModule::GetInstance(){
+    if (entity == nullptr){
+        logger.log_debug("LightsModule is not");
+    }
+    return entity;
+}
+
+LightsModule *LightsModule::GetInstance(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val)
+{
+    if (entity == nullptr) {
+        entity = new LightsModule(duty_cycle_ptc_val, blink_period_val, max_intensity_val, default_color_val);
+    }
+    return entity;
+}
+
+void LightsModule::callback(CanardRxTransfer* transfer) {
     LightsCommand_t raw_command;
     int8_t res = dronecan_equipment_indication_lights_command_deserialize(transfer, &raw_command);
     if (res > 0) {
         command = raw_command;
+        publish_error = false;
+        command_ptr = &raw_command;
     } else {
         publish_error = true;
     }
 }
 
-
-LedColor change_color(LedColor color){
+RgbSimpleColor LightsModule::change_color(RgbSimpleColor color){
     int a = HAL_GetTick() % 15000;
-    if (a == 5000){
-        color = LedColor::BLUE_COLOR;
-        led_conf._led_logger.log_debug("Color: BLUE");
+    if (a==0) {
+        color = RgbSimpleColor::RED_COLOR;
+        logger.log_debug("Color: RED");
+    } else if (a == 5000) {
+        color = RgbSimpleColor::GREEN_COLOR;
+        logger.log_debug("Color: GREEN");
     } else if (a==10000) {
-        color = LedColor::GREEN_COLOR;
-        led_conf._led_logger.log_debug("Color: GREEN");
-
-    } else if (a==0) {
-        color = LedColor::RED_COLOR;
-        led_conf._led_logger.log_debug("Color: RED");
+        color = RgbSimpleColor::BLUE_COLOR;
+        logger.log_debug("Color: BLUE");
     }
     return color;
 }
 
-void init(){
-    led_conf._led_logger = Logger("LED");
+void LightsModule::init(){
 
-    auto default_color = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_DEFAULT_COLOR);
-    auto blink_period = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_BLINK_PERIOD_MS);
+    int_led_driver = GPIORgbLedDriver(GPIOPin::INT_RGB_LED_RED, GPIOPin::INT_RGB_LED_GREEN, GPIOPin::INT_RGB_LED_BLUE);
 
-    uint8_t max_ext_intensity_ptc = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_MAX_INTENSITY);
-    led_conf.duty_cycle_ptc =  paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_DUTY_CYCLE_PTC);
+    int_led_driver.blink_period = blink_period;
+    int_led_driver.duty_cycle = duty_cycle;
+
+    ext_led_driver = PwmRgbLedDriver(PwmPin::PWM_4, PwmPin::PWM_3, PwmPin::PWM_6);
+
+    ext_led_driver.blink_period = blink_period;
+    ext_led_driver.duty_cycle = duty_cycle;
+    ext_led_driver.set_intensity(max_intensity);
     
-    LedPeriphery::update_ext_intensity(max_ext_intensity_ptc);
-    LedPeriphery::set_blink_period(blink_period);
-
-    led_conf.max_int_intensity_ptc = 100;
-
     auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND, callback);
     if (sub_id < 0) {
         logger.log_error("sub_id < 0");
     }
 
-    color_int = LedColor::BLUE_COLOR;
-    LedColor color_ext = LedColor(default_color);
-
-    LedPeriphery::reset_internal();
-    LedPeriphery::reset_external();
-
-    LedPeriphery::toggle_external(color_ext);
-    LedPeriphery::toggle_internal(color_int);
+    RgbSimpleColor color_int = RgbSimpleColor::BLUE_COLOR;
+    int_led_driver.reset();
+    ext_led_driver.reset();
+    int_led_driver.set(color_int);
+    ext_led_driver.set(default_color);
 }
 
-void spin_once(LedColor int_color){
+void LightsModule::spin_once(){
+    if (command_ptr != nullptr) {
+        Rgb565Color color={};
+        color.parseRgb565Color(command.commands->color.red, command.commands->color.green, command.commands->color.blue);
+        ext_led_driver.set(color);
+    }
     
-    LedPeriphery::toggle_internal(int_color);
 
-}
-
-void reset(){
-    command.commands[0].color = {.red=0, .green=0,.blue=0};
+    int_led_driver.toggle();
+    ext_led_driver.toggle();
 }

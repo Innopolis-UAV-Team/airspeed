@@ -4,7 +4,6 @@
 */
 
 #include "logger.hpp"
-
 Logger::Logger(const char* source){
     set_source(this->_msg, source);
 }

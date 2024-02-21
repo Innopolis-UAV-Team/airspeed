@@ -2,8 +2,8 @@
 /// Copyright (c) 2023 Dmitry Ponomarev.
 /// Author: Dmitry Ponomarev <ponomarevda96@gmail.com>
 
-#ifndef SRC_APPLICATION_PERIPHERY_PWM_HPP_
-#define SRC_APPLICATION_PERIPHERY_PWM_HPP_
+#ifndef SRC_PERIPHERY_PWM_HPP_
+#define SRC_PERIPHERY_PWM_HPP_
 
 #include <stdint.h>
 #include "logger.hpp"
@@ -40,4 +40,4 @@ public:
 }
 #endif
 
-#endif  // SRC_APPLICATION_PERIPHERY_PWM_HPP_
+#endif  // SRC_PERIPHERY_PWM_HPP_
