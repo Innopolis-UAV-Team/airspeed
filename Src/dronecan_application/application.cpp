@@ -23,7 +23,7 @@ void application_entry_point() {
 
     auto node_id = paramsGetIntegerValue(IntParamsIndexes::PARAM_UAVCAN_NODE_ID);
 
-    const auto node_name = "co.raccoonlab.mini";
+    const auto node_name = "arl.lights";
     Logger logger = Logger(node_name);
     auto node_name_param_idx = static_cast<ParamIndex_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT);
 
