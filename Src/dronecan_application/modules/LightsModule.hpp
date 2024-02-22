@@ -1,3 +1,8 @@
+/***
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+ *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+***/ 
+
 
 #ifndef SRC_MODULE_LIGHTS_HPP_
 #define SRC_MODULE_LIGHTS_HPP_
@@ -9,10 +14,10 @@
 #include "../periphery/led/led.hpp"
 #include "uavcan/equipment/indication/LightsCommand.h"
 
-
 class LightsModule{
-    // It is Singleton
-    static LightsModule * entity;
+    // It is Singleton    
+    static bool instance_initialized;
+
     uint8_t duty_cycle_ptc = 100;
     uint16_t blink_period = 0;
     uint16_t duty_cycle = 0;
@@ -23,18 +28,22 @@ class LightsModule{
     
     static void callback(CanardRxTransfer* transfer);
     void init();
+
 protected:
-    LightsModule(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity,RgbSimpleColor default_color);
+    LightsModule(){};
+    LightsModule(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color);
 public:
+    static LightsModule instance;
+
     static LightsCommand_t command;
     static LightsCommand_t* command_ptr;
     GPIORgbLedDriver int_led_driver;
     PwmRgbLedDriver ext_led_driver;
 
     LightsModule(LightsModule &other) = delete;
-    void operator=(const LightsModule &) = delete;
-    static LightsModule *GetInstance(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color);
-    static LightsModule *GetInstance();
+    LightsModule& operator = (const LightsModule&) = delete;
+    static LightsModule &getInstance(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color);
+    static LightsModule &getInstance();
     void spin_once();
     void reset_command();
     RgbSimpleColor change_color(RgbSimpleColor color);

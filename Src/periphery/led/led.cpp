@@ -51,22 +51,18 @@ void PwmRgbLedDriver::toggle(){
         return;
     }
     
-    // logger.log_debug("toggle");
-
+    
     uint8_t red     = float(red_val * intensity) / (red_intensity_div * red_max);
     uint8_t green   = float(green_val * intensity) / (green_intensity_div * green_max);
     uint8_t blue    = float(blue_val * intensity) / (blue_intensity_div * blue_max);
 
-    // uint8_t red     = float(red_val * intensity ) / (red_max);
-    // uint8_t green   = float(green_val * intensity) / (green_max);
-    // uint8_t blue    = float(blue_val * intensity) / (blue_max);
-    
     char buffer[90];
 
     if (HAL_GetTick()%1000 ==0){
         sprintf(buffer, "%d, %d, %d", red, green, blue);
         logger.log_debug(buffer);
     }
+
     PwmPeriphery::set_duty_cycle_pct(red_pin, red);
     PwmPeriphery::set_duty_cycle_pct(green_pin, green);
     PwmPeriphery::set_duty_cycle_pct(blue_pin, blue);

@@ -1,34 +1,42 @@
+/***
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+ *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+***/ 
+
+
 #include "LightsModule.hpp"
 
-LightsModule* LightsModule::entity = nullptr;
+// Initialize the static member variables
+LightsModule LightsModule::instance = LightsModule();
+bool LightsModule::instance_initialized = false;
+
 LightsCommand_t* LightsModule::command_ptr = nullptr;
 LightsCommand_t LightsModule::command = {};
 bool LightsModule::publish_error = 0;
 Logger LightsModule::logger = Logger("LightsModule");
 
-LightsModule::LightsModule(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val){
-    entity = this;
-    blink_period = blink_period_val;
-    duty_cycle_ptc = duty_cycle_ptc_val;
-    max_intensity = max_intensity_val;
-    duty_cycle = blink_period * (duty_cycle_ptc/100.0);
-    default_color = default_color;
-    init();
+
+LightsModule &LightsModule::getInstance() {
+    if (!instance_initialized) {
+        if (HAL_GetTick()%1000 ==0){
+            logger.log_debug("instance not init!");
+        }
+    }
+    return instance;
 }
 
-LightsModule *LightsModule::GetInstance(){
-    if (entity == nullptr){
-        logger.log_debug("LightsModule is not");
-    }
-    return entity;
-}
+LightsModule &LightsModule::getInstance(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val) {
+    instance_initialized = true;
+    instance.blink_period = blink_period_val;
+    instance.duty_cycle_ptc = duty_cycle_ptc_val;
+    instance.max_intensity = max_intensity_val;
+    instance.duty_cycle = instance.blink_period * (instance.duty_cycle_ptc/100.0);
+    instance.default_color = instance.default_color;
+    instance.init();
 
-LightsModule *LightsModule::GetInstance(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val)
-{
-    if (entity == nullptr) {
-        entity = new LightsModule(duty_cycle_ptc_val, blink_period_val, max_intensity_val, default_color_val);
-    }
-    return entity;
+    logger.log_debug("instance init");
+    
+    return instance;
 }
 
 void LightsModule::callback(CanardRxTransfer* transfer) {
@@ -43,7 +51,7 @@ void LightsModule::callback(CanardRxTransfer* transfer) {
     }
 }
 
-RgbSimpleColor LightsModule::change_color(RgbSimpleColor color){
+RgbSimpleColor LightsModule::change_color(RgbSimpleColor color) {
     int a = HAL_GetTick() % 15000;
     if (a==0) {
         color = RgbSimpleColor::RED_COLOR;
@@ -58,7 +66,7 @@ RgbSimpleColor LightsModule::change_color(RgbSimpleColor color){
     return color;
 }
 
-void LightsModule::init(){
+void LightsModule::init() {
 
     int_led_driver = GPIORgbLedDriver(GPIOPin::INT_RGB_LED_RED, GPIOPin::INT_RGB_LED_GREEN, GPIOPin::INT_RGB_LED_BLUE);
 
@@ -83,14 +91,17 @@ void LightsModule::init(){
     ext_led_driver.set(default_color);
 }
 
-void LightsModule::spin_once(){
+void LightsModule::spin_once() {
     if (command_ptr != nullptr) {
         Rgb565Color color={};
-        color.parseRgb565Color(command.commands->color.red, command.commands->color.green, command.commands->color.blue);
+        color = {
+            command.commands->color.red, 
+            command.commands->color.green, 
+            command.commands->color.blue
+            };
         ext_led_driver.set(color);
     }
     
-
     int_led_driver.toggle();
     ext_led_driver.toggle();
 }

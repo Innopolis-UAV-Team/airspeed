@@ -5,6 +5,8 @@
 #include "periphery/pwm/pwm.hpp"
 #include <cstddef>
 
+void PwmPeriphery::init(PwmPin){}
+
 void PwmPeriphery::set_duration(const PwmPin pwm_pin, uint16_t duration_us) {
     (void)pwm_pin;
     (void)duration_us;

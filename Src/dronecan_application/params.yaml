@@ -12,14 +12,14 @@ system.name:
   note: Defines custom node name. If empty, the node will use the default name.
   enum: PARAM_SYSTEM_NAME
   flags: mutable
-  default: "co.raccoonlab.mini"
+  default: "arl.lights"
 
 lights.max_intensity:
   type: Integer
   note: Defines the max intensity of the lights [%].
   enum: PARAM_LIGHTS_MAX_INTENSITY
   flags: mutable
-  default: 10
+  default: 2
   min: 0
   max: 100
 

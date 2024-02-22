@@ -18,13 +18,6 @@ struct Rgb565Color {
     uint8_t red     : 5;
     uint8_t green   : 6;
     uint8_t blue    : 5;
-
-    Rgb565Color parseRgb565Color(uint8_t red_val, uint8_t green_val, uint8_t blue_val){
-        red = red_val;
-        green = green_val;
-        blue = blue_val;
-        return *this;
-    }
 };
 // Rgb565Color Rgb565Color::Rgb565Color(uint8_t red_val, uint8_t green_val, uint8_t blue_val){
 
@@ -40,7 +33,7 @@ enum class RgbSimpleColor {
     COLORS_AMOUNT = 7,
 };
 
-enum LedColor{
+enum LedColor {
     RED,
     GREEN,
     BLUE,
@@ -62,7 +55,7 @@ public:
     virtual void reset(LedColor color = LedColor::ALL) = 0;
 };
 
-class PwmRgbLedDriver: public RgbLedInterface{
+class PwmRgbLedDriver: public RgbLedInterface {
 private:
     PwmPin red_pin;
     PwmPin green_pin;
@@ -102,8 +95,12 @@ private:
     uint8_t red_val;
     uint8_t green_val;
     uint8_t blue_val;
+
+    Logger logger = Logger("GPIORgbLedDriver");
+
     void set_intensity(uint8_t intensity) override;
     void init(uint16_t duty_cycle, uint16_t blink_period) override;
+
 public:
     GPIORgbLedDriver();
     GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin);
@@ -118,6 +115,8 @@ class Ws2812Driver: public RgbLedInterface {
 private:
     PwmPin pwm_pin;
     uint16_t num_of_leds;
+    Logger logger = Logger("Ws2812Driver");
+
 public:
 
     Ws2812Driver( PwmPin pwm_pin, uint16_t num_of_leds);

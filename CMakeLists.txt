@@ -60,10 +60,10 @@ add_executable(${EXECUTABLE}
     ${libsSourceCode}
     ${applicationSourceCode}
     ${BUILD_SRC_DIR}/params.cpp
+    ${ROOT_DIR}/Src/periphery/led/led.cpp
     ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/adc.cpp
     ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/gpio.cpp
     ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/i2c.cpp
-    ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/led.cpp
     ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/temperature_sensor.cpp
     ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/pwm.cpp
     ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/platform_specific.cpp
