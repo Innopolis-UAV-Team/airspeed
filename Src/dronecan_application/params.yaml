@@ -28,7 +28,7 @@ lights.default_color:
   note: Defines a default color of the lights.
   enum: PARAM_LIGHTS_DEFAULT_COLOR
   flags: mutable
-  default: 6
+  default: 0
   min: 0
   max: 6
 
