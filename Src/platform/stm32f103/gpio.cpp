@@ -1,12 +1,10 @@
-/// This software is distributed under the terms of the MIT License.
-/// Copyright (c) 2022-2023 Dmitry Ponomarev.
-/// Author: Dmitry Ponomarev <ponomarevda96@gmail.com>
+/***
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+ *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+***/ 
 
 #include "periphery/gpio/gpio.hpp"
 #include "main.h"
-
-Logger GPIOPeriphery::_logger = Logger("GPIO");
-
 
 void GPIOPeriphery::set(GPIOPin gpio_pin){
     switch (gpio_pin) {

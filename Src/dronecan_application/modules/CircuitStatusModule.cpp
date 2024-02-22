@@ -1,28 +1,29 @@
+/***
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+ *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+***/ 
+
 #include "CircuitStatusModule.hpp"
 
 
-CircuitStatusModule* CircuitStatusModule::entity= nullptr;;
+CircuitStatusModule CircuitStatusModule::instance = CircuitStatusModule();
+bool CircuitStatusModule::instance_initialized = false;
 Logger CircuitStatusModule::logger = Logger("CircuitStatus");
+LightsModule* CircuitStatusModule::light_module = &LightsModule::getInstance();
 
-CircuitStatusModule::CircuitStatusModule(LightsModule* light_module_ptr){
-    entity = this;
-    light_module = light_module_ptr;
-    init();
-}
-
-CircuitStatusModule* CircuitStatusModule::GetInstance(LightsModule* light_module)
-{
-    if(entity==nullptr){
-        entity = new CircuitStatusModule(light_module);
+CircuitStatusModule& CircuitStatusModule::getInstance() {
+    if(!instance_initialized){
+        light_module = &LightsModule::getInstance();
+        instance_initialized=true;
+        instance.init();
     }
-    return entity;
+    return instance;
 }
 
 void CircuitStatusModule::init(){
     int8_t adc_status = adc.init();
-    light_module = LightsModule::GetInstance();
     if (adc_status != 0){
-        logger.log_error("ADC");
+        logger.log_error("ADC init");
     } else {
         temp_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
         temp = stm32TemperatureParse(temp_raw);
@@ -37,7 +38,7 @@ void CircuitStatusModule::init(){
 void CircuitStatusModule::spin_once(){
     RgbSimpleColor color = RgbSimpleColor::BLUE_COLOR;
 
-    if (v5_f > 5.5 || circuit_status.voltage > 20) {
+    if (v5_f > 5.5 || circuit_status.voltage > 21.5) {
         circuit_status.error_flags = ERROR_FLAG_OVERVOLTAGE;
     } else if (circuit_status.current > 1.05) {
         light_module->ext_led_driver.reset();

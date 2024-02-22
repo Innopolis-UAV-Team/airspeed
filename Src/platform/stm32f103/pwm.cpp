@@ -1,6 +1,7 @@
-/// This software is distributed under the terms of the MIT License.
-/// Copyright (c) 2022-2023 Dmitry Ponomarev.
-/// Author: Dmitry Ponomarev <ponomarevda96@gmail.com>
+/***
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+ *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+***/ 
 
 #include "periphery/pwm/pwm.hpp"
 #include "main.h"

@@ -1,5 +1,7 @@
-// Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
-// Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+/***
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+ *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+***/ 
 
 #ifndef SRC_PERIPHERY_GPIO_HPP_
 #define SRC_PERIPHERY_GPIO_HPP_
@@ -20,9 +22,6 @@ enum class GPIOPin{
 class GPIOPeriphery{
     static Logger _logger;
 public:
-    // GPIOPeriphery();
-    // GPIO_TypeDef* port;
-    // uint16_t pin;
     static void set(const GPIOPin gpio_pin);
     static GPIO_PinState get(const GPIOPin gpio_pin);
     static void toggle(GPIOPin gpio_pin, uint32_t blink_period, uint32_t duty_cycle);

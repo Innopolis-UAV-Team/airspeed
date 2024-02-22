@@ -1,3 +1,7 @@
+/***
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+ *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+***/ 
 
 #ifndef SRC_MODULE_CIRCUIT_STATUS_HPP_
 #define SRC_MODULE_CIRCUIT_STATUS_HPP_
@@ -10,12 +14,13 @@
 #include "logger.hpp"
 
 
-class CircuitStatusModule{
-    static CircuitStatusModule* entity;
+class CircuitStatusModule {
+    static CircuitStatusModule instance;
+    static bool instance_initialized;
     static Logger logger;
     CircuitStatus_t circuit_status = {};
     Temperature_t temperature_status = {};
-
+    static LightsModule* light_module;
     // CircuitStatusModule* circuit_status_module;
 private:
     uint8_t circuit_status_pub_id = 0;
@@ -28,11 +33,9 @@ private:
     uint16_t v5 = 0;
     int8_t publish_error = 0;
     AdcPeriphery adc;
-    CircuitStatusModule(LightsModule* light_module_ptr);
-
+    // CircuitStatusModule(LightsModule* light_module);
+    CircuitStatusModule(){};
 public:
-    LightsModule* light_module;
-
     float temp = 0;
     float v5_f = 0.0;
     float vol = 0;
@@ -41,8 +44,9 @@ public:
     CircuitStatusModule(CircuitStatusModule &other) = delete;
     void operator=(const CircuitStatusModule &) = delete;
 
-    static CircuitStatusModule *GetInstance(LightsModule* light_module);
+    static CircuitStatusModule &getInstance();
     void init();
     void spin_once();
 };
+
 #endif //SRC_MODULE_CIRCUIT_STATUS_HPP_
