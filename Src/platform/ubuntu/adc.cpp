@@ -46,8 +46,8 @@ float AdcPeriphery::stm32Temperature(uint16_t temp){
     return stm32TemperatureParse(temp);
 }
 float AdcPeriphery::stm32Voltage(uint16_t vol){
-    return vol/64.0;
+    return vol / 64.0;
 }
 float AdcPeriphery::stm32Voltage5V(uint16_t vol){
-    return vol/640.0;
+    return vol / 640.0;
 }

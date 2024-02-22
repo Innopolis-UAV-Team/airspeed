@@ -19,9 +19,7 @@ struct Rgb565Color {
     uint8_t green   : 6;
     uint8_t blue    : 5;
 };
-// Rgb565Color Rgb565Color::Rgb565Color(uint8_t red_val, uint8_t green_val, uint8_t blue_val){
 
-// }
 enum class RgbSimpleColor {
     RED_COLOR,
     GREEN_COLOR,
