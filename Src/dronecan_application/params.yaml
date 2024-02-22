@@ -37,7 +37,7 @@ lights.type:
   note: Defines an intensity transition rate of the lights.
   enum: PARAM_LIGHTS_TYPE
   flags: mutable
-  default: 0
+  default: 2
   min: 0
   max: 255
 
@@ -47,7 +47,7 @@ lights.blink_period_ms:
   enum: PARAM_LIGHTS_BLINK_PERIOD_MS
   flags: mutable
   default: 1000
-  min: 0
+  min: 1
   max: 65535
 
 

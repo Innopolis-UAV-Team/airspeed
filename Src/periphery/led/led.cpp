@@ -51,7 +51,6 @@ void PwmRgbLedDriver::toggle(){
         return;
     }
     
-    
     uint8_t red     = float(red_val * intensity) / (red_intensity_div * red_max);
     uint8_t green   = float(green_val * intensity) / (green_intensity_div * green_max);
     uint8_t blue    = float(blue_val * intensity) / (blue_intensity_div * blue_max);
@@ -140,13 +139,13 @@ GPIORgbLedDriver::GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin,
 
 void GPIORgbLedDriver::set(Rgb565Color color){
     reset();
-    if (color.red >0){
+    if (color.red > 0){
         red_val = 1;
     }
     if (color.green >0){
         green_val = 1;
     }
-    if (color.blue >0){
+    if (color.blue > 0){
         blue_val = 1;
     }
 }
