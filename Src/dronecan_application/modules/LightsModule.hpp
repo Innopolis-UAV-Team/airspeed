@@ -17,7 +17,7 @@
 class LightsModule{
     // It is Singleton    
     static bool instance_initialized;
-
+    static uint8_t light_id;
     uint8_t duty_cycle_ptc = 100;
     uint16_t blink_period = 0;
     uint16_t duty_cycle = 0;
@@ -35,14 +35,14 @@ protected:
 public:
     static LightsModule instance;
 
-    static LightsCommand_t command;
-    static LightsCommand_t* command_ptr;
+    static SingleLightCommand_t command;
+    static SingleLightCommand_t* command_ptr;
     GPIORgbLedDriver int_led_driver;
     PwmRgbLedDriver ext_led_driver;
 
     LightsModule(LightsModule &other) = delete;
     LightsModule& operator = (const LightsModule&) = delete;
-    static LightsModule &get_instance(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color);
+    static LightsModule &get_instance(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color, uint8_t light_id = 0);
     static LightsModule &get_instance();
     void spin_once();
     void reset_command();
