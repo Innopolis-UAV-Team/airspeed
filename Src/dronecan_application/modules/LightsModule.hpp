@@ -42,8 +42,8 @@ public:
 
     LightsModule(LightsModule &other) = delete;
     LightsModule& operator = (const LightsModule&) = delete;
-    static LightsModule &getInstance(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color);
-    static LightsModule &getInstance();
+    static LightsModule &get_instance(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color);
+    static LightsModule &get_instance();
     void spin_once();
     void reset_command();
     RgbSimpleColor change_color(RgbSimpleColor color);

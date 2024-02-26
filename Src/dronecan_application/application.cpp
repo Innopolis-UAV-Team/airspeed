@@ -38,9 +38,9 @@ void application_entry_point() {
     uint8_t duty_cycle_ptc =  paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_DUTY_CYCLE_PTC);
     
     RgbSimpleColor default_rgb_color = RgbSimpleColor(default_color);
-    LightsModule* light_module = &LightsModule::getInstance(duty_cycle_ptc, blink_period, max_ext_intensity_ptc, default_rgb_color);
+    LightsModule* light_module = &LightsModule::get_instance(duty_cycle_ptc, blink_period, max_ext_intensity_ptc, default_rgb_color);
 
-    CircuitStatusModule* status_module = &CircuitStatusModule::getInstance();
+    CircuitStatusModule* status_module = &CircuitStatusModule::get_instance();
 
     while(true) {
         light_module->spin_once();

@@ -16,7 +16,7 @@ bool LightsModule::publish_error = 0;
 Logger LightsModule::logger = Logger("LightsModule");
 
 
-LightsModule &LightsModule::getInstance() {
+LightsModule &LightsModule::get_instance() {
     if (!instance_initialized) {
         if (HAL_GetTick()%1000 ==0){
             logger.log_debug("instance not init!");
@@ -25,7 +25,7 @@ LightsModule &LightsModule::getInstance() {
     return instance;
 }
 
-LightsModule &LightsModule::getInstance(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val) {
+LightsModule &LightsModule::get_instance(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val) {
     instance_initialized = true;
     instance.blink_period = blink_period_val;
     instance.duty_cycle_ptc = duty_cycle_ptc_val;
@@ -81,7 +81,7 @@ void LightsModule::init() {
     
     auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND, callback);
     if (sub_id < 0) {
-        logger.log_error("sub_id < 0");
+        logger.log_debug("sub_id < 0");
     }
 
     RgbSimpleColor color_int = RgbSimpleColor::BLUE_COLOR;
