@@ -6,12 +6,14 @@
 
 #include "LightsModule.hpp"
 
+char buffer[90];
 // Initialize the static member variables
+uint8_t LightsModule::light_id = 0;
 LightsModule LightsModule::instance = LightsModule();
 bool LightsModule::instance_initialized = false;
 
-LightsCommand_t* LightsModule::command_ptr = nullptr;
-LightsCommand_t LightsModule::command = {};
+SingleLightCommand_t* LightsModule::command_ptr = nullptr;
+SingleLightCommand_t LightsModule::command = {};
 bool LightsModule::publish_error = 0;
 Logger LightsModule::logger = Logger("LightsModule");
 
@@ -19,19 +21,21 @@ Logger LightsModule::logger = Logger("LightsModule");
 LightsModule &LightsModule::get_instance() {
     if (!instance_initialized) {
         if (HAL_GetTick()%1000 ==0){
-            logger.log_debug("instance not init!");
+            logger.log_debug("instance not initialized!");
         }
     }
+
     return instance;
 }
 
-LightsModule &LightsModule::get_instance(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val) {
+LightsModule &LightsModule::get_instance(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val, uint8_t light_id_val) {
     instance_initialized = true;
     instance.blink_period = blink_period_val;
     instance.duty_cycle_ptc = duty_cycle_ptc_val;
     instance.max_intensity = max_intensity_val;
     instance.duty_cycle = instance.blink_period * (instance.duty_cycle_ptc/100.0);
-    instance.default_color = instance.default_color;
+    instance.default_color = default_color_val;
+    light_id = light_id_val;
     instance.init();
 
     logger.log_debug("instance init");
@@ -43,9 +47,15 @@ void LightsModule::callback(CanardRxTransfer* transfer) {
     LightsCommand_t raw_command;
     int8_t res = dronecan_equipment_indication_lights_command_deserialize(transfer, &raw_command);
     if (res > 0) {
-        command = raw_command;
+        for (uint8_t i = 0; i<raw_command.number_of_commands; i++){
+            if (raw_command.commands[i].light_id == light_id){
+                command = raw_command.commands[i];
+                command_ptr = &command;
+                break;
+            }
+        }
+
         publish_error = false;
-        command_ptr = &raw_command;
     } else {
         publish_error = true;
     }
@@ -88,20 +98,20 @@ void LightsModule::init() {
     int_led_driver.reset();
     ext_led_driver.reset();
     int_led_driver.set(color_int);
-    ext_led_driver.set(default_color);
+    ext_led_driver.set(instance.default_color);
 }
 
 void LightsModule::spin_once() {
     if (command_ptr != nullptr) {
         Rgb565Color color={};
         color = {
-            command.commands->color.red, 
-            command.commands->color.green, 
-            command.commands->color.blue
+            command.color.red, 
+            command.color.green, 
+            command.color.blue
             };
         ext_led_driver.set(color);
     }
-    
+
     int_led_driver.toggle();
     ext_led_driver.toggle();
 }

@@ -59,10 +59,6 @@ private:
     PwmPin green_pin;
     PwmPin blue_pin;
 
-    uint8_t red_val;
-    uint8_t green_val;
-    uint8_t blue_val;
-
     uint8_t intensity = 100;
     uint8_t red_intensity_div = 2;
     uint8_t green_intensity_div = 1;
@@ -75,6 +71,11 @@ private:
     void init(uint16_t duty_cycle, uint16_t blink_period) override;
     
 public:
+
+    uint8_t red_val;
+    uint8_t green_val;
+    uint8_t blue_val;
+
     PwmRgbLedDriver();
     PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin);
     void set(RgbSimpleColor color) override;
