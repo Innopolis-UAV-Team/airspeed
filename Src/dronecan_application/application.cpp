@@ -34,21 +34,20 @@ void application_entry_point() {
     
     auto default_color = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_DEFAULT_COLOR);
     auto blink_period = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_BLINK_PERIOD_MS);
+    
+    auto blink_type = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_TYPE);
+    
     uint8_t max_ext_intensity_ptc = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_MAX_INTENSITY);
     uint8_t duty_cycle_ptc =  paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_DUTY_CYCLE_PTC);
     
     uint8_t light_id = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHT_ID);
 
     RgbSimpleColor default_rgb_color = RgbSimpleColor(default_color);
-    LightsModule* light_module = &LightsModule::get_instance(duty_cycle_ptc, blink_period, max_ext_intensity_ptc, default_rgb_color, light_id);
+    LightsModule* light_module = &LightsModule::get_instance(duty_cycle_ptc, blink_period, max_ext_intensity_ptc, default_rgb_color, light_id, blink_type);
 
     CircuitStatusModule* status_module = &CircuitStatusModule::get_instance();
     char buffer[90];
     while(true) {
-        if (HAL_GetTick()%1000 == 0){
-            sprintf(buffer, "%d", default_color);
-            logger.log_debug(buffer);
-        }
         light_module->spin_once();
         status_module->spin_once();
 
