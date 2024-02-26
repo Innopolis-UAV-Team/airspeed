@@ -9,11 +9,11 @@
 CircuitStatusModule CircuitStatusModule::instance = CircuitStatusModule();
 bool CircuitStatusModule::instance_initialized = false;
 Logger CircuitStatusModule::logger = Logger("CircuitStatus");
-LightsModule* CircuitStatusModule::light_module = &LightsModule::getInstance();
+LightsModule* CircuitStatusModule::light_module = &LightsModule::get_instance();
 
-CircuitStatusModule& CircuitStatusModule::getInstance() {
+CircuitStatusModule& CircuitStatusModule::get_instance() {
     if(!instance_initialized){
-        light_module = &LightsModule::getInstance();
+        light_module = &LightsModule::get_instance();
         instance_initialized=true;
         instance.init();
     }

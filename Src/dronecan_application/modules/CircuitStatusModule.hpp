@@ -44,7 +44,7 @@ public:
     CircuitStatusModule(CircuitStatusModule &other) = delete;
     void operator=(const CircuitStatusModule &) = delete;
 
-    static CircuitStatusModule &getInstance();
+    static CircuitStatusModule &get_instance();
     void init();
     void spin_once();
 };
