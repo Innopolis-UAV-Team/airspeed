@@ -18,6 +18,7 @@ class LightsModule{
     // It is Singleton    
     static bool instance_initialized;
     static uint8_t light_id;
+    static uint8_t blink_type;
     uint8_t duty_cycle_ptc = 100;
     uint16_t blink_period = 0;
     uint16_t duty_cycle = 0;
@@ -42,7 +43,7 @@ public:
 
     LightsModule(LightsModule &other) = delete;
     LightsModule& operator = (const LightsModule&) = delete;
-    static LightsModule &get_instance(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color, uint8_t light_id = 0);
+    static LightsModule &get_instance(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color, uint8_t light_id = 0, uint8_t blink_type = 0);
     static LightsModule &get_instance();
     void spin_once();
     void reset_command();

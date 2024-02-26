@@ -6,9 +6,10 @@
 
 #include "LightsModule.hpp"
 
-char buffer[90];
 // Initialize the static member variables
+char buffer[90];
 uint8_t LightsModule::light_id = 0;
+uint8_t LightsModule::blink_type = 0;
 LightsModule LightsModule::instance = LightsModule();
 bool LightsModule::instance_initialized = false;
 
@@ -28,7 +29,7 @@ LightsModule &LightsModule::get_instance() {
     return instance;
 }
 
-LightsModule &LightsModule::get_instance(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val, uint8_t light_id_val) {
+LightsModule &LightsModule::get_instance(uint8_t duty_cycle_ptc_val, uint16_t blink_period_val, uint8_t max_intensity_val, RgbSimpleColor default_color_val, uint8_t light_id_val,  uint8_t blink_type_val) {
     instance_initialized = true;
     instance.blink_period = blink_period_val;
     instance.duty_cycle_ptc = duty_cycle_ptc_val;
@@ -36,6 +37,7 @@ LightsModule &LightsModule::get_instance(uint8_t duty_cycle_ptc_val, uint16_t bl
     instance.duty_cycle = instance.blink_period * (instance.duty_cycle_ptc/100.0);
     instance.default_color = default_color_val;
     light_id = light_id_val;
+    blink_type = blink_type_val;
     instance.init();
 
     logger.log_debug("instance init");
@@ -84,14 +86,16 @@ void LightsModule::init() {
     int_led_driver.duty_cycle = duty_cycle;
 
     ext_led_driver = PwmRgbLedDriver(PwmPin::PWM_4, PwmPin::PWM_3, PwmPin::PWM_6);
+    if (blink_type != 0){
+        ext_led_driver.blink_period = blink_period;
+        ext_led_driver.duty_cycle = duty_cycle;
+    }
 
-    ext_led_driver.blink_period = blink_period;
-    ext_led_driver.duty_cycle = duty_cycle;
     ext_led_driver.set_intensity(max_intensity);
     
     auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND, callback);
     if (sub_id < 0) {
-        logger.log_debug("sub_id < 0");
+        logger.log_debug("uavcanSubscribe failed");
     }
 
     RgbSimpleColor color_int = RgbSimpleColor::BLUE_COLOR;
@@ -110,6 +114,16 @@ void LightsModule::spin_once() {
             command.color.blue
             };
         ext_led_driver.set(color);
+    }
+
+    if (blink_type == 2){
+        auto intensity = ((HAL_GetTick()%1000)/ 1000.0) * (max_intensity);
+        if(HAL_GetTick()%1000 ==0 ){
+            sprintf(buffer, "intensity: %d", intensity);
+            logger.log_debug(buffer);
+
+        }  
+        ext_led_driver.set_intensity(intensity);
     }
 
     int_led_driver.toggle();
