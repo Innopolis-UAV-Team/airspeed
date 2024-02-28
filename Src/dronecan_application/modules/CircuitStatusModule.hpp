@@ -20,8 +20,23 @@ class CircuitStatusModule {
     static Logger logger;
     CircuitStatus_t circuit_status = {};
     Temperature_t temperature_status = {};
-    static LightsModule* light_module;
+    static LightsModule& light_module;
     // CircuitStatusModule* circuit_status_module;
+    float temp = 0;
+    float v5_f = 0.0;
+    float vol = 0;
+    float curr = 0;
+
+public:
+    RgbSimpleColor color;
+
+    static CircuitStatusModule &get_instance();
+    void init();
+    void spin_once();
+    
+    CircuitStatusModule(CircuitStatusModule &other) = delete;
+    void operator=(const CircuitStatusModule &) = delete;
+    
 private:
     uint8_t circuit_status_transfer_id = 0;
     uint8_t temperature_transfer_id = 0;
@@ -33,20 +48,8 @@ private:
     uint16_t v5 = 0;
     int8_t publish_error = 0;
     AdcPeriphery adc;
-    // CircuitStatusModule(LightsModule* light_module);
     CircuitStatusModule(){};
-public:
-    float temp = 0;
-    float v5_f = 0.0;
-    float vol = 0;
-    float curr = 0;
-    RgbSimpleColor color;
-    CircuitStatusModule(CircuitStatusModule &other) = delete;
-    void operator=(const CircuitStatusModule &) = delete;
 
-    static CircuitStatusModule &get_instance();
-    void init();
-    void spin_once();
 };
 
 #endif //SRC_MODULE_CIRCUIT_STATUS_HPP_

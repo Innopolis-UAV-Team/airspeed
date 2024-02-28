@@ -72,9 +72,9 @@ private:
     
 public:
     Rgb565Color _current_rgb565_color;
-    uint8_t red_val;
-    uint8_t green_val;
-    uint8_t blue_val;
+    // uint8_t red_val;
+    // uint8_t green_val;
+    // uint8_t blue_val;
 
     PwmRgbLedDriver();
     PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin);

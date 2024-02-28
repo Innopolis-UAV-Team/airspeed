@@ -9,29 +9,20 @@
 CircuitStatusModule CircuitStatusModule::instance = CircuitStatusModule();
 bool CircuitStatusModule::instance_initialized = false;
 Logger CircuitStatusModule::logger = Logger("CircuitStatus");
-LightsModule* CircuitStatusModule::light_module = &LightsModule::get_instance();
+LightsModule& CircuitStatusModule::light_module = LightsModule::get_instance();
 
 CircuitStatusModule& CircuitStatusModule::get_instance() {
     if(!instance_initialized){
-        light_module = &LightsModule::get_instance();
         instance_initialized=true;
         instance.init();
     }
     return instance;
 }
 
-void CircuitStatusModule::init(){
+void CircuitStatusModule::init() {
     int8_t adc_status = adc.init();
-    if (adc_status != 0){
+    if (adc_status != 0) {
         logger.log_error("ADC init");
-    } else {
-        temp_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
-        temp = stm32TemperatureParse(temp_raw);
-        vol_raw = adc.get(AdcChannel::ADC_VIN);
-        cur_raw = adc.get(AdcChannel::ADC_CURRENT);
-        circuit_status = {.voltage = AdcPeriphery::stm32Voltage(vol_raw), .current=AdcPeriphery::stm32Current(cur_raw)};
-        dronecan_equipment_circuit_status_publish(&circuit_status, &circuit_status_transfer_id);
-        circuit_status_transfer_id +=1;
     }
 }
 
@@ -41,13 +32,13 @@ void CircuitStatusModule::spin_once(){
     if (v5_f > 5.5 || circuit_status.voltage > 60.0) {
         circuit_status.error_flags = ERROR_FLAG_OVERVOLTAGE;
     } else if (circuit_status.current > 1.05) {
-        light_module->ext_led_driver.reset();
+        light_module.ext_led_driver.reset();
         circuit_status.error_flags = ERROR_FLAG_OVERCURRENT;
     } else if (publish_error) {
         logger.log_debug("pub");
     }
 
-    if (circuit_status.error_flags != ERROR_FLAG_CLEAR){
+    if (circuit_status.error_flags != ERROR_FLAG_CLEAR) {
         color = RgbSimpleColor::YELLOW_COLOR;
     }
 
@@ -64,7 +55,7 @@ void CircuitStatusModule::spin_once(){
         } 
     }
     
-    if (HAL_GetTick()%1000 == 0) {
+    if (HAL_GetTick() % 1000 == 0) {
         v5 = adc.get(AdcChannel::ADC_5V);
         v5_f =  AdcPeriphery::stm32Voltage5V(v5);
 
@@ -83,6 +74,6 @@ void CircuitStatusModule::spin_once(){
     }
     
     circuit_status.error_flags = ERROR_FLAG_CLEAR;
-    light_module->int_led_driver.set(color);
+    light_module.int_led_driver.set(color);
 }
 

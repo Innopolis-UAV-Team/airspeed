@@ -1,0 +1,147 @@
+==115632== Memcheck, a memory error detector
+==115632== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==115632== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
+==115632== Command: ./build/obj/example.out
+==115632== Parent PID: 112829
+==115632== 
+--115632-- 
+--115632-- Valgrind options:
+--115632--    -v
+--115632--    --tool=memcheck
+--115632--    --leak-check=full
+--115632--    --num-callers=40
+--115632--    --log-file=valgrind.log
+--115632-- Contents of /proc/version:
+--115632--   Linux version 6.5.0-18-generic (buildd@lcy02-amd64-070) (x86_64-linux-gnu-gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #18~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Wed Feb  7 11:40:03 UTC 2
+--115632-- 
+--115632-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--115632-- Page sizes: currently 4096, max supported 4096
+--115632-- Valgrind library directory: /usr/libexec/valgrind
+--115632-- Reading syms from /home/user/Documents/lights_node/build/obj/example.out
+--115632-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+--115632--   Considering /usr/lib/debug/.build-id/15/921ea631d9f36502d20459c43e5c85b7d6ab76.debug ..
+--115632--   .. build-id is valid
+--115632-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--115632--    object doesn't have a symbol table
+--115632--    object doesn't have a dynamic symbol table
+--115632-- Scheduler: using generic scheduler lock implementation.
+--115632-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==115632== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-115632-by-user-on-???
+==115632== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-115632-by-user-on-???
+==115632== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-115632-by-user-on-???
+==115632== 
+==115632== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==115632== don't want to do, unless you know exactly what you're doing,
+==115632== or are doing some strange experiment):
+==115632==   /usr/bin/vgdb --pid=115632 ...command...
+==115632== 
+==115632== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==115632==   /path/to/gdb ./build/obj/example.out
+==115632== and then give GDB the following command
+==115632==   target remote | /usr/bin/vgdb --pid=115632
+==115632== --pid is optional if only one valgrind process is running
+==115632== 
+--115632-- REDIR: 0x402aa40 (ld-linux-x86-64.so.2:strlen) redirected to 0x580bcec2 (???)
+--115632-- REDIR: 0x402a810 (ld-linux-x86-64.so.2:index) redirected to 0x580bcedc (???)
+--115632-- Reading syms from /usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+--115632--    object doesn't have a symbol table
+--115632-- Reading syms from /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+--115632--    object doesn't have a symbol table
+==115632== WARNING: new redirection conflicts with existing -- ignoring it
+--115632--     old: 0x0402aa40 (strlen              ) R-> (0000.0) 0x580bcec2 ???
+--115632--     new: 0x0402aa40 (strlen              ) R-> (2007.0) 0x0484ee30 strlen
+--115632-- REDIR: 0x4027220 (ld-linux-x86-64.so.2:strcmp) redirected to 0x484fcd0 (strcmp)
+--115632-- REDIR: 0x402afa0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4853840 (mempcpy)
+--115632-- Reading syms from /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30
+--115632--    object doesn't have a symbol table
+--115632-- Reading syms from /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+--115632--    object doesn't have a symbol table
+--115632-- Reading syms from /usr/lib/x86_64-linux-gnu/libc.so.6
+--115632--   Considering /usr/lib/debug/.build-id/c2/89da5071a3399de893d2af81d6a30c62646e1e.debug ..
+--115632--   .. build-id is valid
+==115632== WARNING: new redirection conflicts with existing -- ignoring it
+--115632--     old: 0x04b5ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--115632--     new: 0x04b5ec60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==115632== WARNING: new redirection conflicts with existing -- ignoring it
+--115632--     old: 0x04b5ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--115632--     new: 0x04b5ec60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+==115632== WARNING: new redirection conflicts with existing -- ignoring it
+--115632--     old: 0x04b5ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--115632--     new: 0x04b5ec60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==115632== WARNING: new redirection conflicts with existing -- ignoring it
+--115632--     old: 0x04b5ec60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--115632--     new: 0x04b5ec60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+--115632-- Reading syms from /usr/lib/x86_64-linux-gnu/libm.so.6
+--115632--   Considering /usr/lib/debug/.build-id/a8/8ef0199bd5e742ebd0c359edf5cb2be0ec08b5.debug ..
+--115632--   .. build-id is valid
+--115632-- REDIR: 0x4b61720 (libc.so.6:strnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b619e0 (libc.so.6:strpbrk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b612e0 (libc.so.6:strcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b7fcd0 (libc.so.6:wcsnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b626d0 (libc.so.6:memset) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b7e540 (libc.so.6:wcslen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b62c10 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b7e370 (libc.so.6:wcschr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b61260 (libc.so.6:index) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b61960 (libc.so.6:rindex) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b625a0 (libc.so.6:memmove) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+==115632== Preferring higher priority redirection:
+--115632--     old: 0x04c597c0 (__memcpy_avx_unalign) R-> (2018.0) 0x04850f90 __memcpy_avx_unaligned_erms
+--115632--     new: 0x04c597c0 (__memcpy_avx_unalign) R-> (2018.1) 0x04852880 memmove
+--115632-- REDIR: 0x4b7e3f0 (libc.so.6:wcscmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b629e0 (libc.so.6:stpncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b7e9b0 (libc.so.6:wmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b61830 (libc.so.6:strncmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b62a70 (libc.so.6:strcasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b61420 (libc.so.6:strcspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b7e470 (libc.so.6:wcscpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b611d0 (libc.so.6:strcat) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b62b60 (libc.so.6:strncasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b62480 (libc.so.6:bcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b6a570 (libc.so.6:memrchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b64010 (libc.so.6:strchrnul) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b61390 (libc.so.6:strcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b62b10 (libc.so.6:strcasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b616a0 (libc.so.6:strlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b618d0 (libc.so.6:strncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b62950 (libc.so.6:stpcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b623f0 (libc.so.6:memchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b61b00 (libc.so.6:strspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b627d0 (libc.so.6:mempcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b62ac0 (libc.so.6:strncasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4b63f80 (libc.so.6:rawmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4bed280 (libc.so.6:__memcpy_chk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--115632-- REDIR: 0x4c56610 (libc.so.6:__strrchr_avx2) redirected to 0x484e810 (rindex)
+--115632-- REDIR: 0x4b5e0a0 (libc.so.6:malloc) redirected to 0x4848820 (malloc)
+--115632-- REDIR: 0x4c567e0 (libc.so.6:__strlen_avx2) redirected to 0x484ed10 (strlen)
+--115632-- REDIR: 0x4c52a80 (libc.so.6:__memcmp_avx2_movbe) redirected to 0x4852010 (bcmp)
+--115632-- REDIR: 0x4c59790 (libc.so.6:__memcpy_chk_avx_unaligned_erms) redirected to 0x4853940 (__memcpy_chk)
+==115632== Stack overflow in thread #1: can't grow stack to 0x1ffe801000
+==115632== 
+==115632== Process terminating with default action of signal 11 (SIGSEGV)
+==115632==  Access not within mapped region at address 0x1FFE801FF8
+==115632== Stack overflow in thread #1: can't grow stack to 0x1ffe801000
+==115632==    at 0x111EE6: GPIORgbLedDriver::reset(LedColor) (in /home/user/Documents/lights_node/build/obj/example.out)
+==115632==  If you believe this happened as a result of a stack
+==115632==  overflow in your program's main thread (unlikely but
+==115632==  possible), you can try to increase the size of the
+==115632==  main thread stack using the --main-stacksize= flag.
+==115632==  The main thread stack size used in this run was 8388608.
+==115632== 
+==115632== HEAP SUMMARY:
+==115632==     in use at exit: 72,704 bytes in 1 blocks
+==115632==   total heap usage: 1 allocs, 0 frees, 72,704 bytes allocated
+==115632== 
+==115632== Searching for pointers to 1 not-freed blocks
+==115632== Checked 5,389,192 bytes
+==115632== 
+==115632== LEAK SUMMARY:
+==115632==    definitely lost: 0 bytes in 0 blocks
+==115632==    indirectly lost: 0 bytes in 0 blocks
+==115632==      possibly lost: 0 bytes in 0 blocks
+==115632==    still reachable: 72,704 bytes in 1 blocks
+==115632==         suppressed: 0 bytes in 0 blocks
+==115632== Reachable blocks (those to which a pointer was found) are not shown.
+==115632== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==115632== 
+==115632== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
