@@ -16,6 +16,7 @@
 
 class LightsModule{
     // It is Singleton    
+    static LightsModule instance;
     static bool instance_initialized;
     static uint8_t light_id;
     static uint8_t blink_type;
@@ -23,7 +24,7 @@ class LightsModule{
     uint16_t toggle_period = 0;
     uint16_t duty_cycle = 0;
     uint8_t max_intensity = 0;
-    RgbSimpleColor default_color;
+    RgbSimpleColor _current_color;
     static bool publish_error;
     static Logger logger;
     
@@ -32,12 +33,13 @@ class LightsModule{
 
 protected:
     LightsModule();
-    // LightsModule(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color);
+    // LightsModule(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor _current_color);
 public:
     // static LightsModule instance;
 
     static SingleLightCommand_t command;
-    static SingleLightCommand_t* command_ptr;
+    // static SingleLightCommand_t* command_ptr;
+    static bool is_cmd_received;
     GPIORgbLedDriver int_led_driver;
     PwmRgbLedDriver ext_led_driver;
 
@@ -45,7 +47,6 @@ public:
     LightsModule& operator = (const LightsModule&) = delete;
     // static LightsModule &get_instance(uint8_t duty_cycle_ptc, uint16_t blink_period, uint8_t max_intensity, RgbSimpleColor default_color, uint8_t light_id = 0, uint8_t blink_type = 0);
     static LightsModule &get_instance(){
-        static LightsModule instance;
         return instance;
     };
     void update_params();
