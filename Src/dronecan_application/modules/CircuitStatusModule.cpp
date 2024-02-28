@@ -30,21 +30,19 @@ void CircuitStatusModule::init(){
         vol_raw = adc.get(AdcChannel::ADC_VIN);
         cur_raw = adc.get(AdcChannel::ADC_CURRENT);
         circuit_status = {.voltage = AdcPeriphery::stm32Voltage(vol_raw), .current=AdcPeriphery::stm32Current(cur_raw)};
-        dronecan_equipment_circuit_status_publish(&circuit_status, &circuit_status_pub_id);
-        circuit_status_pub_id +=1;
+        dronecan_equipment_circuit_status_publish(&circuit_status, &circuit_status_transfer_id);
+        circuit_status_transfer_id +=1;
     }
 }
 
 void CircuitStatusModule::spin_once(){
     RgbSimpleColor color = RgbSimpleColor::BLUE_COLOR;
 
-    if (v5_f > 5.5 || circuit_status.voltage > 21.5) {
+    if (v5_f > 5.5 || circuit_status.voltage > 60.0) {
         circuit_status.error_flags = ERROR_FLAG_OVERVOLTAGE;
     } else if (circuit_status.current > 1.05) {
         light_module->ext_led_driver.reset();
         circuit_status.error_flags = ERROR_FLAG_OVERCURRENT;
-    } else if (circuit_status.current < 0.01) {
-        circuit_status.error_flags = ERROR_FLAG_UNDERCURRENT;
     } else if (publish_error) {
         logger.log_debug("pub");
     }
@@ -58,11 +56,11 @@ void CircuitStatusModule::spin_once(){
         temp = AdcPeriphery::stm32Temperature(temp_raw);
         temperature_status.temperature = temp;
         
-        publish_error = dronecan_equipment_temperature_publish(&temperature_status, &temperature_pub_id);
+        publish_error = dronecan_equipment_temperature_publish(&temperature_status, &temperature_transfer_id);
         if (publish_error) {
             color = RgbSimpleColor::RED_COLOR;
         } else {
-            temperature_pub_id ++;
+            temperature_transfer_id ++;
         } 
     }
     
@@ -76,11 +74,11 @@ void CircuitStatusModule::spin_once(){
         circuit_status.voltage = AdcPeriphery::stm32Voltage(vol_raw);
         circuit_status.current=AdcPeriphery::stm32Current(cur_raw);
 
-        publish_error = dronecan_equipment_circuit_status_publish(&circuit_status, &circuit_status_pub_id);
+        publish_error = dronecan_equipment_circuit_status_publish(&circuit_status, &circuit_status_transfer_id);
         if (publish_error) {
             color = RgbSimpleColor::RED_COLOR;
         } else {
-            circuit_status_pub_id ++;
+            circuit_status_transfer_id ++;
         } 
     }
     

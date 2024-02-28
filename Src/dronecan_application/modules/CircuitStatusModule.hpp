@@ -23,8 +23,8 @@ class CircuitStatusModule {
     static LightsModule* light_module;
     // CircuitStatusModule* circuit_status_module;
 private:
-    uint8_t circuit_status_pub_id = 0;
-    uint8_t temperature_pub_id = 0;
+    uint8_t circuit_status_transfer_id = 0;
+    uint8_t temperature_transfer_id = 0;
 
     uint16_t vol_raw = 0;
     uint16_t temp_raw = 0;

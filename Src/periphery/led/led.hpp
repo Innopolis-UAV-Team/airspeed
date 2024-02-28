@@ -42,7 +42,7 @@ enum LedColor {
 class RgbLedInterface {
 public:
     uint16_t duty_cycle = 0;
-    uint16_t blink_period = 0;
+    uint16_t toggle_period = 0;
 
     virtual void init(uint16_t duty_cycle, uint16_t blink_period) = 0;
 
@@ -71,7 +71,7 @@ private:
     void init(uint16_t duty_cycle, uint16_t blink_period) override;
     
 public:
-
+    Rgb565Color _current_rgb565_color;
     uint8_t red_val;
     uint8_t green_val;
     uint8_t blue_val;
@@ -101,6 +101,8 @@ private:
     void init(uint16_t duty_cycle, uint16_t blink_period) override;
 
 public:
+    Rgb565Color _current_rgb565_color;
+
     GPIORgbLedDriver();
     GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin);
 
