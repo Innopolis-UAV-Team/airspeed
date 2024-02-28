@@ -24,14 +24,17 @@ void PwmRgbLedDriver::reset(LedColor color){
     switch (color)
     {
     case LedColor::RED:
+        _current_rgb565_color.red = 0;
         PwmPeriphery::reset(red_pin);
         break;
         
     case LedColor::GREEN:
+        _current_rgb565_color.green = 0;
         PwmPeriphery::reset(green_pin);
         break;
 
     case LedColor::BLUE:
+        _current_rgb565_color.blue = 0;
         PwmPeriphery::reset(blue_pin);
         break;
     
@@ -39,87 +42,84 @@ void PwmRgbLedDriver::reset(LedColor color){
         PwmPeriphery::reset(red_pin);
         PwmPeriphery::reset(green_pin);
         PwmPeriphery::reset(blue_pin);
+        _current_rgb565_color = Rgb565Color{0,0,0};
         break;
     }
+    set(_current_rgb565_color);
 }
 
 void PwmRgbLedDriver::toggle(){
     auto crnt_time_ms = HAL_GetTick();
-    bool state = (crnt_time_ms % blink_period > duty_cycle);
+    bool state = (crnt_time_ms % toggle_period > duty_cycle);
     if (state){
         reset();
         return;
     }
     
-    uint8_t red     = float(red_val * intensity) / (red_intensity_div * red_max);
-    uint8_t green   = float(green_val * intensity) / (green_intensity_div * green_max);
-    uint8_t blue    = float(blue_val * intensity) / (blue_intensity_div * blue_max);
-
     char buffer[90];
 
     if (HAL_GetTick()%1000 ==0){
-        sprintf(buffer, "%d, %d, %d", red, green, blue);
+        sprintf(buffer, "%d, %d, %d", red_val, green_val, blue_val);
         logger.log_debug(buffer);
     }
 
-    PwmPeriphery::set_duty_cycle_pct(red_pin, red);
-    PwmPeriphery::set_duty_cycle_pct(green_pin, green);
-    PwmPeriphery::set_duty_cycle_pct(blue_pin, blue);
+    PwmPeriphery::set_duty_cycle_pct(red_pin, red_val);
+    PwmPeriphery::set_duty_cycle_pct(green_pin, green_val);
+    PwmPeriphery::set_duty_cycle_pct(blue_pin, blue_val);
 }
 
 void PwmRgbLedDriver::set(Rgb565Color color){
-    red_val = color.red;
-    green_val = color.green;
-    blue_val = color.blue;
+    _current_rgb565_color.red     = float(color.red * intensity) / (red_intensity_div * red_max);
+    _current_rgb565_color.green   = float(color.green * intensity) / (green_intensity_div * green_max);
+    _current_rgb565_color.blue    = float(color.blue * intensity) / (blue_intensity_div * blue_max);
 }
 
 void PwmRgbLedDriver::set(RgbSimpleColor color){
+    uint8_t red     = 0;
+    uint8_t green   = 0;
+    uint8_t blue    = 0;
+    
     switch (color)
     {
     case RgbSimpleColor::RED_COLOR:
-        red_val = red_max;
-        green_val = 0;
-        blue_val = 0;
+        red = red_max;
         break;
     case RgbSimpleColor::GREEN_COLOR:
-        red_val = 0;
-        green_val = green_max;
-        blue_val = 0;
+        green = green_max;
         break;
 
     case RgbSimpleColor::BLUE_COLOR:
-        red_val = 0;
-        green_val = 0;
-        blue_val = blue_max;
+        blue = blue_max;
         break;
 
     case RgbSimpleColor::CYAN_COLOR:
-        red_val = 0;
-        green_val = green_max;
-        blue_val = blue_max;
+        green = green_max;
+        blue = blue_max;
         break;
     
     case RgbSimpleColor::MAGENTA_COLOR:
-        red_val = red_max;
-        green_val = 0;
-        blue_val = blue_max;
+        red = red_max;
+        blue = blue_max;
         break;
 
     case RgbSimpleColor::YELLOW_COLOR:
-        red_val = red_max;
-        green_val = green_max;
-        blue_val = 0;
+        red = red_max;
+        green = green_max;
         break;
 
     case RgbSimpleColor::WHITE_COLOR:
-        red_val = red_max;
-        green_val = green_max;
-        blue_val = blue_max;
+        red = red_max;
+        green = green_max;
+        blue = blue_max;
         break;
 
     default:
         break;
     }
+
+    _current_rgb565_color.red     = float(red * intensity) / (red_intensity_div * red_max);
+    _current_rgb565_color.green   = float(green * intensity) / (green_intensity_div * green_max);
+    _current_rgb565_color.blue    = float(blue * intensity) / (blue_intensity_div * blue_max);
 }
 void PwmRgbLedDriver::set_intensity(uint8_t intensity){
 
@@ -139,81 +139,66 @@ GPIORgbLedDriver::GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin,
 
 void GPIORgbLedDriver::set(Rgb565Color color){
     reset();
-    if (color.red > 0){
-        red_val = 1;
-    }
-    if (color.green >0){
-        green_val = 1;
-    }
-    if (color.blue > 0){
-        blue_val = 1;
-    }
+    _current_rgb565_color = color;
 }
 
 void GPIORgbLedDriver::set(RgbSimpleColor color){
+    _current_rgb565_color = Rgb565Color{ 0, 0, 0};
     switch (color) {
         case RgbSimpleColor::RED_COLOR:
-            red_val = 1;
-            green_val = 0;
-            blue_val = 0;
+            _current_rgb565_color.red = 1;
             break;
 
         case RgbSimpleColor::GREEN_COLOR:
-            red_val = 0;
-            green_val = 1;
-            blue_val = 0;
+            _current_rgb565_color.green = 1;
             break;
 
         case RgbSimpleColor::BLUE_COLOR:
-            red_val = 0;
-            green_val = 0;
-            blue_val = 1;
+            _current_rgb565_color.blue = 1;
             break;
 
         case RgbSimpleColor::CYAN_COLOR:
-            red_val = 0;
-            green_val = 1;
-            blue_val = 1;
+            _current_rgb565_color.green = 1;
+            _current_rgb565_color.blue = 1;
             break;
         
         case RgbSimpleColor::MAGENTA_COLOR:
-            red_val = 1;
-            green_val = 0;
-            blue_val = 1;
+            _current_rgb565_color.red = 1;
+            _current_rgb565_color.blue = 1;
             break;
 
         case RgbSimpleColor::YELLOW_COLOR:
-            red_val = 1;
-            green_val = 1;
-            blue_val = 0;
+            _current_rgb565_color.red = 1;
+            _current_rgb565_color.green = 1;
             break;
 
         case RgbSimpleColor::WHITE_COLOR:
-            red_val = 1;
-            green_val = 1;
-            blue_val = 1;
+            _current_rgb565_color.red = 1;
+            _current_rgb565_color.green = 1;
+            _current_rgb565_color.blue = 1;
             break;
 
         default:
             set(RgbSimpleColor::RED_COLOR);
             break;
-    }
+        }
+    set(_current_rgb565_color);
 }
 
 void GPIORgbLedDriver::reset(LedColor color){
     switch (color) {
     case LedColor::RED:
-        red_val = 0;
+        _current_rgb565_color.red = 0;
         GPIOPeriphery::reset(red_pin);
         break;
 
     case LedColor::GREEN:
-        green_val = 0;
+        _current_rgb565_color.green = 0;
         GPIOPeriphery::reset(green_pin);
         break;
 
     case LedColor::BLUE:
-        blue_val = 0;
+        _current_rgb565_color.blue = 0;
         GPIOPeriphery::reset(blue_pin);
         break;
     
@@ -223,13 +208,14 @@ void GPIORgbLedDriver::reset(LedColor color){
         GPIOPeriphery::reset(blue_pin);
         break;
     }
+    set(_current_rgb565_color);
 }
 
 void GPIORgbLedDriver::set_intensity(uint8_t intensity){}
 
 void GPIORgbLedDriver::toggle(){
     reset();
-    if (red_val > 0) GPIOPeriphery::toggle(red_pin, blink_period, duty_cycle);
-    if (green_val > 0) GPIOPeriphery::toggle(green_pin, blink_period, duty_cycle);
-    if (blue_val > 0) GPIOPeriphery::toggle(blue_pin, blink_period, duty_cycle);
+    if (_current_rgb565_color.red > 0) GPIOPeriphery::toggle(red_pin, toggle_period, duty_cycle);
+    if (_current_rgb565_color.green > 0) GPIOPeriphery::toggle(green_pin, toggle_period, duty_cycle);
+    if (_current_rgb565_color.blue > 0) GPIOPeriphery::toggle(blue_pin, toggle_period, duty_cycle);
 }
