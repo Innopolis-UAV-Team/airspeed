@@ -10,10 +10,10 @@
 char buffer[90];
 uint8_t LightsModule::light_id = 0;
 uint8_t LightsModule::blink_type = 0;
-LightsModule LightsModule::instance = LightsModule();
+// LightsModule LightsModule::instance = LightsModule();
 bool LightsModule::instance_initialized = false;
-bool LightsModule::is_cmd_received = false;
 
+SingleLightCommand_t* LightsModule::command_ptr = nullptr;
 SingleLightCommand_t LightsModule::command = {};
 bool LightsModule::publish_error = 0;
 Logger LightsModule::logger = Logger("LightsModule");
@@ -23,6 +23,7 @@ LightsModule::LightsModule(){
     instance_initialized = true;
     duty_cycle = toggle_period * (duty_cycle_ptc/100.0);
     init();
+
 }
 
 void LightsModule::callback(CanardRxTransfer* transfer) {
@@ -32,10 +33,11 @@ void LightsModule::callback(CanardRxTransfer* transfer) {
         for (uint8_t i = 0; i<raw_command.number_of_commands; i++){
             if (raw_command.commands[i].light_id == light_id){
                 command = raw_command.commands[i];
-                is_cmd_received = true;
+                command_ptr = &command;
                 break;
             }
         }
+
         publish_error = false;
     } else {
         publish_error = true;
@@ -43,35 +45,17 @@ void LightsModule::callback(CanardRxTransfer* transfer) {
 }
 
 RgbSimpleColor LightsModule::change_color(RgbSimpleColor color) {
-    color = static_cast<RgbSimpleColor>(static_cast<int>(color) + 1);
-
-    switch (color)
-    {
-    case RgbSimpleColor::RED_COLOR:
-        logger.log_debug("Color: RED");
-        break;
-    case RgbSimpleColor::GREEN_COLOR:
-        logger.log_debug("Color: GREEN");
-        break;
-    case RgbSimpleColor::BLUE_COLOR:
-        logger.log_debug("Color: BLUE");
-        break;
-    case RgbSimpleColor::YELLOW_COLOR:
-        logger.log_debug("Color: YELLOW");
-        break;
-    case RgbSimpleColor::CYAN_COLOR:
-        logger.log_debug("Color: CYAN");
-    case RgbSimpleColor::MAGENTA_COLOR:
-        logger.log_debug("Color: MAGENTA");
-        break;
-    case RgbSimpleColor::WHITE_COLOR:
-        logger.log_debug("Color: WHITE");
-        break;
-    default:
+    int a = HAL_GetTick() % 15000;
+    if (a==0) {
         color = RgbSimpleColor::RED_COLOR;
-        break;
+        logger.log_debug("Color: RED");
+    } else if (a == 5000) {
+        color = RgbSimpleColor::GREEN_COLOR;
+        logger.log_debug("Color: GREEN");
+    } else if (a==10000) {
+        color = RgbSimpleColor::BLUE_COLOR;
+        logger.log_debug("Color: BLUE");
     }
-    
     return color;
 }
 
@@ -99,7 +83,7 @@ void LightsModule::init() {
     int_led_driver.reset();
     ext_led_driver.reset();
     int_led_driver.set(color_int);
-    ext_led_driver.set(_current_color);
+    ext_led_driver.set(default_color);
 }
 
 void LightsModule::update_params(){
@@ -115,18 +99,18 @@ void LightsModule::update_params(){
     light_id = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHT_ID);
 
     auto default_color = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_DEFAULT_COLOR);
-    _current_color = RgbSimpleColor(default_color);
+    RgbSimpleColor default_rgb_color = RgbSimpleColor(default_color);
 
-    ext_led_driver.set(_current_color);
+    ext_led_driver.set(default_rgb_color);
 }
 
 void LightsModule::spin_once() {
 
-    if (HAL_GetTick() % 10000 == 0){
+    if (HAL_GetTick() % 10000 == 0) {
         update_params();  
     } 
 
-    if (is_cmd_received) {
+    if (command_ptr != nullptr) {
         Rgb565Color color={};
         color = {
             command.color.red, 
@@ -137,7 +121,7 @@ void LightsModule::spin_once() {
     }
 
     if (blink_type == 2){
-        auto intensity = ((HAL_GetTick() % toggle_period) / (float)toggle_period) * (max_intensity);
+        auto intensity = ((HAL_GetTick()%1000)/ 1000.0) * (max_intensity);
         
         if(HAL_GetTick()%1000 ==0 ){
             sprintf(buffer, "intensity: %d", intensity);

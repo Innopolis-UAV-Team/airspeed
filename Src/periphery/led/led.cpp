@@ -59,13 +59,13 @@ void PwmRgbLedDriver::toggle(){
     char buffer[90];
 
     if (HAL_GetTick()%1000 ==0){
-        sprintf(buffer, "%d, %d, %d", _current_rgb565_color.red, _current_rgb565_color.green, _current_rgb565_color.blue);
+        sprintf(buffer, "%d, %d, %d", red_val, green_val, blue_val);
         logger.log_debug(buffer);
     }
 
-    PwmPeriphery::set_duty_cycle_pct(red_pin, _current_rgb565_color.red);
-    PwmPeriphery::set_duty_cycle_pct(green_pin, _current_rgb565_color.green);
-    PwmPeriphery::set_duty_cycle_pct(blue_pin, _current_rgb565_color.blue);
+    PwmPeriphery::set_duty_cycle_pct(red_pin, red_val);
+    PwmPeriphery::set_duty_cycle_pct(green_pin, green_val);
+    PwmPeriphery::set_duty_cycle_pct(blue_pin, blue_val);
 }
 
 void PwmRgbLedDriver::set(Rgb565Color color){
