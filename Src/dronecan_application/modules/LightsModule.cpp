@@ -101,8 +101,9 @@ void LightsModule::spin_once() {
         update_params();
         init();
     }
-    if (HAL_GetTick() % 1000 == 0) {
-        sprintf(buffer, "%d %d", ext_led_driver.duty_cycle_ms, ext_led_driver.toggle_period_ms);
+
+    if (HAL_GetTick() % 500 == 0) {
+        sprintf(buffer, "%d %d", ext_led_driver.toggle_period_ms, int_led_driver.toggle_period_ms);
         logger.log_debug(buffer);
     }
     int_led_driver.spin();
@@ -154,4 +155,5 @@ RgbSimpleColor LightsModule::change_color(RgbSimpleColor color) {
         color = RgbSimpleColor::RED_COLOR;
         break;
     }
+    return color;
 }

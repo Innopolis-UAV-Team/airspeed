@@ -23,6 +23,7 @@ void GPIOPeripheryInverted::set(GPIOPin gpio_pin){
             break;
     }
 }
+
 GPIO_PinState GPIOPeripheryInverted::get(GPIOPin gpio_pin){
     switch (gpio_pin) {
         case GPIOPin::INT_RGB_LED_RED :

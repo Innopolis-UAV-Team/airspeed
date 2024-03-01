@@ -34,16 +34,11 @@ void application_entry_point() {
     LightsModule& light_module = LightsModule::get_instance();
     CircuitStatusModule& status_module = CircuitStatusModule::get_instance();
 
-    char buffer[90];
     while(true) {
         light_module.spin_once();
         status_module.spin_once();
         uavcanSpinOnce();
 
-        if (HAL_GetTick() % 1000 == 0){
-            sprintf(buffer, "%d %d %d ", light_module.int_led_driver._current_rgb565_color.red, light_module.int_led_driver._current_rgb565_color.green, light_module.int_led_driver._current_rgb565_color.blue);
-            logger.log_debug(buffer);
-        }
         #ifdef HAL_IWDG_MODULE_ENABLED
         HAL_IWDG_Refresh(&hiwdg);
         #endif  // HAL_IWDG_MODULE_ENABLED

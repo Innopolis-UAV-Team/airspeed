@@ -41,17 +41,19 @@ enum LedColor {
 
 class RgbLedInterface {
 public:
+    bool _toggle_flag = false;
     uint8_t red_max;
     uint8_t green_max;
     uint8_t blue_max;
 
-    uint16_t duty_cycle_ms = 0;
-    uint16_t toggle_period_ms = 0;
+    uint16_t duty_cycle_ms;
+    uint16_t toggle_period_ms;
     Rgb565Color _current_rgb565_color;
 
     virtual void set(RgbSimpleColor color);
     virtual void set(Rgb565Color color);
-    virtual void spin() = 0;
+    virtual void set() = 0;
+    virtual void spin();
     virtual void reset(LedColor color = LedColor::ALL);
 };
 
@@ -74,10 +76,12 @@ private:
 
 public:
 
-    void init();
     PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin);
-    void set(RgbSimpleColor color) override;
+
+    void init();
+    void set() override;
     void set(Rgb565Color color) override;
+    void set(RgbSimpleColor color) override;
     void set_intensity(uint8_t intensity);
     void spin() override;
     void reset(LedColor color = LedColor::ALL) override;
@@ -92,7 +96,9 @@ private:
 
 public:
     GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin);
-
+    void set() override;
+    void set(Rgb565Color color) override;
+    void set(RgbSimpleColor color) override;
     void spin() override;
     void reset(LedColor color = LedColor::ALL) override;
 };
@@ -108,6 +114,7 @@ public:
     Ws2812Driver(PwmPin pwm_pin, uint16_t num_of_leds);
     void set(RgbSimpleColor color) override;
     void set(Rgb565Color color) override;
+    void set() override;
     void set_intensity(uint8_t intensity);
     void spin() override;
     void reset(LedColor color = LedColor::ALL) override;
