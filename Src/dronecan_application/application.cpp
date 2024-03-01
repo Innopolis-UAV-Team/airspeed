@@ -31,6 +31,7 @@ void application_entry_point() {
 
     uavcanInitApplication(node_id);
     
+<<<<<<< HEAD
     // LightsModule& light_module = LightsModule::get_instance();
 
     // CircuitStatusModule& status_module = CircuitStatusModule::get_instance();
@@ -43,6 +44,15 @@ void application_entry_point() {
         }
         // status_module.spin_once();
 
+=======
+    LightsModule& light_module = LightsModule::get_instance();
+    CircuitStatusModule& status_module = CircuitStatusModule::get_instance();
+
+    char buffer[90];
+    while(true) {
+        light_module.spin_once();
+        status_module.spin_once();
+>>>>>>> 37a65a2 (apply suggestions)
         uavcanSpinOnce();
 
         #ifdef HAL_IWDG_MODULE_ENABLED

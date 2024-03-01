@@ -24,9 +24,9 @@ enum class RgbSimpleColor {
     RED_COLOR,
     GREEN_COLOR,
     BLUE_COLOR,
-    CYAN_COLOR,
     MAGENTA_COLOR,
     YELLOW_COLOR,
+    CYAN_COLOR,
     WHITE_COLOR,
     COLORS_AMOUNT = 7,
 };
@@ -41,16 +41,23 @@ enum LedColor {
 
 class RgbLedInterface {
 public:
+<<<<<<< HEAD
     uint16_t duty_cycle = 0;
     uint16_t toggle_period = 0;
+=======
+    uint8_t red_max;
+    uint8_t green_max;
+    uint8_t blue_max;
+>>>>>>> 37a65a2 (apply suggestions)
 
-    virtual void init(uint16_t duty_cycle, uint16_t blink_period) = 0;
+    uint16_t duty_cycle_ms = 0;
+    uint16_t toggle_period_ms = 0;
+    Rgb565Color _current_rgb565_color;
 
-    virtual void set(RgbSimpleColor color) = 0;
-    virtual void set(Rgb565Color color) = 0;
-    virtual void set_intensity(uint8_t intensity) =0;
-    virtual void toggle() =0;
-    virtual void reset(LedColor color = LedColor::ALL) = 0;
+    virtual void set(RgbSimpleColor color);
+    virtual void set(Rgb565Color color);
+    virtual void spin() = 0;
+    virtual void reset(LedColor color = LedColor::ALL);
 };
 
 class PwmRgbLedDriver: public RgbLedInterface {
@@ -60,28 +67,33 @@ private:
     PwmPin blue_pin;
 
     uint8_t intensity = 100;
-    uint8_t red_intensity_div = 2;
+    uint8_t red_intensity_div = 1;
     uint8_t green_intensity_div = 1;
     uint8_t blue_intensity_div = 1;
 
-    uint8_t red_max = 31;
-    uint8_t green_max = 63;
-    uint8_t blue_max = 31;
+    uint16_t red_ticks;
+    uint16_t green_ticks;
+    uint16_t blue_ticks;
+
     Logger logger = Logger("PwmRgbLedDriver");
-    void init(uint16_t duty_cycle, uint16_t blink_period) override;
-    
+
 public:
+<<<<<<< HEAD
     Rgb565Color _current_rgb565_color;
     uint8_t red_val;
     uint8_t green_val;
     uint8_t blue_val;
 
     PwmRgbLedDriver();
+=======
+
+    void init();
+>>>>>>> 37a65a2 (apply suggestions)
     PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin);
     void set(RgbSimpleColor color) override;
     void set(Rgb565Color color) override;
-    void set_intensity(uint8_t intensity) override;
-    void toggle() override;
+    void set_intensity(uint8_t intensity);
+    void spin() override;
     void reset(LedColor color = LedColor::ALL) override;
 };
 
@@ -90,25 +102,19 @@ private:
     GPIOPin red_pin;
     GPIOPin green_pin;
     GPIOPin blue_pin;
-
-    uint8_t red_val;
-    uint8_t green_val;
-    uint8_t blue_val;
-
     Logger logger = Logger("GPIORgbLedDriver");
 
-    void set_intensity(uint8_t intensity) override;
-    void init(uint16_t duty_cycle, uint16_t blink_period) override;
-
 public:
+<<<<<<< HEAD
     Rgb565Color _current_rgb565_color;
 
     GPIORgbLedDriver();
+=======
+
+>>>>>>> 37a65a2 (apply suggestions)
     GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin);
 
-    void set(RgbSimpleColor color) override;
-    void set(Rgb565Color color) override;
-    void toggle() override;
+    void spin() override;
     void reset(LedColor color = LedColor::ALL) override;
 };
 
@@ -120,11 +126,11 @@ private:
 
 public:
 
-    Ws2812Driver( PwmPin pwm_pin, uint16_t num_of_leds);
+    Ws2812Driver(PwmPin pwm_pin, uint16_t num_of_leds);
     void set(RgbSimpleColor color) override;
     void set(Rgb565Color color) override;
-    void set_intensity(uint8_t intensity) override;
-    void toggle() override;
+    void set_intensity(uint8_t intensity);
+    void spin() override;
     void reset(LedColor color = LedColor::ALL) override;
 };
 

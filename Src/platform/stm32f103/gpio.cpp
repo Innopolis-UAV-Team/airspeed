@@ -6,7 +6,7 @@
 #include "periphery/gpio/gpio.hpp"
 #include "main.h"
 
-void GPIOPeriphery::set(GPIOPin gpio_pin){
+void GPIOPeripheryInverted::set(GPIOPin gpio_pin){
     switch (gpio_pin) {
         case GPIOPin::INT_RGB_LED_RED :
             HAL_GPIO_WritePin(INT_RGB_LED_RED_GPIO_Port, INT_RGB_LED_RED_Pin, GPIO_PIN_RESET);
@@ -23,7 +23,7 @@ void GPIOPeriphery::set(GPIOPin gpio_pin){
             break;
     }
 }
-GPIO_PinState GPIOPeriphery::get(GPIOPin gpio_pin){
+GPIO_PinState GPIOPeripheryInverted::get(GPIOPin gpio_pin){
     switch (gpio_pin) {
         case GPIOPin::INT_RGB_LED_RED :
             return HAL_GPIO_ReadPin(INT_RGB_LED_RED_GPIO_Port, INT_RGB_LED_RED_Pin);
@@ -39,13 +39,13 @@ GPIO_PinState GPIOPeriphery::get(GPIOPin gpio_pin){
 }
 
 
-void GPIOPeriphery::reset() {
+void GPIOPeripheryInverted::reset() {
     HAL_GPIO_WritePin(INT_RGB_LED_RED_GPIO_Port, INT_RGB_LED_RED_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(INT_RGB_LED_GREEN_GPIO_Port, INT_RGB_LED_GREEN_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(INT_RGB_LED_BLUE_GPIO_Port, INT_RGB_LED_BLUE_Pin, GPIO_PIN_SET);
 }
 
-void GPIOPeriphery::reset(GPIOPin gpio_pin) {
+void GPIOPeripheryInverted::reset(GPIOPin gpio_pin) {
     switch (gpio_pin) {
         case GPIOPin::INT_RGB_LED_RED :
             HAL_GPIO_WritePin(INT_RGB_LED_RED_GPIO_Port, INT_RGB_LED_RED_Pin, GPIO_PIN_SET);
@@ -62,9 +62,9 @@ void GPIOPeriphery::reset(GPIOPin gpio_pin) {
 }
 
 
-void GPIOPeriphery::toggle(GPIOPin gpio_pin, uint32_t blink_period, uint32_t duty_cycle){
+void GPIOPeripheryInverted::toggle(GPIOPin gpio_pin, uint32_t blink_period_ms, uint32_t duty_cycle_ms){
     auto crnt_time_ms = HAL_GetTick();
-    GPIO_PinState state = (crnt_time_ms % blink_period > duty_cycle) ? GPIO_PIN_SET : GPIO_PIN_RESET;
+    GPIO_PinState state = (crnt_time_ms % blink_period_ms > duty_cycle_ms) ? GPIO_PIN_SET : GPIO_PIN_RESET;
     switch (gpio_pin) {
         case GPIOPin::INT_RGB_LED_RED :
             HAL_GPIO_WritePin(INT_RGB_LED_RED_GPIO_Port, INT_RGB_LED_RED_Pin, state);
