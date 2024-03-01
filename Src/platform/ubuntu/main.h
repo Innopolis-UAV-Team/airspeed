@@ -19,11 +19,11 @@ uint32_t HAL_GetTick();
 void HAL_NVIC_SystemReset();
 
 uint32_t uavcanGetTimeMs();
-typedef enum
-{
-  GPIO_PIN_RESET = 0u,
+typedef enum {
+  GPIO_PIN_RESET = false,
   GPIO_PIN_SET
 } GPIO_PinState;
+
 #ifdef __cplusplus
 }
 #endif

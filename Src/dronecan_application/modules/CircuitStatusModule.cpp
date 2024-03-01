@@ -9,11 +9,9 @@
 CircuitStatusModule CircuitStatusModule::instance = CircuitStatusModule();
 bool CircuitStatusModule::instance_initialized = false;
 Logger CircuitStatusModule::logger = Logger("CircuitStatus");
-LightsModule* CircuitStatusModule::light_module = &LightsModule::get_instance();
 
 CircuitStatusModule& CircuitStatusModule::get_instance() {
     if(!instance_initialized){
-        light_module = &LightsModule::get_instance();
         instance_initialized=true;
         instance.init();
     }
@@ -41,30 +39,21 @@ void CircuitStatusModule::spin_once(){
     if (v5_f > 5.5 || circuit_status.voltage > 60.0) {
         circuit_status.error_flags = ERROR_FLAG_OVERVOLTAGE;
     } else if (circuit_status.current > 1.05) {
-        light_module->ext_led_driver.reset();
         circuit_status.error_flags = ERROR_FLAG_OVERCURRENT;
     } else if (publish_error) {
         logger.log_debug("pub");
     }
 
-    if (circuit_status.error_flags != ERROR_FLAG_CLEAR){
-        color = RgbSimpleColor::YELLOW_COLOR;
-    }
-
-    if (HAL_GetTick()%1000 == 0) {
+    if (HAL_GetTick() % 1000 == 0) {
         temp_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
         temp = AdcPeriphery::stm32Temperature(temp_raw);
         temperature_status.temperature = temp;
         
         publish_error = dronecan_equipment_temperature_publish(&temperature_status, &temperature_transfer_id);
-        if (publish_error) {
-            color = RgbSimpleColor::RED_COLOR;
-        } else {
-            temperature_transfer_id ++;
-        } 
+        temperature_transfer_id ++;
     }
     
-    if (HAL_GetTick()%1000 == 0) {
+    if (HAL_GetTick() % 1000 == 0) {
         v5 = adc.get(AdcChannel::ADC_5V);
         v5_f =  AdcPeriphery::stm32Voltage5V(v5);
 
@@ -72,17 +61,12 @@ void CircuitStatusModule::spin_once(){
         cur_raw = adc.get(AdcChannel::ADC_CURRENT);
 
         circuit_status.voltage = AdcPeriphery::stm32Voltage(vol_raw);
-        circuit_status.current=AdcPeriphery::stm32Current(cur_raw);
+        circuit_status.current = AdcPeriphery::stm32Current(cur_raw);
 
         publish_error = dronecan_equipment_circuit_status_publish(&circuit_status, &circuit_status_transfer_id);
-        if (publish_error) {
-            color = RgbSimpleColor::RED_COLOR;
-        } else {
-            circuit_status_transfer_id ++;
-        } 
+        circuit_status_transfer_id ++;
     }
     
     circuit_status.error_flags = ERROR_FLAG_CLEAR;
-    light_module->int_led_driver.set(color);
 }
 
