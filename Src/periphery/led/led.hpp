@@ -41,14 +41,9 @@ enum LedColor {
 
 class RgbLedInterface {
 public:
-<<<<<<< HEAD
-    uint16_t duty_cycle = 0;
-    uint16_t toggle_period = 0;
-=======
     uint8_t red_max;
     uint8_t green_max;
     uint8_t blue_max;
->>>>>>> 37a65a2 (apply suggestions)
 
     uint16_t duty_cycle_ms = 0;
     uint16_t toggle_period_ms = 0;
@@ -78,17 +73,8 @@ private:
     Logger logger = Logger("PwmRgbLedDriver");
 
 public:
-<<<<<<< HEAD
-    Rgb565Color _current_rgb565_color;
-    uint8_t red_val;
-    uint8_t green_val;
-    uint8_t blue_val;
-
-    PwmRgbLedDriver();
-=======
 
     void init();
->>>>>>> 37a65a2 (apply suggestions)
     PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin);
     void set(RgbSimpleColor color) override;
     void set(Rgb565Color color) override;
@@ -105,13 +91,6 @@ private:
     Logger logger = Logger("GPIORgbLedDriver");
 
 public:
-<<<<<<< HEAD
-    Rgb565Color _current_rgb565_color;
-
-    GPIORgbLedDriver();
-=======
-
->>>>>>> 37a65a2 (apply suggestions)
     GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin);
 
     void spin() override;

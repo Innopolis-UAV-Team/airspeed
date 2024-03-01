@@ -62,9 +62,9 @@ void GPIOPeripheryInverted::reset(GPIOPin gpio_pin) {
 }
 
 
-void GPIOPeripheryInverted::toggle(GPIOPin gpio_pin, uint32_t blink_period_ms, uint32_t duty_cycle_ms){
+void GPIOPeripheryInverted::toggle(GPIOPin gpio_pin, uint32_t toggle_period_ms, uint32_t duty_cycle_ms){
     auto crnt_time_ms = HAL_GetTick();
-    GPIO_PinState state = (crnt_time_ms % blink_period_ms > duty_cycle_ms) ? GPIO_PIN_SET : GPIO_PIN_RESET;
+    GPIO_PinState state = (crnt_time_ms % toggle_period_ms > duty_cycle_ms) ? GPIO_PIN_SET : GPIO_PIN_RESET;
     switch (gpio_pin) {
         case GPIOPin::INT_RGB_LED_RED :
             HAL_GPIO_WritePin(INT_RGB_LED_RED_GPIO_Port, INT_RGB_LED_RED_Pin, state);
