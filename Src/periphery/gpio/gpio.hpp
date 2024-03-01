@@ -19,12 +19,12 @@ enum class GPIOPin{
     INT_RGB_LED_BLUE,   //
 };
 
-class GPIOPeriphery{
+class GPIOPeripheryInverted{
     static Logger _logger;
 public:
     static void set(const GPIOPin gpio_pin);
     static GPIO_PinState get(const GPIOPin gpio_pin);
-    static void toggle(GPIOPin gpio_pin, uint32_t blink_period, uint32_t duty_cycle);
+    static void toggle(GPIOPin gpio_pin, uint32_t blink_period_ms, uint32_t duty_cycle_ms);
     static void reset(GPIOPin gpio_pin);
     static void reset();
 };
