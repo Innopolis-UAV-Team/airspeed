@@ -15,4 +15,4 @@ GPIO_PinState GPIOPeripheryInverted::get(GPIOPin gpio_pin){
 }
 void GPIOPeripheryInverted::reset() {}
 void GPIOPeripheryInverted::reset(GPIOPin gpio_pin) {}
-void GPIOPeripheryInverted::toggle(GPIOPin gpio_pin, uint32_t blink_period_ms, uint32_t duty_cycle_ms){}
+void GPIOPeripheryInverted::toggle(GPIOPin gpio_pin, uint32_t toggle_period_ms, uint32_t duty_cycle_ms){}

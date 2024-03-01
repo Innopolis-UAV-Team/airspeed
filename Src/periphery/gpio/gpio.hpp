@@ -24,7 +24,7 @@ class GPIOPeripheryInverted{
 public:
     static void set(const GPIOPin gpio_pin);
     static GPIO_PinState get(const GPIOPin gpio_pin);
-    static void toggle(GPIOPin gpio_pin, uint32_t blink_period_ms, uint32_t duty_cycle_ms);
+    static void toggle(GPIOPin gpio_pin, uint32_t toggle_period_ms, uint32_t duty_cycle_ms);
     static void reset(GPIOPin gpio_pin);
     static void reset();
 };
