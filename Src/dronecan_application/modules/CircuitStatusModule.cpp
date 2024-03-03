@@ -23,13 +23,10 @@ void CircuitStatusModule::init(){
     if (adc_status != 0){
         logger.log_error("ADC init");
     } else {
-        temp_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
-        temp = stm32TemperatureParse(temp_raw);
+        tem_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
+        temp = stm32TemperatureParse(tem_raw);
         vol_raw = adc.get(AdcChannel::ADC_VIN);
         cur_raw = adc.get(AdcChannel::ADC_CURRENT);
-        circuit_status = {.voltage = AdcPeriphery::stm32Voltage(vol_raw), .current=AdcPeriphery::stm32Current(cur_raw)};
-        dronecan_equipment_circuit_status_publish(&circuit_status, &circuit_status_transfer_id);
-        circuit_status_transfer_id +=1;
     }
 }
 
@@ -45,8 +42,8 @@ void CircuitStatusModule::spin_once(){
     }
 
     if (HAL_GetTick() % 1000 == 0) {
-        temp_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
-        temp = AdcPeriphery::stm32Temperature(temp_raw);
+        tem_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
+        temp = AdcPeriphery::stm32Temperature(tem_raw);
         temperature_status.temperature = temp;
         
         publish_error = dronecan_equipment_temperature_publish(&temperature_status, &temperature_transfer_id);
@@ -54,8 +51,8 @@ void CircuitStatusModule::spin_once(){
     }
     
     if (HAL_GetTick() % 1000 == 0) {
-        v5 = adc.get(AdcChannel::ADC_5V);
-        v5_f =  AdcPeriphery::stm32Voltage5V(v5);
+        v5_raw = adc.get(AdcChannel::ADC_5V);
+        v5_f =  AdcPeriphery::stm32Voltage5V(v5_raw);
 
         vol_raw = adc.get(AdcChannel::ADC_VIN);
         cur_raw = adc.get(AdcChannel::ADC_CURRENT);

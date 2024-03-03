@@ -15,24 +15,7 @@
 #include "uavcan/equipment/indication/LightsCommand.h"
 
 class LightsModule{
-    // It is Singleton    
-    static uint8_t light_id;
-    static uint8_t toggle_type;
-    uint8_t duty_cycle_ptc = 100;
-    uint16_t toggle_period_ms = 0;
-    uint16_t duty_cycle_ms = 0;
-    uint8_t max_intensity = 0;
-    RgbSimpleColor _current_color;
-    static bool parsing_error;
-    static Logger logger;
-    
-    static void callback(CanardRxTransfer* transfer);
-    void init();
-    void update_params();
 
-protected:
-    LightsModule();
-    
 public:
     static bool instance_initialized;
 
@@ -43,11 +26,30 @@ public:
     GPIORgbLedDriver int_led_driver;
     PwmRgbLedDriver ext_led_driver;
 
-    LightsModule(LightsModule &other) = delete;
-    LightsModule& operator = (const LightsModule&) = delete;
-    static LightsModule &get_instance();
     void spin_once();
     void reset_command();
+    void update_params();
+    static LightsModule &get_instance();
     RgbSimpleColor change_color(RgbSimpleColor color);
+    
+protected:
+    LightsModule();
+
+private:
+    static uint8_t light_id;
+    static uint8_t toggle_type;
+
+    uint8_t duty_cycle_ptc      = 100;
+    uint16_t toggle_period_ms   = 0;
+    uint16_t duty_cycle_ms      = 0;
+    uint8_t max_intensity       = 0;
+
+    Rgb565Color _current_color;
+    static Logger logger;
+    
+    void init();
+    static void callback(CanardRxTransfer* transfer);
+    LightsModule& operator = (const LightsModule&) = delete;
+    LightsModule(LightsModule &other) = delete;
 };
 #endif //SRC_MODULE_LIGHTS_HPP_

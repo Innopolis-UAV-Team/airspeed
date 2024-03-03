@@ -15,36 +15,40 @@
 
 
 class CircuitStatusModule {
-    static CircuitStatusModule instance;
-    static bool instance_initialized;
-    static Logger logger;
-    CircuitStatus_t circuit_status = {};
-    Temperature_t temperature_status = {};
-
-private:
-    uint8_t circuit_status_transfer_id = 0;
-    uint8_t temperature_transfer_id = 0;
-
-    uint16_t vol_raw = 0;
-    uint16_t temp_raw = 0;
-    uint16_t cur_raw = 0;
-
-    uint16_t v5 = 0;
-    int8_t publish_error = 0;
-    AdcPeriphery adc;
-    // CircuitStatusModule(LightsModule* light_module);
-    CircuitStatusModule(){};
 public:
+    static CircuitStatusModule &get_instance();
+    void spin_once();
+
     float temp = 0;
     float v5_f = 0.0;
-    float vol = 0;
+    float volt = 0;
     float curr = 0;
+
+private:
+    static CircuitStatusModule instance;
+    static bool instance_initialized;
+
+    CircuitStatus_t circuit_status = {};
+    Temperature_t temperature_status = {};
+    
+    static Logger logger;
+
+    CircuitStatusModule(){};
+    AdcPeriphery adc;
+
+    uint8_t circuit_status_transfer_id  = 0;
+    uint8_t temperature_transfer_id     = 0;
+
+    uint16_t v5_raw     = 0;
+    uint16_t cur_raw    = 0;
+    uint16_t vol_raw    = 0;
+    uint16_t tem_raw    = 0;
+
+    int8_t publish_error = 0;
+
+    void init();
     CircuitStatusModule(CircuitStatusModule &other) = delete;
     void operator=(const CircuitStatusModule &) = delete;
-
-    static CircuitStatusModule &get_instance();
-    void init();
-    void spin_once();
 };
 
 #endif //SRC_MODULE_CIRCUIT_STATUS_HPP_
