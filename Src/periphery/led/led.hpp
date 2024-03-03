@@ -14,14 +14,9 @@
 
 #include "logger.hpp"
 
-struct Rgb565Color {
-    uint8_t red     : 5;
-    uint8_t green   : 6;
-    uint8_t blue    : 5;
-};
 
 enum class RgbSimpleColor {
-    RED_COLOR,
+    RED_COLOR = 0,
     GREEN_COLOR,
     BLUE_COLOR,
     MAGENTA_COLOR,
@@ -29,6 +24,13 @@ enum class RgbSimpleColor {
     CYAN_COLOR,
     WHITE_COLOR,
     COLORS_AMOUNT = 7,
+};
+
+struct Rgb565Color {
+    uint8_t red     : 5;
+    uint8_t green   : 6;
+    uint8_t blue    : 5;
+    static Rgb565Color from_rgb_simple_color(RgbSimpleColor color);
 };
 
 enum LedColor {
@@ -54,6 +56,7 @@ public:
     virtual void set(Rgb565Color color);
     virtual void set() = 0;
     virtual void spin();
+    virtual void spin(Rgb565Color color)=0;
     virtual void reset(LedColor color = LedColor::ALL);
 };
 
@@ -83,7 +86,7 @@ public:
     void set(Rgb565Color color) override;
     void set(RgbSimpleColor color) override;
     void set_intensity(uint8_t intensity);
-    void spin() override;
+    void spin(Rgb565Color color) override;
     void reset(LedColor color = LedColor::ALL) override;
 };
 
@@ -99,7 +102,7 @@ public:
     void set() override;
     void set(Rgb565Color color) override;
     void set(RgbSimpleColor color) override;
-    void spin() override;
+    void spin(Rgb565Color color) override;
     void reset(LedColor color = LedColor::ALL) override;
 };
 
