@@ -8,9 +8,9 @@ The node has the following registers:
 |  4 | lights.max_intensity    | Defines the max intensity of the lights [%]. |
 |  5 | lights.default_color    | Defines a default color of the lights. 0 - red, 1 - green, 2 - blue, 3 - cyan, 4 - magenta, 5 - yellow, 6 - white, 7 - turned off |
 |  6 | lights.type             | Defines an intensity transition rate of the lights. 0 - solid (steady and continuous illumination), 1 - blinking (rapid on-off cycling of colors), 2 - pulsing (gradual increase and decrease in brightness or color intensity). |
-|  7 | lights.blink_period_ms  | Defines a blink period of the lights [ms]. This parameter has no effect when lights.type=0 (solid) |
+|  7 | lights.period           | Defines a blink period of the lights [ms]. This parameter has no effect when lights.type=0 (solid) |
 |  8 | lights.duty_cycle_pct   | Defines a duty cycle of the lights [%]. |
-|  9 | lights.verbose          | Defines the operational mode of the node. If set to 1, uavcan.equipment.indication.LightsCommand will be sent, containing current LED color. |
+|  9 | lights.verbose          | Indicates the operational mode of the node. When set to 1, the uavcan.equipment.indication.LightsCommand will be transmitted, including the current LED color and id. |
 
 > This docs was automatically generated. Do not edit it manually.
 
