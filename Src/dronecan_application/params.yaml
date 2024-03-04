@@ -71,8 +71,7 @@ lights.duty_cycle_pct:
 
 lights.verbose:
   type: Integer
-  note: Indicates the operational mode of the node. 
-  When set to 1, the uavcan.equipment.indication.LightsCommand will be transmitted, including the current LED color and id. 
+  note: Indicates the operational mode of the node. When set to 1, the uavcan.equipment.indication.LightsCommand will be transmitted, including the current LED color and id. 
   enum: PARAM_LIGHTS_VERBOSE
   flags: mutable
   default: 0
