@@ -34,7 +34,7 @@ void application_entry_point() {
     LightsModule& light_module = LightsModule::get_instance();
     CircuitStatusModule& status_module = CircuitStatusModule::get_instance();
     char buffer[90];
-    while(true) {
+    while (true) {
         light_module.spin_once();
         status_module.spin_once();
 

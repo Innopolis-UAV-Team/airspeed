@@ -4,11 +4,11 @@
 */
 
 #include "logger.hpp"
-Logger::Logger(const char* source){
+Logger::Logger(const char* source) {
     set_source(this->_msg, source);
 }
 
-int8_t Logger::init(const char* source = ""){
+int8_t Logger::init(const char* source = "") {
     return set_source(this->_msg, source);
 }
 
@@ -28,7 +28,7 @@ void Logger::log_error(const char* text) {
     publish();
 }
 
-void Logger::publish(){
+void Logger::publish() {
     dronecan_protocol_debug_log_message_publish(&this->_msg, &_transfer_id);
     _transfer_id++;
 }

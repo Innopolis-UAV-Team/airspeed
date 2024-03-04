@@ -11,16 +11,16 @@ bool CircuitStatusModule::instance_initialized = false;
 Logger CircuitStatusModule::logger = Logger("CircuitStatus");
 
 CircuitStatusModule& CircuitStatusModule::get_instance() {
-    if(!instance_initialized){
+    if (!instance_initialized) {
         instance_initialized=true;
         instance.init();
     }
     return instance;
 }
 
-void CircuitStatusModule::init(){
+void CircuitStatusModule::init() {
     int8_t adc_status = adc.init();
-    if (adc_status != 0){
+    if (adc_status != 0) {
         logger.log_error("ADC init");
     } else {
         tem_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
@@ -30,7 +30,7 @@ void CircuitStatusModule::init(){
     }
 }
 
-void CircuitStatusModule::spin_once(){
+void CircuitStatusModule::spin_once() {
     RgbSimpleColor color = RgbSimpleColor::BLUE_COLOR;
 
     if (v5_f > 5.5 || circuit_status.voltage > 60.0) {

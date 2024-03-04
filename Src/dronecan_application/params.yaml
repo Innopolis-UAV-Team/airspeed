@@ -17,7 +17,7 @@ system.name:
 lights.id:
   type: Integer
   note: Defines the lights id. The default value is zero, which for PX4 0 means UI LED.
-  enum: PARAM_LIGHT_ID
+  enum: PARAM_LIGHTS_ID
   flags: mutable
   default: 0
   min: 0
@@ -50,10 +50,10 @@ lights.type:
   min: 0
   max: 255
 
-lights.blink_period_ms:
+lights.period:
   type: Integer
   note: Defines a blink period of the lights [ms]. This parameter has no effect when lights.type=0 (solid)
-  enum: PARAM_LIGHTS_BLINK_PERIOD_MS
+  enum: PARAM_LIGHTS_PERIOD_MS
   flags: mutable
   default: 1000
   min: 1
@@ -71,7 +71,8 @@ lights.duty_cycle_pct:
 
 lights.verbose:
   type: Integer
-  note: Defines the operational mode of the node. If set to 1, uavcan.equipment.indication.LightsCommand will be sent, containing current LED color.
+  note: Indicates the operational mode of the node. 
+  When set to 1, the uavcan.equipment.indication.LightsCommand will be transmitted, including the current LED color and id. 
   enum: PARAM_LIGHTS_VERBOSE
   flags: mutable
   default: 0

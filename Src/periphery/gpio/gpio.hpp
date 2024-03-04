@@ -13,13 +13,13 @@
 extern "C" {
 #endif
 
-enum class GPIOPin{
+enum class GPIOPin {
     INT_RGB_LED_RED,    //
     INT_RGB_LED_GREEN,  //
     INT_RGB_LED_BLUE,   //
 };
 
-class GPIOPeripheryInverted{
+class GPIOPeripheryInverted {
     static Logger _logger;
 public:
     static void set(const GPIOPin gpio_pin);

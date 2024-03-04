@@ -16,7 +16,7 @@ SingleLightCommand_t LightsModule::command = {};
 Logger LightsModule::logger = Logger("LightsModule");
 
 
-LightsModule::LightsModule(): int_led_driver(GPIOPin::INT_RGB_LED_RED, GPIOPin::INT_RGB_LED_GREEN, GPIOPin::INT_RGB_LED_BLUE),  ext_led_driver(PwmPin::PWM_4, PwmPin::PWM_3, PwmPin::PWM_6){
+LightsModule::LightsModule(): int_led_driver(GPIOPin::INT_RGB_LED_RED, GPIOPin::INT_RGB_LED_GREEN, GPIOPin::INT_RGB_LED_BLUE),  ext_led_driver(PwmPin::PWM_4, PwmPin::PWM_3, PwmPin::PWM_6) {
     update_params();
     instance.init();
     instance_initialized = true;
@@ -28,7 +28,7 @@ LightsModule &LightsModule::get_instance() {
 }
 
 
-void LightsModule::reset_command(){
+void LightsModule::reset_command() {
     command = {};
 }
 
@@ -44,7 +44,7 @@ void LightsModule::spin_once() {
         ext_led_driver.set(color);
     }
     
-    if (toggle_type == 2){
+    if (toggle_type == 2) {
         uint8_t intensity = max_intensity * ((HAL_GetTick() % toggle_period_ms) / float (toggle_period_ms));
         ext_led_driver.set_intensity(intensity);
     }
@@ -62,7 +62,7 @@ void LightsModule::spin_once() {
     }
 }
 
-void LightsModule::publish_command(){
+void LightsModule::publish_command() {
     static uint32_t next_pub_ms = 100;
     if (next_pub_ms < HAL_GetTick()) {
     next_pub_ms += 10;
@@ -89,7 +89,7 @@ void LightsModule::callback(CanardRxTransfer* transfer) {
     int8_t res = dronecan_equipment_indication_lights_command_deserialize(transfer, &raw_command);
     if (res > 0) {
         for (uint8_t i = 0; i < raw_command.number_of_commands; i++) {
-            if (raw_command.commands[i].light_id == light_id){
+            if (raw_command.commands[i].light_id == light_id) {
                 command = raw_command.commands[i];
                 is_cmd_received = true;
                 break;
@@ -101,8 +101,7 @@ void LightsModule::callback(CanardRxTransfer* transfer) {
 
 RgbSimpleColor LightsModule::change_color(RgbSimpleColor color) {
 
-    switch (color)
-    {
+    switch (color) {
     case RgbSimpleColor::RED_COLOR:
         color = RgbSimpleColor::BLUE_COLOR;
         break;
@@ -135,13 +134,13 @@ RgbSimpleColor LightsModule::change_color(RgbSimpleColor color) {
 }
 
 
-void LightsModule::update_params(){
+void LightsModule::update_params() {
     auto default_color = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_DEFAULT_COLOR);
 
     toggle_type = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_TYPE);
     max_intensity = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_MAX_INTENSITY);
-    light_id = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHT_ID);
-    toggle_period_ms = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_BLINK_PERIOD_MS);
+    light_id = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_ID);
+    toggle_period_ms = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_PERIOD_MS);
     
     if (toggle_type == 1) {
         duty_cycle_ptc = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_DUTY_CYCLE_PTC);
@@ -152,9 +151,6 @@ void LightsModule::update_params(){
     }
     _current_color = Rgb565Color::from_rgb_simple_color(RgbSimpleColor(default_color));
     verbose = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_VERBOSE);
-    char buffer[90];
-    sprintf(buffer, "%d", verbose);
-    logger.log_debug(buffer);
 }
 
 
