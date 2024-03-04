@@ -54,9 +54,8 @@ public:
 
     virtual void set(RgbSimpleColor color);
     virtual void set(Rgb565Color color);
-    virtual void set() = 0;
-    virtual void spin();
-    virtual void spin(Rgb565Color color)=0;
+    virtual void apply() = 0;
+    virtual void spin(Rgb565Color color);
     virtual void reset(LedColor color = LedColor::ALL);
 };
 
@@ -81,13 +80,11 @@ public:
 
     PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin);
 
+    using RgbLedInterface::apply;
+    using RgbLedInterface::reset;
     void init();
-    void set() override;
-    void set(Rgb565Color color) override;
-    void set(RgbSimpleColor color) override;
+    void apply();
     void set_intensity(uint8_t intensity);
-    void spin(Rgb565Color color) override;
-    void reset(LedColor color = LedColor::ALL) override;
 };
 
 class GPIORgbLedDriver: public RgbLedInterface {
@@ -99,11 +96,9 @@ private:
 
 public:
     GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin);
-    void set() override;
-    void set(Rgb565Color color) override;
-    void set(RgbSimpleColor color) override;
-    void spin(Rgb565Color color) override;
-    void reset(LedColor color = LedColor::ALL) override;
+    void apply() override;
+    using RgbLedInterface::set;
+    using RgbLedInterface::reset;
 };
 
 class Ws2812Driver: public RgbLedInterface {
@@ -115,12 +110,8 @@ private:
 public:
 
     Ws2812Driver(PwmPin pwm_pin, uint16_t num_of_leds);
-    void set(RgbSimpleColor color) override;
-    void set(Rgb565Color color) override;
-    void set() override;
+    void apply() override;
     void set_intensity(uint8_t intensity);
-    void spin() override;
-    void reset(LedColor color = LedColor::ALL) override;
 };
 
 #endif  // SRC_PERIPHERY_LED_LED_HPP_

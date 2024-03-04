@@ -15,6 +15,7 @@ CircuitStatusModule& CircuitStatusModule::get_instance() {
         instance_initialized=true;
         instance.init();
     }
+    
     return instance;
 }
 
