@@ -87,7 +87,7 @@ PwmRgbLedDriver::PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPi
 void PwmRgbLedDriver::apply() {
     red_ticks = float(_current_rgb565_color.red * intensity) / (red_intensity_div * red_max);
     green_ticks = float(_current_rgb565_color.green * intensity) / (green_intensity_div * green_max);
-    blue_ticks = float(_current_rgb565_color.blue * intensity) / (green_intensity_div * green_max);
+    blue_ticks = float(_current_rgb565_color.blue * intensity) / (blue_intensity_div * blue_max);
 
     PwmPeriphery::set_duty_cycle_pct(red_pin, red_ticks);
     PwmPeriphery::set_duty_cycle_pct(green_pin, green_ticks);
@@ -100,10 +100,9 @@ void PwmRgbLedDriver::set_intensity(uint8_t intensity_val) {
     }
 
     intensity = intensity_val;
-    
     red_ticks = float(_current_rgb565_color.red * intensity) / (red_intensity_div * red_max);
     green_ticks = float(_current_rgb565_color.green * intensity) / (green_intensity_div * green_max);
-    blue_ticks = float(_current_rgb565_color.blue * intensity) / (green_intensity_div * green_max);
+    blue_ticks = float(_current_rgb565_color.blue * intensity) / (blue_intensity_div * blue_max);
 }
 
 GPIORgbLedDriver::GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin) {

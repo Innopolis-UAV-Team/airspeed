@@ -60,7 +60,7 @@ void LightsModule::spin_once() {
     int_led_driver.spin(Rgb565Color{0, 0, 1});
     ext_led_driver.spin(_current_color);
 
-    if (verbose) {
+    if (verbose) {  
         publish_command();
     }
 }
@@ -83,7 +83,7 @@ void LightsModule::publish_command() {
     cmd.commands[0].color.blue = 31 - blue;
     dronecan_equipment_indication_lights_command_publish(&cmd, &transfer_id);
     transfer_id++;
-}
+    }
 
 }
 
@@ -99,41 +99,6 @@ void LightsModule::callback(CanardRxTransfer* transfer) {
             }
         }
     }
-}
-
-
-RgbSimpleColor LightsModule::change_color(RgbSimpleColor color) {
-
-    switch (color) {
-    case RgbSimpleColor::RED_COLOR:
-        color = RgbSimpleColor::BLUE_COLOR;
-        break;
-    
-    case RgbSimpleColor::BLUE_COLOR:
-        color = RgbSimpleColor::GREEN_COLOR;
-        break;
-    
-    case RgbSimpleColor::GREEN_COLOR:
-        color = RgbSimpleColor::MAGENTA_COLOR;
-        break;
-    
-    case RgbSimpleColor::MAGENTA_COLOR:
-        color = RgbSimpleColor::YELLOW_COLOR;
-        break;
-    
-    case RgbSimpleColor::YELLOW_COLOR:
-        color = RgbSimpleColor::CYAN_COLOR;
-        break;
-    
-    case RgbSimpleColor::CYAN_COLOR:
-        color = RgbSimpleColor::WHITE_COLOR;
-        break;
-    
-    default:
-        color = RgbSimpleColor::RED_COLOR;
-        break;
-    }
-    return color;
 }
 
 
@@ -177,4 +142,39 @@ void LightsModule::init() {
     RgbSimpleColor color_int = RgbSimpleColor::BLUE_COLOR;
     int_led_driver.set(color_int);
     ext_led_driver.set(_current_color);
+}
+
+
+RgbSimpleColor LightsModule::change_color(RgbSimpleColor color) {
+
+    switch (color) {
+    case RgbSimpleColor::RED_COLOR:
+        color = RgbSimpleColor::BLUE_COLOR;
+        break;
+    
+    case RgbSimpleColor::BLUE_COLOR:
+        color = RgbSimpleColor::GREEN_COLOR;
+        break;
+    
+    case RgbSimpleColor::GREEN_COLOR:
+        color = RgbSimpleColor::MAGENTA_COLOR;
+        break;
+    
+    case RgbSimpleColor::MAGENTA_COLOR:
+        color = RgbSimpleColor::YELLOW_COLOR;
+        break;
+    
+    case RgbSimpleColor::YELLOW_COLOR:
+        color = RgbSimpleColor::CYAN_COLOR;
+        break;
+    
+    case RgbSimpleColor::CYAN_COLOR:
+        color = RgbSimpleColor::WHITE_COLOR;
+        break;
+    
+    default:
+        color = RgbSimpleColor::RED_COLOR;
+        break;
+    }
+    return color;
 }
