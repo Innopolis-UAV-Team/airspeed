@@ -15,7 +15,7 @@ extern TIM_HandleTypeDef htim3;
 
 Logger PwmPeriphery::_logger = Logger("PWM");
 
-void PwmPeriphery::init(PwmPin pin){
+void PwmPeriphery::init(PwmPin pin) {
     switch (pin) {
     #ifdef htim1
     
@@ -117,9 +117,9 @@ uint16_t PwmPeriphery::get_duration(PwmPin pwm_pin) {
     return pwm_duration;
 }
 
-void PwmPeriphery::set_duty_cycle_pct(PwmPin pwm_pin, uint8_t duty_cycle_pct){
+void PwmPeriphery::set_duty_cycle_pct(PwmPin pwm_pin, uint8_t duty_cycle_pct) {
     
-    if (duty_cycle_pct > 100){
+    if (duty_cycle_pct > 100) {
         return;
     }
 
@@ -156,7 +156,7 @@ void PwmPeriphery::set_duty_cycle_pct(PwmPin pwm_pin, uint8_t duty_cycle_pct){
     }
 }
 
-void PwmPeriphery::reset(PwmPin pwm_pin){
+void PwmPeriphery::reset(PwmPin pwm_pin) {
 
     switch (pwm_pin) {
         case PwmPin::PWM_1:

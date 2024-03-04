@@ -24,6 +24,7 @@ LightsModule::LightsModule(): int_led_driver(GPIOPin::INT_RGB_LED_RED, GPIOPin::
 
 
 LightsModule &LightsModule::get_instance() {
+    instance.update_params();
     return instance;
 }
 
@@ -49,7 +50,9 @@ void LightsModule::spin_once() {
         ext_led_driver.set_intensity(intensity);
     }
 
-    if (HAL_GetTick() % 5000 == 0) {
+    static uint32_t next_update_ms = 10;
+    if (HAL_GetTick() > next_update_ms) {
+        next_update_ms += 5000;
         update_params();
         init();
     }
