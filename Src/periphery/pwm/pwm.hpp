@@ -22,7 +22,7 @@ enum class PwmPin {
     PWM_4,      // PB4 TIM3_CH1 EXT_RED
     PWM_5,      // PB3 TIM2_CH2 PWM_5
     PWM_6,      // PB0 TIM3_CH3 EXT_BLUE 
-    PWM_AMOUNT,
+    PWM_AMOUNT = 7,
 };
 
 

@@ -56,8 +56,33 @@ void LightsModule::spin_once() {
 
     int_led_driver.spin(Rgb565Color{0, 0, 1});
     ext_led_driver.spin(_current_color);
+
+    if (verbose) {
+        publish_command();
+    }
 }
 
+void LightsModule::publish_command(){
+    static uint32_t next_pub_ms = 100;
+    if (next_pub_ms < HAL_GetTick()) {
+    next_pub_ms += 10;
+
+    uint16_t red = PwmPeriphery::get_duration(PwmPin::PWM_4) * 0.031f;
+    uint16_t green = PwmPeriphery::get_duration(PwmPin::PWM_3) * 0.063f;
+    uint16_t blue = PwmPeriphery::get_duration(PwmPin::PWM_6) * 0.031f;
+
+    static uint8_t transfer_id = 0;
+    LightsCommand_t cmd{};
+    cmd.number_of_commands = 1;
+    cmd.commands[0].light_id = 1;
+    cmd.commands[0].color.red = 31 - red;
+    cmd.commands[0].color.green = 63 - green;
+    cmd.commands[0].color.blue = 31 - blue;
+    dronecan_equipment_indication_lights_command_publish(&cmd, &transfer_id);
+    transfer_id++;
+}
+
+}
 
 void LightsModule::callback(CanardRxTransfer* transfer) {
     LightsCommand_t raw_command;
@@ -126,6 +151,10 @@ void LightsModule::update_params(){
         duty_cycle_ms = toggle_period_ms;
     }
     _current_color = Rgb565Color::from_rgb_simple_color(RgbSimpleColor(default_color));
+    verbose = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_VERBOSE);
+    char buffer[90];
+    sprintf(buffer, "%d", verbose);
+    logger.log_debug(buffer);
 }
 
 

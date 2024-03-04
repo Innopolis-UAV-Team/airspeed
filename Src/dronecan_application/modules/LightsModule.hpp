@@ -29,6 +29,7 @@ public:
     void spin_once();
     void reset_command();
     void update_params();
+    void publish_command();
     static LightsModule &get_instance();
     RgbSimpleColor change_color(RgbSimpleColor color);
     
@@ -44,6 +45,7 @@ private:
     uint16_t duty_cycle_ms      = 0;
     uint8_t max_intensity       = 0;
 
+    bool verbose;
     Rgb565Color _current_color;
     static Logger logger;
     
