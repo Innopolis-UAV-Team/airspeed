@@ -2,8 +2,6 @@
  * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
  *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
 ***/ 
-
-
 #ifndef SRC_MODULE_LIGHTS_HPP_
 #define SRC_MODULE_LIGHTS_HPP_
 
@@ -14,8 +12,7 @@
 #include "../periphery/led/led.hpp"
 #include "uavcan/equipment/indication/LightsCommand.h"
 
-class LightsModule{
-
+class LightsModule {
 public:
     static bool instance_initialized;
 
@@ -49,7 +46,7 @@ private:
     Rgb565Color _current_color;
     static Logger logger;
     
-    void init();
+    void apply_params();
     static void callback(CanardRxTransfer* transfer);
     LightsModule& operator = (const LightsModule&) = delete;
     LightsModule(LightsModule &other) = delete;
