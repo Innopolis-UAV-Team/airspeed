@@ -77,3 +77,12 @@ lights.verbose:
   default: 0
   min: 0
   max: 1
+
+lights.ttl:
+  type: Integer
+  note: TTL for light commands [ms].
+  enum: PARAM_LIGHTS_TTL
+  flags: mutable
+  default: 1000
+  min: 100
+  max: 65535
