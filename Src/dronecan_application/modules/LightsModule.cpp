@@ -6,15 +6,17 @@
 
 #include "LightsModule.hpp"
 
+bool LightsModule::instance_initialized = false;
+LightsModule LightsModule::instance = LightsModule();
+
 uint8_t LightsModule::light_id = 0;
 uint8_t LightsModule::toggle_type = 0;
-LightsModule LightsModule::instance = LightsModule();
-bool LightsModule::instance_initialized = false;
 
-bool LightsModule::is_cmd_received = false;
 SingleLightCommand_t LightsModule::command = {};
-Logger LightsModule::logger = Logger("LightsModule");
+uint32_t LightsModule::ttl_current_cmd_ms = 0;
+uint16_t LightsModule::ttl_cmd = 0;
 
+Logger LightsModule::logger = Logger("LightsModule");
 
 LightsModule::LightsModule(): int_led_driver(GPIOPin::INT_RGB_LED_RED, GPIOPin::INT_RGB_LED_GREEN, GPIOPin::INT_RGB_LED_BLUE),  ext_led_driver(PwmPin::PWM_4, PwmPin::PWM_3, PwmPin::PWM_6) {
     update_params();
@@ -34,17 +36,20 @@ void LightsModule::reset_command() {
 
 
 void LightsModule::spin_once() {
-    if (is_cmd_received) {
-        _current_color = Rgb565Color{
+    Rgb565Color color = _default_color;
+    if (HAL_GetTick() < ttl_current_cmd_ms) {
+        color = Rgb565Color{
             command.color.red, 
             command.color.green, 
             command.color.blue
             };
-    }
-    
-    if (toggle_type == 2) {
-        uint8_t intensity = max_intensity * ((HAL_GetTick() % toggle_period_ms) / float (toggle_period_ms));
-        ext_led_driver.set_intensity(intensity);
+        ext_led_driver.set(color);
+    } else {
+        if (toggle_type == 2) {
+            uint8_t intensity = max_intensity * ((HAL_GetTick() % toggle_period_ms) / float (toggle_period_ms));
+            ext_led_driver.set_intensity(intensity);
+        }
+        ext_led_driver.spin(color);
     }
 
     static uint32_t next_update_ms = 10;
@@ -54,7 +59,6 @@ void LightsModule::spin_once() {
     }
 
     int_led_driver.spin(Rgb565Color{0, 0, 1});
-    ext_led_driver.spin(_current_color);
 
     if (verbose) {  
         publish_command();
@@ -90,7 +94,7 @@ void LightsModule::callback(CanardRxTransfer* transfer) {
         for (uint8_t i = 0; i < raw_command.number_of_commands; i++) {
             if (raw_command.commands[i].light_id == light_id) {
                 command = raw_command.commands[i];
-                is_cmd_received = true;
+                ttl_current_cmd_ms = HAL_GetTick() + ttl_cmd;
                 break;
             }
         }
@@ -113,9 +117,10 @@ void LightsModule::update_params() {
     } else {
         duty_cycle_ms = toggle_period_ms;
     }
-    _current_color = Rgb565Color::from_rgb_simple_color(RgbSimpleColor(default_color));
+    _default_color = Rgb565Color::from_rgb_simple_color(RgbSimpleColor(default_color));
     verbose = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_VERBOSE);
     instance.apply_params();
+    ttl_cmd = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_TTL);
 }
 
 void LightsModule::apply_params() {
@@ -130,14 +135,13 @@ void LightsModule::apply_params() {
 
     ext_led_driver.set_intensity(max_intensity);
     
-    auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND, callback);
+    auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND_SIGNATURE, UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND_ID, callback);
     if (sub_id < 0) {
-        logger.log_debug("uavcanSubscribe failed");
     }
 
     RgbSimpleColor color_int = RgbSimpleColor::BLUE_COLOR;
     int_led_driver.set(color_int);
-    ext_led_driver.set(_current_color);
+    ext_led_driver.set(_default_color);
 }
 
 

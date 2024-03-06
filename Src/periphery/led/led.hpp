@@ -75,15 +75,14 @@ private:
     uint16_t blue_ticks;
 
     Logger logger = Logger("PwmRgbLedDriver");
+    void apply();
+    void init();
 
 public:
 
     PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin);
-
-    using RgbLedInterface::apply;
+    using RgbLedInterface::set;
     using RgbLedInterface::reset;
-    void init();
-    void apply();
     void set_intensity(uint8_t intensity);
 };
 
@@ -93,10 +92,10 @@ private:
     GPIOPin green_pin;
     GPIOPin blue_pin;
     Logger logger = Logger("GPIORgbLedDriver");
+    void apply() override;
 
 public:
     GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin);
-    void apply() override;
     using RgbLedInterface::set;
     using RgbLedInterface::reset;
 };
@@ -106,11 +105,10 @@ private:
     PwmPin pwm_pin;
     uint16_t num_of_leds;
     Logger logger = Logger("Ws2812Driver");
-
+    void apply() override;
 public:
 
     Ws2812Driver(PwmPin pwm_pin, uint16_t num_of_leds);
-    void apply() override;
     void set_intensity(uint8_t intensity);
 };
 

@@ -22,6 +22,8 @@ public:
     static bool is_cmd_received;
     GPIORgbLedDriver int_led_driver;
     PwmRgbLedDriver ext_led_driver;
+    static uint32_t ttl_current_cmd_ms;
+    static uint16_t ttl_cmd;
 
     void spin_once();
     void reset_command();
@@ -43,7 +45,7 @@ private:
     uint8_t max_intensity       = 0;
 
     bool verbose;
-    Rgb565Color _current_color;
+    Rgb565Color _default_color;
     static Logger logger;
     
     void apply_params();
