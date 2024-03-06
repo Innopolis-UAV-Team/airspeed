@@ -141,7 +141,6 @@ void LightsModule::apply_params() {
 
     RgbSimpleColor color_int = RgbSimpleColor::BLUE_COLOR;
     int_led_driver.set(color_int);
-    ext_led_driver.set(_default_color);
 }
 
 
