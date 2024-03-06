@@ -18,7 +18,6 @@ Logger LightsModule::logger = Logger("LightsModule");
 
 LightsModule::LightsModule(): int_led_driver(GPIOPin::INT_RGB_LED_RED, GPIOPin::INT_RGB_LED_GREEN, GPIOPin::INT_RGB_LED_BLUE),  ext_led_driver(PwmPin::PWM_4, PwmPin::PWM_3, PwmPin::PWM_6) {
     update_params();
-    instance.init();
     instance_initialized = true;
 };
 
@@ -35,14 +34,12 @@ void LightsModule::reset_command() {
 
 
 void LightsModule::spin_once() {
-    Rgb565Color color;
     if (is_cmd_received) {
-        color = {
+        _current_color = Rgb565Color{
             command.color.red, 
             command.color.green, 
             command.color.blue
             };
-        ext_led_driver.set(color);
     }
     
     if (toggle_type == 2) {
@@ -52,9 +49,8 @@ void LightsModule::spin_once() {
 
     static uint32_t next_update_ms = 10;
     if (HAL_GetTick() > next_update_ms) {
-        next_update_ms += 5000;
+        next_update_ms += 100;
         update_params();
-        init();
     }
 
     int_led_driver.spin(Rgb565Color{0, 0, 1});
@@ -119,10 +115,10 @@ void LightsModule::update_params() {
     }
     _current_color = Rgb565Color::from_rgb_simple_color(RgbSimpleColor(default_color));
     verbose = paramsGetIntegerValue(IntParamsIndexes::PARAM_LIGHTS_VERBOSE);
+    instance.apply_params();
 }
 
-
-void LightsModule::init() {
+void LightsModule::apply_params() {
     int_led_driver = GPIORgbLedDriver(GPIOPin::INT_RGB_LED_RED, GPIOPin::INT_RGB_LED_GREEN, GPIOPin::INT_RGB_LED_BLUE);
 
     int_led_driver.toggle_period_ms = 1000;
