@@ -21,6 +21,11 @@ Logger LightsModule::logger = Logger("LightsModule");
 LightsModule::LightsModule(): int_led_driver(GPIOPin::INT_RGB_LED_RED, GPIOPin::INT_RGB_LED_GREEN, GPIOPin::INT_RGB_LED_BLUE),  ext_led_driver(PwmPin::PWM_4, PwmPin::PWM_3, PwmPin::PWM_6) {
     update_params();
     instance_initialized = true;
+        
+    auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND_SIGNATURE, UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND_ID, callback);
+    if (sub_id < 0) {
+        logger.log_debug("subscribe failed");
+    }
 };
 
 
@@ -134,10 +139,6 @@ void LightsModule::apply_params() {
     ext_led_driver.duty_cycle_ms = duty_cycle_ms;
 
     ext_led_driver.set_intensity(max_intensity);
-    
-    auto sub_id = uavcanSubscribe(UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND_SIGNATURE, UAVCAN_EQUIPMENT_INDICATION_LIGHTS_COMMAND_ID, callback);
-    if (sub_id < 0) {
-    }
 
     RgbSimpleColor color_int = RgbSimpleColor::BLUE_COLOR;
     int_led_driver.set(color_int);
