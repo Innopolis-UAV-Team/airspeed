@@ -14,14 +14,12 @@
 
 class LightsModule {
 public:
-    static bool instance_initialized;
-
-    static LightsModule instance;
-
     static SingleLightCommand_t command;
     static bool is_cmd_received;
+
     GPIORgbLedDriver int_led_driver;
     PwmRgbLedDriver ext_led_driver;
+    
     static uint32_t ttl_current_cmd_ms;
     static uint16_t ttl_cmd;
 
@@ -36,6 +34,9 @@ protected:
     LightsModule();
 
 private:
+    static bool instance_initialized;
+    static LightsModule instance;
+
     static uint8_t light_id;
     static uint8_t toggle_type;
 
