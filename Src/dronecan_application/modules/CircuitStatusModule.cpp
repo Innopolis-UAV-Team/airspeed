@@ -15,7 +15,6 @@ CircuitStatusModule& CircuitStatusModule::get_instance() {
         instance_initialized=true;
         instance.init();
     }
-    
     return instance;
 }
 
@@ -32,8 +31,9 @@ void CircuitStatusModule::init() {
 }
 
 void CircuitStatusModule::spin_once() {
+    static uint32_t next_temp_pub_ms = 1000;
+    static uint32_t next_status_pub_ms = 1000;
     RgbSimpleColor color = RgbSimpleColor::BLUE_COLOR;
-
     if (v5_f > 5.5 || circuit_status.voltage > 60.0) {
         circuit_status.error_flags = ERROR_FLAG_OVERVOLTAGE;
     } else if (circuit_status.current > 1.05) {
@@ -42,16 +42,18 @@ void CircuitStatusModule::spin_once() {
         logger.log_debug("pub");
     }
 
-    if (HAL_GetTick() % 1000 == 0) {
+    if (HAL_GetTick() > next_temp_pub_ms) {
         tem_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
         temp = AdcPeriphery::stm32Temperature(tem_raw);
         temperature_status.temperature = temp;
         
         publish_error = dronecan_equipment_temperature_publish(&temperature_status, &temperature_transfer_id);
         temperature_transfer_id ++;
+        next_temp_pub_ms += 1000;
+
     }
     
-    if (HAL_GetTick() % 1000 == 0) {
+    if (HAL_GetTick() > next_status_pub_ms) {
         v5_raw = adc.get(AdcChannel::ADC_5V);
         v5_f =  AdcPeriphery::stm32Voltage5V(v5_raw);
 
@@ -63,6 +65,8 @@ void CircuitStatusModule::spin_once() {
 
         publish_error = dronecan_equipment_circuit_status_publish(&circuit_status, &circuit_status_transfer_id);
         circuit_status_transfer_id ++;
+        next_status_pub_ms += 1000;
+
     }
     
     circuit_status.error_flags = ERROR_FLAG_CLEAR;
