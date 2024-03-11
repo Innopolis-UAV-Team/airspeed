@@ -64,8 +64,6 @@ protected:
 class PwmRgbLedDriver: public RgbLedInterface {
 public:
     PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin);
-    RgbLedInterface::set;
-    RgbLedInterface::reset;
     void set_intensity(uint8_t intensity);
 
 private:
@@ -92,8 +90,6 @@ protected:
 class GPIORgbLedDriver: public RgbLedInterface {
 public:
     GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin);
-    RgbLedInterface::set;
-    RgbLedInterface::reset;
 
 private:
     GPIOPin red_pin;

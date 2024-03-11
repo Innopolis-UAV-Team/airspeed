@@ -33,7 +33,7 @@ void CircuitStatusModule::init() {
 void CircuitStatusModule::spin_once() {
     static uint32_t next_temp_pub_ms = 1000;
     static uint32_t next_status_pub_ms = 1000;
-    RgbSimpleColor color = RgbSimpleColor::BLUE_COLOR;
+
     if (v5_f > 5.5 || circuit_status.voltage > 60.0) {
         circuit_status.error_flags = ERROR_FLAG_OVERVOLTAGE;
     } else if (circuit_status.current > 1.05) {
