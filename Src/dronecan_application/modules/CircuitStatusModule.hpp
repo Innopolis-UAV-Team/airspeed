@@ -10,7 +10,6 @@
 #include "uavcan/equipment/power/CircuitStatus.h"
 #include "uavcan/equipment/temperature/Temperature.h"
 #include "periphery/adc/adc.hpp"
-#include "LightsModule.hpp"
 #include "logger.hpp"
 
 
