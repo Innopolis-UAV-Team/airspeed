@@ -30,6 +30,7 @@ uint16_t AdcPeriphery::get(AdcChannel channel) {
 }
 
 float AdcPeriphery::stm32Current(uint16_t curr) {
+    if (curr < 2048) return 0;
     return (curr - 2048.00) / 90;
 }
 
