@@ -1,8 +1,7 @@
 /***
- * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file
- *LICENSE.
- ***/
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine@gmail.com>
+ *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+***/ 
 
 #include "application.hpp"
 #include "dronecan.h"
@@ -10,6 +9,7 @@
 #include "main.h"
 #include "modules/CircuitStatusModule.hpp"
 #include "modules/LightsModule.hpp"
+#include "modules/PressureModule.hpp"
 #include "params.hpp"
 
 #ifdef HAL_IWDG_MODULE_ENABLED
@@ -35,9 +35,12 @@ void application_entry_point() {
     uavcanInitApplication(node_id);
     LightsModule& light_module = LightsModule::get_instance();
     CircuitStatusModule& status_module = CircuitStatusModule::get_instance();
+    PressureModule& pressure_module = PressureModule::get_instance();
     while (true) {
         light_module.spin_once();
         status_module.spin_once();
+        pressure_module.spin_once();
+        uavcanSetNodeHealth((NodeStatusHealth_t) pressure_module.status);
         uavcanSpinOnce();
 
 #ifdef HAL_IWDG_MODULE_ENABLED

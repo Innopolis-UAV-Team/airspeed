@@ -86,3 +86,12 @@ lights.ttl:
   default: 1000
   min: 100
   max: 65535
+
+dprs.offset:
+  type: Integer
+  note: Offset for pressure sensor in pa.
+  enum: PARAM_DPRS_OFFSET
+  flags: mutable
+  default: 0
+  min: - 7000
+  max: 7000

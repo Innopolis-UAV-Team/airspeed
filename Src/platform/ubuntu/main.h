@@ -9,7 +9,8 @@
 extern "C" {
 #endif
 
-#include <cstdint>
+#include <stdint.h>
+#include <stdbool.h>
 
 static inline uint32_t HAL_GetUIDw0() {return 0;}
 static inline uint32_t HAL_GetUIDw1() {return 0;}
