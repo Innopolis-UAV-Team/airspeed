@@ -1,3 +1,8 @@
+/***
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+ *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+***/
+
 #include "PWMModule.hpp"
 
 #define CHANNEL(channel) IntParamsIndexes::PARAM_PWM_##channel##_CH
@@ -122,30 +127,28 @@ void PWMModule::apply_params() {
     uint16_t data_type_id = 0;
     uint64_t data_type_signature = 0;
 
-    for (int i = 0; i < static_cast<uint8_t>(PwmPin::PWM_AMOUNT); i++) {
-        if (PwmPeriphery::get_frequency(params.pin) != pwm_freq) {
-            PwmPeriphery::set_frequency(params.pin, pwm_freq);
-        }
-        switch (pwm_cmd_type) {
-            case 0:
-                callback = raw_command_callback;
-                data_type_signature = UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_SIGNATURE;
-                data_type_id = UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_ID;
-                publish_state = publish_esc_status;
-                break;
+    if (PwmPeriphery::get_frequency(params.pin) != pwm_freq) {
+        PwmPeriphery::set_frequency(params.pin, pwm_freq);
+    }
+    switch (pwm_cmd_type) {
+        case 0:
+            callback = raw_command_callback;
+            data_type_signature = UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_SIGNATURE;
+            data_type_id = UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_ID;
+            publish_state = publish_esc_status;
+            break;
 
-            case 1:
-                callback = array_command_callback;
-                data_type_signature =
-                    UAVCAN_EQUIPMENT_ACTUATOR_ARRAY_COMMAND_SIGNATURE;
-                data_type_id = UAVCAN_EQUIPMENT_ACTUATOR_ARRAY_COMMAND_ID;
-                publish_state = publish_esc_status;
-                // publish_state = publish_actuator_status;
-                break;
+        case 1:
+            callback = array_command_callback;
+            data_type_signature =
+                UAVCAN_EQUIPMENT_ACTUATOR_ARRAY_COMMAND_SIGNATURE;
+            data_type_id = UAVCAN_EQUIPMENT_ACTUATOR_ARRAY_COMMAND_ID;
+            publish_state = publish_esc_status;
+            // publish_state = publish_actuator_status;
+            break;
 
-            default:
-                return;
-        }
+        default:
+            return;
     }
     if (module_status == ModuleStatus::MODULE_OK) {
         uavcanSubscribe(data_type_signature, data_type_id, callback);

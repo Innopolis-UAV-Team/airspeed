@@ -59,7 +59,6 @@ lights.period:
   min: 1
   max: 65535
 
-
 lights.duty_cycle_pct:
   type: Integer
   note: Defines a duty cycle of the lights [%].
@@ -86,6 +85,79 @@ lights.ttl:
   default: 1000
   min: 100
   max: 65535
+
+pwm.cmd_ttl_ms:
+  type: Integer
+  note: TTL of LightCommands [ms].
+  enum: PARAM_PWM_CMD_TTL_MS
+  flags: mutable
+  default: 500
+  min: 0
+  max: 10000
+
+pwm.frequency:
+  type: Integer
+  note: PWM frequency [Hz].
+  enum: PARAM_PWM_FREQUENCY
+  flags: immutable
+  default: 100
+  min: 50
+  max: 400
+
+pwm.cmd_type:
+  type: Integer
+  note: 0 means RawCommand, 1 means ArrayCommand, 2 is reserved for hardpoint.Command.
+  enum: PARAM_PWM_CMD_TYPE
+  flags: mutable
+  default: 0
+  min: 0
+  max: 2
+
+pwm.5_ch:
+  type: Integer
+  note: Index of setpoint channel. [-1; 255]. -1 means disabled, # -2 means GPIO SET.
+  enum: PARAM_PWM_5_CH
+  flags: mutable
+  default: -1
+  min: -1
+  max: 255
+
+pwm.5_min:
+  type: Integer
+  note: PWM duration when setpoint is min (RawCommand is 0 or Command is -1.0)
+  enum: PARAM_PWM_5_MIN
+  flags: mutable
+  default: 0
+  min: 0
+  max: 2000
+
+pwm.5_max:
+  type: Integer
+  note: PWM duration when setpoint is max (RawCommand is 8191 or Command is 1.0)
+  enum: PARAM_PWM_5_MAX
+  flags: mutable
+  default: 0
+  min: 0
+  max: 2000
+
+pwm.5_def:
+  type: Integer
+  note: PWM duration when setpoint is negative or there is no setpoint at all.
+  enum: PARAM_PWM_5_DEF
+  flags: mutable
+  default: 0
+  min: 0
+  max: 2000
+
+pwm.5_feedback:
+  type: Integer
+  note: Indicates the operational mode of the node. 0 means disabled. When set to 1, the command of corresponding Status type for cmd_type will be transmitted (esc.RawCommand - esc.Status, actuator.ArrayCommand - actuator.Status) with frequency 1 Hz. When set to 2 - 10 Hz.
+  enum: PARAM_PWM_5_FB
+  flags: mutable
+  default: 0
+  min: 0
+  max: 2
+
 
 dprs.offset:
   type: Integer

@@ -5,7 +5,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#include "algorithms.hpp"
+#include "common.hpp"
 
 
 static const RawCommand RAW_COMMAND_MIN = 0;
