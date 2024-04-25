@@ -25,9 +25,7 @@ void application_entry_point() {
         paramsGetIntegerValue(IntParamsIndexes::PARAM_UAVCAN_NODE_ID);
 
     const auto node_name = "arl.lights";
-    Logger logger = Logger(node_name);
-    auto node_name_param_idx =
-        static_cast<ParamIndex_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT);
+    auto node_name_param_idx = static_cast<ParamIndex_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT);
 
     paramsSetStringValue(node_name_param_idx, 19, (const uint8_t*)node_name);
     uavcanSetNodeName(node_name);
