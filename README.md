@@ -1,3 +1,5 @@
+[![dronecan](https://github.com/Innopolis-UAV-Team/lights_node/actions/workflows/dronecan.yml/badge.svg)](https://github.com/Innopolis-UAV-Team/lights_node/actions/workflows/dronecan.yml) [![code_style](https://github.com/Innopolis-UAV-Team/lights_node/actions/workflows/code_style.yml/badge.svg)](https://github.com/Innopolis-UAV-Team/lights_node/actions/workflows/code_style.yml)
+
 # VTOL Lights DroneCAN application
 
 > Developers docs: [DroneCAN template application](https://github.com/RaccoonlabDev/mini_v2_node/wiki/dronecan).
