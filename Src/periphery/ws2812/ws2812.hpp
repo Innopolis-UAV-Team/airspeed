@@ -14,4 +14,4 @@ public:
     static void toggle();
 };
 
-#endif // SRC_PERIPHERY_WS2812_HPP_
+#endif  // SRC_PERIPHERY_WS2812_HPP_

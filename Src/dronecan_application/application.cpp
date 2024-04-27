@@ -1,29 +1,33 @@
 /***
  * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
-***/ 
+ *  Distributed under the terms of the GPL v3 license, available in the file
+ *LICENSE.
+ ***/
 
 #include "application.hpp"
 #include "dronecan.h"
-#include "main.h"
-#include "params.hpp"
 #include "logger.hpp"
-#include "modules/LightsModule.hpp"
+#include "main.h"
 #include "modules/CircuitStatusModule.hpp"
+#include "modules/LightsModule.hpp"
+#include "params.hpp"
 
 #ifdef HAL_IWDG_MODULE_ENABLED
 extern IWDG_HandleTypeDef hiwdg;
 #endif /* HAL_IWDG_MODULE_ENABLED */
 
 void application_entry_point() {
-    paramsInit(static_cast<uint8_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT), NUM_OF_STR_PARAMS, -1, 1);
+    paramsInit(static_cast<uint8_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT),
+               NUM_OF_STR_PARAMS, -1, 1);
     paramsLoad();
 
-    auto node_id = paramsGetIntegerValue(IntParamsIndexes::PARAM_UAVCAN_NODE_ID);
+    auto node_id =
+        paramsGetIntegerValue(IntParamsIndexes::PARAM_UAVCAN_NODE_ID);
 
     const auto node_name = "arl.lights";
     Logger logger = Logger(node_name);
-    auto node_name_param_idx = static_cast<ParamIndex_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT);
+    auto node_name_param_idx =
+        static_cast<ParamIndex_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT);
 
     paramsSetStringValue(node_name_param_idx, 19, (const uint8_t*)node_name);
     uavcanSetNodeName(node_name);
@@ -36,8 +40,8 @@ void application_entry_point() {
         status_module.spin_once();
         uavcanSpinOnce();
 
-        #ifdef HAL_IWDG_MODULE_ENABLED
+#ifdef HAL_IWDG_MODULE_ENABLED
         HAL_IWDG_Refresh(&hiwdg);
-        #endif  // HAL_IWDG_MODULE_ENABLED
+#endif  // HAL_IWDG_MODULE_ENABLED
     }
 }
