@@ -16,9 +16,8 @@ extern IWDG_HandleTypeDef hiwdg;
 #endif /* HAL_IWDG_MODULE_ENABLED */
 
 void application_entry_point() {
-
-    paramsInit(static_cast<uint8_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT), NUM_OF_STR_PARAMS);
-    paramsLoadFromFlash();
+    paramsInit(static_cast<uint8_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT), NUM_OF_STR_PARAMS, -1, 1);
+    paramsLoad();
 
     auto node_id = paramsGetIntegerValue(IntParamsIndexes::PARAM_UAVCAN_NODE_ID);
 
@@ -30,13 +29,11 @@ void application_entry_point() {
     uavcanSetNodeName(node_name);
 
     uavcanInitApplication(node_id);
-    
     LightsModule& light_module = LightsModule::get_instance();
     CircuitStatusModule& status_module = CircuitStatusModule::get_instance();
     while (true) {
         light_module.spin_once();
         status_module.spin_once();
-
         uavcanSpinOnce();
 
         #ifdef HAL_IWDG_MODULE_ENABLED
