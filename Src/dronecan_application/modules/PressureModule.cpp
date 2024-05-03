@@ -20,7 +20,7 @@ PressureModule& PressureModule::get_instance() {
 void PressureModule::init() {
     int8_t pressure_sensor_status = pressure_driver.init();
     if (pressure_sensor_status != 0) {
-        logger.log_error("DPS init");
+        logger.log_debug("DPS init");
         status = ModuleStatus::MODULE_CRITICAL;
     }
 }
@@ -49,7 +49,7 @@ void PressureModule::publish_data() {
 
     if (pressure_driver.get_data() != 0) {
         status = ModuleStatus::MODULE_WARN;
-        logger.log_error("get_data");
+        logger.log_debug("get_data");
         return;
     }
 
@@ -58,9 +58,8 @@ void PressureModule::publish_data() {
     if (dronecan_equipment_air_data_raw_air_data_publish(&air_data, &transfer_id) == 0) {
         transfer_id++;
     } else {
-        logger.log_error("data_not_sent");
+        logger.log_debug("data_not_sent");
         status = ModuleStatus::MODULE_WARN;
     }
     next_pub_ms = HAL_GetTick() + 100;
-
 }
