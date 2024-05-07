@@ -3,7 +3,7 @@
  * Distributed under the terms of the GPL v3 license
  */
 
-#include "periphery/i2c/i2c.h"
+#include "periphery/i2c/i2c.hpp"
 
 #ifdef __cplusplus
 extern "C" {
