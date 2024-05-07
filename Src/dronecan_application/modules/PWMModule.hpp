@@ -17,7 +17,7 @@
 #include "uavcan/equipment/esc/RawCommand.h"
 #include "uavcan/equipment/esc/Status.h"
 #include "uavcan/equipment/indication/LightsCommand.h"
-// #include "uavcan/equipment/actuator/Status.h"
+#include "uavcan/equipment/actuator/Status.h"
 
 enum class ModuleStatus : uint8_t {
     MODULE_OK = 0,        // The module is functioning properly

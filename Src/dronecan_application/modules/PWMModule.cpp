@@ -118,9 +118,6 @@ void PWMModule::update_params() {
 }
 
 void PWMModule::apply_params() {
-    uint16_t data_type_id = 0;
-    uint64_t data_type_signature = 0;
-
     if (PwmPeriphery::get_frequency(params.pin) != pwm_freq) {
         PwmPeriphery::set_frequency(params.pin, pwm_freq);
     }
@@ -130,8 +127,7 @@ void PWMModule::apply_params() {
             break;
 
         case 1:
-            publish_state = publish_esc_status;
-            // publish_state = publish_actuator_status;
+            publish_state = publish_actuator_status;
             break;
 
         default:
@@ -145,8 +141,7 @@ void PWMModule::publish_esc_status() {
     auto crnt_time_ms = HAL_GetTick();
     static uint32_t
         next_status_pub_ms;
-    if (params.channel < 0 || params.fb == 0 ||
-        next_status_pub_ms > crnt_time_ms) {
+    if (params.channel < 0 || params.fb == 0 || next_status_pub_ms > crnt_time_ms) {
         return;
     }
     msg.esc_index = params.channel;
@@ -159,36 +154,38 @@ void PWMModule::publish_esc_status() {
     }
 }
 
-// void PWMModule::publish_actuator_status() {
-//     static uint8_t transfer_id = 0;
-//     ActuatorStatus_t msg {};
-//     auto crnt_time_ms = HAL_GetTick();
-//     static uint32_t
-//         next_status_pub_ms;
-//     if (params.channel < 0 || params.fb == 0 ||
-//         next_status_pub_ms > crnt_time_ms) {
-//         return;
-//     }
-//     msg.actuator_id = params.channel;
-//     auto pwm_val = PwmPeriphery::get_duration(params.pin);
-//     auto scaled_value = mapPwmToPct(pwm_val, params.min, params.max);
-//     msg.power_rating_pct = (uint8_t) scaled_value;
-//     if (dronecan_equipment_actuator_status_publish(&msg, &transfer_id) ==
-//     0) {
-//         transfer_id++;
-//     }
-// }
+void PWMModule::publish_actuator_status() {
+    static uint8_t transfer_id = 0;
+    ActuatorStatus_t msg {};
+    auto crnt_time_ms = HAL_GetTick();
+    static uint32_t
+        next_status_pub_ms;
+    if (params.channel < 0 || params.fb == 0 || next_status_pub_ms > crnt_time_ms) {
+        return;
+    }
+    msg.actuator_id = params.channel;
+    auto pwm_val = PwmPeriphery::get_duration(params.pin);
+    auto scaled_value = mapPwmToPct(pwm_val, params.min, params.max);
+    msg.power_rating_pct = (uint8_t) scaled_value;
+    if (dronecan_equipment_actuator_status_publish(&msg, &transfer_id) == 0) {
+        transfer_id++;
+    }
+}
 
 void PWMModule::raw_command_callback(CanardRxTransfer* transfer) {
-    if (module_status != ModuleStatus::MODULE_OK || pwm_cmd_type != 0) return;
+    if (module_status != ModuleStatus::MODULE_OK || pwm_cmd_type != 0) {
+        return;
+    }
+
     RawCommand_t command;
     auto pwm = &params;
     int8_t ch_num =
         dronecan_equipment_esc_raw_command_deserialize(transfer, &command);
-    if ((ch_num <= 0) || (pwm->channel < 0)) {
+
+    if ((ch_num <= 0) || (pwm->channel < 0) || (pwm->channel >= ch_num)) {
         return;
     }
-    if (command.raw_cmd[pwm->channel] >= 0) {
+    if (command.raw_cmd[pwm->channel] > -1) {
         pwm->cmd_end_time_ms = HAL_GetTick() + ttl_cmd;
         pwm->command_val = mapRawCommandToPwm(command.raw_cmd[pwm->channel],
                                                 pwm->min, pwm->max, pwm->def);
