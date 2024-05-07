@@ -1,0 +1,26 @@
+range_finder.offset:
+  type: Integer
+  note: Offset for range finder [mm].
+  enum: PARAM_RANGE_FINDER_OFFSET
+  flags: mutable
+  default: 0
+  min: -40000
+  max: 40000
+
+range_finder.scale:
+  type: Integer
+  note: Offset for range finder in ptc [%].
+  enum: PARAM_RANGE_FINDER_SCALE
+  flags: mutable
+  default: 100
+  min: -1000
+  max: 1000
+
+range_finder.enable:
+  type: Integer
+  note: Indicates the operational mode of the node. When set to 1, the uavcan.equipment.range_sensor will be transmitted. 
+  enum: PARAM_RANGE_FINDER_ENABLE
+  flags: mutable
+  default: 0
+  min: 0
+  max: 1

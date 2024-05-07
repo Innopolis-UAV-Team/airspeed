@@ -11,12 +11,14 @@ add_definitions(-DHW_VERSION_MINOR=1)
 add_definitions(-DFLASH_DRIVER_STORAGE_FILE="${CMAKE_CURRENT_LIST_DIR}/default_params.yml")
 
 include(${ROOT_DIR}/Libs/Dronecan/CMakeLists.txt)
+include(${ROOT_DIR}/Src/dronecan_application/modules/RangeFinder/CMakeLists.txt)
 include(${ROOT_DIR}/Src/dronecan_application/modules/DifferentialPressure/CMakeLists.txt)
 include(${ROOT_DIR}/Src/dronecan_application/modules/PWM/CMakeLists.txt)
 
 set(applicationSourceCode
     ${libparamsSrc}
     ${DRONECAN_SOURCES}
+    ${RANGEFINDER_SOURCES}
     ${DIFFPRESSURE_SOURCES}
     ${PWM_SOURCES}
     ${ROOT_DIR}/Src/dronecan_application/logger.cpp
@@ -27,6 +29,7 @@ set(applicationSourceCode
 set(applicationHeaders
     ${libparamsHeaders}
     ${DRONECAN_HEADERS}
+    ${RANGEFINDER_HEADERS}
     ${DIFFPRESSURE_HEADERS}
     ${PWM_HEADERS}
     ${ROOT_DIR}/Src
@@ -35,4 +38,5 @@ set(applicationHeaders
 
 set(LIBPARAMS_PARAMS
     ${CMAKE_CURRENT_LIST_DIR}/params.yaml
+    ${RANGEFINDER_PARAMS}
 )

@@ -11,7 +11,7 @@ The node has the following registers:
 |  7 | lights.period           | Defines a blink period of the lights [ms]. This parameter has no effect when lights.type=0 (solid) |
 |  8 | lights.duty_cycle_pct   | Defines a duty cycle of the lights [%]. |
 |  9 | lights.verbose          | Indicates the operational mode of the node. When set to 1, the uavcan.equipment.indication.LightsCommand will be transmitted, including the current LED color and id. |
-|  10 | lights.ttl              | TTL for light commands [ms]. |
+|  10 | lights.ttl              | TTL of specified by pwm.cmd_type commands [ms]. |
 |  11 | pwm.cmd_ttl_ms          | TTL of LightCommands [ms]. |
 |  12 | pwm.frequency           | PWM frequency [Hz]. |
 |  13 | pwm.cmd_type            | 0 means RawCommand, 1 means ArrayCommand, 2 is reserved for hardpoint.Command. |
@@ -21,6 +21,9 @@ The node has the following registers:
 |  17 | pwm.5_def               | PWM duration when setpoint is negative or there is no setpoint at all. |
 |  18 | pwm.5_feedback          | Indicates the operational mode of the node. 0 means disabled. When set to 1, the command of corresponding Status type for cmd_type will be transmitted (esc.RawCommand - esc.Status, actuator.ArrayCommand - actuator.Status) with frequency 1 Hz. When set to 2 - 10 Hz. |
 |  19 | dprs.offset             | Offset for pressure sensor in mpa. |
+|  20 | range_finder.offset     | Offset for range finder [mm]. |
+|  21 | range_finder.scale      | Offset for range finder in ptc [%]. |
+|  22 | range_finder.enable     | Indicates the operational mode of the node. When set to 1, the uavcan.equipment.range_sensor will be transmitted. |
 
 > This docs was automatically generated. Do not edit it manually.
 

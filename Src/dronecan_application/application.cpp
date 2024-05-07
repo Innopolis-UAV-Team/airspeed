@@ -11,6 +11,7 @@
 #include "modules/CircuitStatusModule.hpp"
 #include "modules/LightsModule.hpp"
 #include "modules/DifferentialPressure/DifferentialPressure.hpp"
+#include "modules/RangeFinder/RangeFinder.hpp"
 #include "params.hpp"
 #include "modules/PWM/PWMModule.hpp"
 
@@ -38,15 +39,26 @@ void application_entry_point() {
     CircuitStatusModule& status_module = CircuitStatusModule::get_instance();
     DifferentialPressure& pressure_module = DifferentialPressure::get_instance();
     PWMModule& pwm_module = PWMModule::get_instance();
+    RangeFinder& range_finder = RangeFinder::get_instance();
+
     while (true) {
         light_module.spin_once();
         status_module.spin_once();
         pressure_module.spin_once();
         pwm_module.spin_once();
-        if (pressure_module.status == ModuleStatus::MODULE_OK) {
-            uavcanSetNodeHealth((NodeStatusHealth_t)(pwm_module.module_status));
+        range_finder.spin_once();
+        if (pressure_module.status != ModuleStatus::MODULE_OK) {
+            uavcanSetNodeHealth((NodeStatusHealth_t)(pressure_module.status));
         } else {
-            uavcanSetNodeHealth((NodeStatusHealth_t) pressure_module.status);
+            if (pwm_module.module_status != ModuleStatus::MODULE_OK) {
+                uavcanSetNodeHealth((NodeStatusHealth_t) pwm_module.module_status);
+            } else {
+                if (range_finder.status != ModuleStatus::MODULE_OK) {
+                    uavcanSetNodeHealth((NodeStatusHealth_t) range_finder.status);
+                } else {
+                    uavcanSetNodeHealth(NodeStatusHealth_t::NODE_STATUS_HEALTH_OK);
+                }
+            }
         }
         uavcanSpinOnce();
 

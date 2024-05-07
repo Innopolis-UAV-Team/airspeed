@@ -33,6 +33,17 @@ int8_t i2cReceive(uint8_t id, uint8_t *rx, uint8_t len) {
     return 0;
 }
 
+i2c_error_t i2cReadRegister(uint8_t id, uint8_t mem_addr,
+                                    uint8_t *const pData,  uint8_t data_length) {
+    if (i2cTransmit(id, &mem_addr, 1)) {
+        return I2C_TRANSMIT_ERROR;
+    }
+    if (i2cReceive(id, pData, data_length)) {
+        return I2C_RECEIVE_ERROR;
+    }
+    return I2C_SUCCESS;
+}
+
 i2c_error_t i2cReadByteRegister(uint8_t id, uint8_t mem_addr,
                                 uint8_t *const pData) {
     uint8_t tx_buf[1] = {0x00};
