@@ -177,21 +177,13 @@ void PWMModule::raw_command_callback(CanardRxTransfer* transfer) {
         return;
     }
 
-    RawCommand_t command;
-    auto pwm = &params;
-    int8_t ch_num =
-        dronecan_equipment_esc_raw_command_deserialize(transfer, &command);
-
-    if ((ch_num <= 0) || (pwm->channel < 0) || (pwm->channel >= ch_num)) {
+    int16_t cmd;
+    if (!dronecan_equipment_esc_raw_command_channel_deserialize(transfer, params.channel, &cmd)) {
         return;
     }
-    if (command.raw_cmd[pwm->channel] > -1) {
-        pwm->cmd_end_time_ms = HAL_GetTick() + ttl_cmd;
-        pwm->command_val = mapRawCommandToPwm(command.raw_cmd[pwm->channel],
-                                                pwm->min, pwm->max, pwm->def);
-    } else {
-        pwm->command_val = pwm->def;
-    }
+
+    params.cmd_end_time_ms = HAL_GetTick() + ttl_cmd;
+    params.command_val = mapRawCommandToPwm(cmd, params.min, params.max, params.def);
 }
 
 void PWMModule::array_command_callback(CanardRxTransfer* transfer) {
