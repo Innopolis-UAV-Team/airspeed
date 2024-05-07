@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-#include "periphery/i2c/i2c.h"
+#include "periphery/i2c/i2c.hpp"
 #include "main.h"
 
 #ifdef __cplusplus

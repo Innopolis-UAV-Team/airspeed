@@ -7,9 +7,9 @@
 #define SRC_MODULE_PRESSURE_MODULE_HPP_
 
 #include "periphery/adc/adc.hpp"
-#include "periphery/pressure_sensor/pressure_sensor.hpp"
+#include "drivers/ms4525do.h"
 #include "uavcan/equipment/air_data/RawAirData.h"
-#include "module_status.hpp"
+#include "../module_status.hpp"
 #include "params.hpp"
 #include "logger.hpp"
 
@@ -20,16 +20,16 @@ enum class HeaterSateFlag {
     FLAG_HEATER_OPENCIRCUIT    = 8,
 };
 
-class PressureModule {
+class DifferentialPressure {
 public:
-    static PressureModule &get_instance();
+    static DifferentialPressure &get_instance();
     void spin_once();
     ModuleStatus status;
 
 private:
     RawAirData_t air_data;
-    int16_t offset;
-    PressureDriverI2C pressure_driver;
+    float offset;
+    DifferentialPressureData dprs_data;
 
     void init();
     void update_params();
@@ -39,12 +39,12 @@ private:
     uint8_t transfer_id;
     int8_t publish_error = 0;
 
-    static PressureModule instance;
+    static DifferentialPressure instance;
     static bool instance_initialized;
-    PressureModule() {}
+    DifferentialPressure() {}
 
-    PressureModule(const PressureModule &other) = delete;
-    void operator=(const PressureModule &) = delete;
+    DifferentialPressure(const DifferentialPressure &other) = delete;
+    void operator=(const DifferentialPressure &) = delete;
 };
 
 #endif  // SRC_MODULE_PRESSURE_MODULE_HPP_

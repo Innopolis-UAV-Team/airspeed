@@ -9,7 +9,7 @@
 #include "main.h"
 #include "modules/CircuitStatusModule.hpp"
 #include "modules/LightsModule.hpp"
-#include "modules/PressureModule.hpp"
+#include "modules/DifferentialPressure/DifferentialPressure.hpp"
 #include "params.hpp"
 
 #ifdef HAL_IWDG_MODULE_ENABLED
@@ -33,7 +33,7 @@ void application_entry_point() {
     uavcanInitApplication(node_id);
     LightsModule& light_module = LightsModule::get_instance();
     CircuitStatusModule& status_module = CircuitStatusModule::get_instance();
-    PressureModule& pressure_module = PressureModule::get_instance();
+    DifferentialPressure& pressure_module = DifferentialPressure::get_instance();
     while (true) {
         light_module.spin_once();
         status_module.spin_once();

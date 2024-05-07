@@ -7,7 +7,7 @@
 
 #include "ms4525do.h"
 #include <string.h>
-#include "periphery/i2c/i2c.h"
+#include "periphery/i2c/i2c.hpp"
 
 #define I2C_ID              (0x28 << 1) + 1
 #define I2C_RESPONSE_SIZE   4
