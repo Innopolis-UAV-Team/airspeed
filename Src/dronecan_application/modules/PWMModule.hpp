@@ -11,6 +11,7 @@
 #include "../logger.hpp"
 #include "dronecan.h"
 #include "params.hpp"
+#include "module_status.hpp"
 #include "periphery/pwm/pwm.hpp"
 #include "periphery/servos/common.hpp"
 #include "uavcan/equipment/actuator/ArrayCommand.h"
@@ -18,13 +19,6 @@
 #include "uavcan/equipment/esc/Status.h"
 #include "uavcan/equipment/indication/LightsCommand.h"
 #include "uavcan/equipment/actuator/Status.h"
-
-enum class ModuleStatus : uint8_t {
-    MODULE_OK = 0,        // The module is functioning properly
-    MODULE_WARN = 1,      // The module encountered a minor failure
-    MODULE_ERROR = 2,     // The module encountered a major failure
-    MODULE_CRITICAL = 3,  // The module suffered a fatal malfunction
-};
 
 struct PwmChannelInfo {
     PwmPin pin;

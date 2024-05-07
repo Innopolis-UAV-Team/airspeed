@@ -13,9 +13,6 @@
 #include "modules/DifferentialPressure/DifferentialPressure.hpp"
 #include "params.hpp"
 #include "modules/PWMModule.hpp"
-#include "modules/LightsModule.hpp"
-#include "modules/PWMModule.hpp"
-#include "params.hpp"
 
 #ifdef HAL_IWDG_MODULE_ENABLED
 extern IWDG_HandleTypeDef hiwdg;
@@ -45,8 +42,12 @@ void application_entry_point() {
         light_module.spin_once();
         status_module.spin_once();
         pressure_module.spin_once();
-        uavcanSetNodeHealth((NodeStatusHealth_t) pressure_module.status);        pwm_module.spin_once();
-        uavcanSetNodeHealth((NodeStatusHealth_t)(pwm_module.module_status));
+        pwm_module.spin_once();
+        if (pressure_module.status == ModuleStatus::MODULE_OK) {
+            uavcanSetNodeHealth((NodeStatusHealth_t)(pwm_module.module_status));
+        } else {
+            uavcanSetNodeHealth((NodeStatusHealth_t) pressure_module.status);
+        }
         uavcanSpinOnce();
 
 #ifdef HAL_IWDG_MODULE_ENABLED
