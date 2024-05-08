@@ -12,7 +12,7 @@
 #include "modules/LightsModule.hpp"
 #include "modules/DifferentialPressure/DifferentialPressure.hpp"
 #include "params.hpp"
-#include "modules/PWMModule.hpp"
+#include "modules/PWM/PWMModule.hpp"
 
 #ifdef HAL_IWDG_MODULE_ENABLED
 extern IWDG_HandleTypeDef hiwdg;

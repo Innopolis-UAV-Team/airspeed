@@ -12,21 +12,23 @@ add_definitions(-DFLASH_DRIVER_STORAGE_FILE="${CMAKE_CURRENT_LIST_DIR}/default_p
 
 include(${ROOT_DIR}/Libs/Dronecan/CMakeLists.txt)
 include(${ROOT_DIR}/Src/dronecan_application/modules/DifferentialPressure/CMakeLists.txt)
+include(${ROOT_DIR}/Src/dronecan_application/modules/PWM/CMakeLists.txt)
 
 set(applicationSourceCode
     ${libparamsSrc}
     ${DRONECAN_SOURCES}
     ${DIFFPRESSURE_SOURCES}
+    ${PWM_SOURCES}
     ${ROOT_DIR}/Src/dronecan_application/logger.cpp
     ${ROOT_DIR}/Src/dronecan_application/modules/LightsModule.cpp
     ${ROOT_DIR}/Src/dronecan_application/modules/CircuitStatusModule.cpp
-    ${ROOT_DIR}/Src/dronecan_application/modules/PWMModule.cpp
     ${ROOT_DIR}/Src/dronecan_application/application.cpp
 )
 set(applicationHeaders
     ${libparamsHeaders}
     ${DRONECAN_HEADERS}
     ${DIFFPRESSURE_HEADERS}
+    ${PWM_HEADERS}
     ${ROOT_DIR}/Src
     ${ROOT_DIR}/Src/dronecan_application
 )

@@ -8,10 +8,10 @@
 
 #include <algorithm>
 
-#include "../logger.hpp"
+#include "logger.hpp"
 #include "dronecan.h"
 #include "params.hpp"
-#include "module_status.hpp"
+#include "../module_status.hpp"
 #include "periphery/pwm/pwm.hpp"
 #include "periphery/servos/common.hpp"
 #include "uavcan/equipment/actuator/ArrayCommand.h"

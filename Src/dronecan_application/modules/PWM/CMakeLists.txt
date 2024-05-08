@@ -1,0 +1,8 @@
+set(PWM_MODULE_DIR ${CMAKE_CURRENT_LIST_DIR})
+
+set(PWM_HEADERS 
+    ${PWM_MODULE_DIR}
+)
+set(PWM_SOURCES
+    ${PWM_MODULE_DIR}/PWMModule.cpp
+)
