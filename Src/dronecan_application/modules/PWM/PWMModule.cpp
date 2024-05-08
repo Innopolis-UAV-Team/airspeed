@@ -41,7 +41,6 @@ PWMModule& PWMModule::get_instance() {
 }
 
 void PWMModule::init() {
-    logger.init("PWMModule");
     PwmPeriphery::init(params.pin);
     uavcanSubscribe(UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_SIGNATURE, UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_ID,
                                                                             raw_command_callback);

@@ -79,7 +79,7 @@ lights.verbose:
 
 lights.ttl:
   type: Integer
-  note: TTL for light commands [ms].
+  note: TTL of specified by pwm.cmd_type commands [ms].
   enum: PARAM_LIGHTS_TTL
   flags: mutable
   default: 1000
