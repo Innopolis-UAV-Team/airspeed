@@ -30,6 +30,7 @@ uint16_t AdcPeriphery::get(AdcChannel channel) {
 }
 
 float AdcPeriphery::stm32Current(uint16_t curr) {
+    if (curr < 2048) return 0;
     return (curr - 2048.00) / 90;
 }
 
@@ -49,6 +50,7 @@ float AdcPeriphery::stm32Voltage5V(uint16_t volt) {
  * @note We assume that hadc->Instance == ADC1 always!
  */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
-    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)(void*)&adc_dma_buffer, static_cast<uint8_t>(AdcChannel::ADC_NUMBER_OF_CNANNELS));
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)(void*)&adc_dma_buffer,
+                        static_cast<uint8_t>(AdcChannel::ADC_NUMBER_OF_CNANNELS));
 }
 #endif
