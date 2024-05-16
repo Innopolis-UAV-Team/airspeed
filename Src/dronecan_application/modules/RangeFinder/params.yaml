@@ -1,9 +1,9 @@
 range_finder.id:
   type: Integer
-  note: Range finder sensor ID,  used in uavcan.equipment.range_sensor.Measurement publications.
+  note: Range finder sensor ID, used in uavcan.equipment.range_sensor.Measurement publications.
   enum: PARAM_RANGE_FINDER_ID
   flags: mutable
-  default: 1
+  default: 0
   max: 255
   min: 0
 
