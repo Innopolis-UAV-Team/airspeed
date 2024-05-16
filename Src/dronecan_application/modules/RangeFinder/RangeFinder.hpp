@@ -26,8 +26,7 @@ private:
     RangeSensorMeasurement_t msg;
 
     float range_m;
-    float offset;
-    float scale;
+
     bool enabled;
 
     CoarseOrientation_t orientation;

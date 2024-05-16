@@ -19,7 +19,9 @@ RangeFinder& RangeFinder::get_instance() {
 }
 
 void RangeFinder::init() {
-    msg = {.sensor_type = RangeFinderSensorType::SENSOR_TYPE_LIDAR, .reading_type = 1};
+    msg = {.timestamp = 0,
+           .sensor_type = RangeFinderSensorType::SENSOR_TYPE_LIDAR,
+           .reading_type = 1};
     if (garminLiteInit() < 0) {
         status = ModuleStatus::MODULE_WARN;
         return;
@@ -53,7 +55,7 @@ void RangeFinder::update_data() {
         init();
         return;
     }
-    range_m = (garminLiteParseCollectedData() + offset) * scale;
+    range_m = garminLiteParseCollectedData();
 }
 
 void RangeFinder::update_params() {
@@ -61,8 +63,7 @@ void RangeFinder::update_params() {
     if (HAL_GetTick() < next_upd_ms) {
         return;
     }
-    offset = paramsGetIntegerValue(IntParamsIndexes::PARAM_RANGE_FINDER_OFFSET) / 100.0f;
-    scale = paramsGetIntegerValue(IntParamsIndexes::PARAM_RANGE_FINDER_SCALE) / 100.0f;
+    msg.sensor_id = paramsGetIntegerValue(IntParamsIndexes::PARAM_RANGE_FINDER_ID);
     enabled = paramsGetIntegerValue(IntParamsIndexes::PARAM_RANGE_FINDER_ENABLE);
     next_upd_ms = HAL_GetTick() + 1000;
 }

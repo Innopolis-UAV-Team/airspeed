@@ -21,9 +21,8 @@ The node has the following registers:
 |  17 | pwm.5_def               | PWM duration when setpoint is negative or there is no setpoint at all. |
 |  18 | pwm.5_feedback          | Indicates the operational mode of the node. 0 means disabled. When set to 1, the command of corresponding Status type for cmd_type will be transmitted (esc.RawCommand - esc.Status, actuator.ArrayCommand - actuator.Status) with frequency 1 Hz. When set to 2 - 10 Hz. |
 |  19 | dprs.offset             | Offset for pressure sensor in mpa. |
-|  20 | range_finder.offset     | Offset for range finder [mm]. |
-|  21 | range_finder.scale      | Offset for range finder in ptc [%]. |
-|  22 | range_finder.enable     | Indicates the operational mode of the node. When set to 1, the uavcan.equipment.range_sensor will be transmitted. |
+|  20 | range_finder.id         | Range finder sensor ID,  used in uavcan.equipment.range_sensor.Measurement publications. |
+|  21 | range_finder.enable     | Indicates the operational mode of the node. When set to 1, the uavcan.equipment.range_sensor will be transmitted. |
 
 > This docs was automatically generated. Do not edit it manually.
 
