@@ -54,14 +54,17 @@ int8_t isDeviceReady(uint8_t id, uint8_t n_trials) {
     return hal_status;
 }
 
-/**
- * @brief Reads 16 bits from specified register of the i2c device
- * @param id Target device address: The device 7 bits address value
- *         in datasheet must be shifted to the left before calling the interface
- * @param mem_addr Target device register
- * @param pData Pointer to data buffer
- * @retval i2c_error_t status
- */
+i2c_error_t i2cReadRegister(uint8_t id, uint8_t mem_addr,
+                                    uint8_t *const pData,  uint8_t data_length) {
+    if (i2cTransmit(id, &mem_addr, 1)) {
+        return I2C_TRANSMIT_ERROR;
+    }
+    if (i2cReceive(id, pData, data_length)) {
+        return I2C_RECEIVE_ERROR;
+    }
+    return I2C_SUCCESS;
+}
+
 i2c_error_t i2cReadTwoBytesRegister(uint8_t id, uint8_t mem_addr,
                                     uint16_t *const pData) {
     uint8_t tx_buf[I2C_MEMADD_SIZE_8BIT] = {mem_addr};
@@ -80,14 +83,6 @@ i2c_error_t i2cReadTwoBytesRegister(uint8_t id, uint8_t mem_addr,
     return I2C_SUCCESS;
 }
 
-/**
- * @brief Reads 8 bits from specified register of the i2c device
- * @param id Target device address: The device 7 bits address value
- *         in datasheet must be shifted to the left before calling the interface
- * @param mem_addr Target device register
- * @param pData Pointer to data buffer
- * @retval i2c_error_t status
- */
 i2c_error_t i2cReadByteRegister(uint8_t id, uint8_t mem_addr,
                                 uint8_t *const pData) {
     uint8_t tx_buf[I2C_MEMADD_SIZE_8BIT] = {0x00};

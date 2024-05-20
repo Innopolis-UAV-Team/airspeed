@@ -1,0 +1,17 @@
+range_finder.id:
+  type: Integer
+  note: Range finder sensor ID, used in uavcan.equipment.range_sensor.Measurement publications.
+  enum: PARAM_RANGE_FINDER_ID
+  flags: mutable
+  default: 0
+  max: 255
+  min: 0
+
+range_finder.enable:
+  type: Integer
+  note: Indicates the operational mode of the node. When set to 1, the uavcan.equipment.range_sensor will be transmitted. 
+  enum: PARAM_RANGE_FINDER_ENABLE
+  flags: mutable
+  default: 1
+  min: 0
+  max: 1
