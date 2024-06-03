@@ -8,20 +8,20 @@
 #include "dronecan.h"
 #include "logger.hpp"
 #include "main.h"
-#include "modules/CircuitStatusModule.hpp"
-#include "modules/LightsModule.hpp"
+#include "modules/CircuitStatus/CircuitStatus.hpp"
+#include "modules/Lights/Lights.hpp"
 #include "modules/DifferentialPressure/DifferentialPressure.hpp"
 #include "modules/RangeFinder/RangeFinder.hpp"
-#include "params.hpp"
 #include "modules/PWM/PWMModule.hpp"
+#include "params.hpp"
 
 #ifdef HAL_IWDG_MODULE_ENABLED
 extern IWDG_HandleTypeDef hiwdg;
 #endif /* HAL_IWDG_MODULE_ENABLED */
 
 void application_entry_point() {
-
-    paramsInit(static_cast<uint8_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT), NUM_OF_STR_PARAMS, -1, 1);
+    paramsInit(static_cast<uint8_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT),
+               NUM_OF_STR_PARAMS, -1, 1);
     paramsLoad();
 
     auto node_id =

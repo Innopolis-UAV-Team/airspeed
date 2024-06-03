@@ -1,5 +1,5 @@
 /***
- * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine@gmail.com>
  *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
 ***/ 
 
@@ -7,7 +7,6 @@
 #define SRC_PERIPHERY_LED_HPP_
 
 #include "main.h"
-#include <stdint.h>
 #include "periphery/pwm/pwm.hpp"
 #include "periphery/gpio/gpio.hpp"
 #include "uavcan/equipment/indication/RGB565.h"
@@ -82,7 +81,7 @@ private:
 
     Logger logger = Logger("PwmRgbLedDriver");
 
-protected:    
+protected:
     void apply();
     void init();
 };
