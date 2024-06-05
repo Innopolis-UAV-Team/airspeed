@@ -9,6 +9,7 @@ add_definitions(-DAPP_VERSION_MINOR=2)
 add_definitions(-DHW_VERSION_MAJOR=2)
 add_definitions(-DHW_VERSION_MINOR=1)
 add_definitions(-DFLASH_DRIVER_STORAGE_FILE="${CMAKE_CURRENT_LIST_DIR}/default_params.yml")
+# add_definitions(-DFLASH_DRIVER_SIM_STORAGE_FILE="${BUILD_SRC_DIR}/sim_params.yml")
 
 include(${ROOT_DIR}/Libs/Dronecan/CMakeLists.txt)
 include(${ROOT_DIR}/Src/dronecan_application/modules/PWM/CMakeLists.txt)
