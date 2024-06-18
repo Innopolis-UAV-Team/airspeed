@@ -1,7 +1,6 @@
 /***
- * Copyright (C) 2024 Anastasiia Stepanova  <asiiapinemail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file
- *LICENSE.
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine@gmail.com>
+ * Distributed under the terms of the GPL v3 license, available in the file LICENSE.
  ***/
 
 #include "periphery/adc/adc.hpp"
@@ -13,6 +12,7 @@ struct adcState {
     uint16_t version;
     uint16_t temperature;
 };
+
 adcState state = {};
 
 int8_t AdcPeriphery::init() {
@@ -44,5 +44,11 @@ float AdcPeriphery::stm32Current(uint16_t curr) {
 float AdcPeriphery::stm32Temperature(uint16_t temp) {
     return stm32TemperatureParse(temp);
 }
-float AdcPeriphery::stm32Voltage(uint16_t volt) { return volt / 64.0; }
-float AdcPeriphery::stm32Voltage5V(uint16_t volt) { return volt / 640.0; }
+
+float AdcPeriphery::stm32Voltage(uint16_t volt) {
+    return volt / 64.0;
+}
+
+float AdcPeriphery::stm32Voltage5V(uint16_t volt) {
+    return volt / 640.0;
+}

@@ -1,7 +1,6 @@
 /***
  * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine@gmail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file
- *LICENSE.
+ * Distributed under the terms of the GPL v3 license, available in the file LICENSE.
  ***/
 
 #include "CircuitStatus.hpp"
@@ -46,7 +45,6 @@ void CircuitStatusModule::spin_once() {
         tem_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
         temp = AdcPeriphery::stm32Temperature(tem_raw);
         temperature_status.temperature = temp;
-
         publish_error = dronecan_equipment_temperature_publish(
             &temperature_status, &temperature_transfer_id);
         temperature_transfer_id++;

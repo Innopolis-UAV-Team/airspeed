@@ -1,6 +1,6 @@
 /***
  * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine@gmail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+ * Distributed under the terms of the GPL v3 license, available in the file LICENSE.
 ***/ 
 
 #include "application.hpp"
@@ -22,8 +22,6 @@ extern IWDG_HandleTypeDef hiwdg;
 void application_entry_point() {
     paramsInit(static_cast<uint8_t>(IntParamsIndexes::INTEGER_PARAMS_AMOUNT),
                NUM_OF_STR_PARAMS, -1, 1);
-    // paramsInitRedundantPage(126);
-    // paramsChooseRom();
     paramsLoad();
 
     auto node_id =
@@ -62,6 +60,7 @@ void application_entry_point() {
                 }
             }
         }
+
         uavcanSpinOnce();
 
 #ifdef HAL_IWDG_MODULE_ENABLED

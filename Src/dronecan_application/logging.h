@@ -1,12 +1,15 @@
+/*
+ * Copyright (C) 2023 Anastasiia Stepanova <asiiapine@gmail.com>
+ * Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+ */
+
 #ifndef SRC_LOGGING_H_
 #define SRC_LOGGING_H_
-
-#include <stdarg.h>
 
 #include "uavcan/protocol/debug/LogMessage.h"
 
 static inline bool set_source(DebugLogMessage_t msg, const char *str) {
-    if (str == nullptr) {
+    if (str == nullptr){
         return false;
     }
 
@@ -15,22 +18,22 @@ static inline bool set_source(DebugLogMessage_t msg, const char *str) {
         return false;
     }
 
-    snprintf((char *)msg.source, str_len, str);
+    memcpy(msg.source, str, str_len);
     msg.source_size = str_len;
     return true;
 }
 
 static inline bool set_text(DebugLogMessage_t msg, const char *str) {
-    if (str == nullptr) {
+    if (str == nullptr){
         return false;
     }
     size_t str_len = strlen(str);
 
     if (str_len > 90) {
-        return false;
+    return false;
     }
 
-    snprintf((char *)msg.text, str_len, str);
+    memcpy(msg.text, str, str_len);
     msg.text_size = str_len;
     return true;
 }

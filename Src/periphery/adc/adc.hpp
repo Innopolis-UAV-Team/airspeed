@@ -11,7 +11,7 @@ extern "C" {
 #endif
 
 enum class AdcChannel : uint8_t {
-    ADC_VIN, 
+    ADC_VIN,
     ADC_5V,
     ADC_CURRENT,
     ADC_VERSION,

@@ -17,11 +17,13 @@ void Logger::log_info(const char* text) {
     _msg.level = LOG_LEVEL_INFO;
     publish();
 }
+
 void Logger::log_warn(const char* text) {
     set_text(this->_msg, text);
     _msg.level = LOG_LEVEL_WARNING;
     publish();
 }
+
 void Logger::log_error(const char* text) {
     set_text(this->_msg, text);
     _msg.level = LOG_LEVEL_ERROR;
@@ -38,6 +40,7 @@ void Logger::log_debug(const char* text) {
     // Do nothing if _DEBUG is not defined
 }
 #else
+
 void Logger::log_debug(const char* text) {
     set_text(this->_msg, text);
     _msg.level = LOG_LEVEL_DEBUG;

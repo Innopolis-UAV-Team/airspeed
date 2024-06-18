@@ -1,6 +1,6 @@
 /***
  * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine@gmail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+ * Distributed under the terms of the GPL v3 license, available in the file LICENSE.
 ***/ 
 
 #ifndef SRC_PERIPHERY_LED_HPP_
@@ -79,8 +79,6 @@ private:
     uint16_t green_ticks;
     uint16_t blue_ticks;
 
-    Logger logger = Logger("PwmRgbLedDriver");
-
 protected:
     void apply();
     void init();
@@ -94,7 +92,6 @@ private:
     GPIOPin red_pin;
     GPIOPin green_pin;
     GPIOPin blue_pin;
-    Logger logger = Logger("GPIORgbLedDriver");
 
 protected:
     void apply();
@@ -108,7 +105,6 @@ public:
 private:
     PwmPin pwm_pin;
     uint16_t num_of_leds;
-    Logger logger = Logger("Ws2812Driver");
     void apply();
 };
 
