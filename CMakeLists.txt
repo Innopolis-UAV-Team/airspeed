@@ -60,7 +60,6 @@ add_executable(${EXECUTABLE}
     ${libsSourceCode}
     ${applicationSourceCode}
     ${BUILD_SRC_DIR}/params.cpp
-    ${ROOT_DIR}/Src/periphery/led/led.cpp
     ${ROOT_DIR}/Src/periphery/servos/common.cpp
     ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/adc.cpp
     ${ROOT_DIR}/Src/platform/${APP_PLATFORM}/gpio.cpp

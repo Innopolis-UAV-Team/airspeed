@@ -1,0 +1,10 @@
+set(LIGHTS_MODULE_DIR ${CMAKE_CURRENT_LIST_DIR})
+
+set(LIGHTS_HEADERS
+    ${LIGHTS_MODULE_DIR}
+    ${LIGHTS_MODULE_DIR}/drivers/
+)
+set(LIGHTS_SOURCES
+    ${LIGHTS_MODULE_DIR}/drivers/led.cpp
+    ${LIGHTS_MODULE_DIR}/Lights.cpp
+)

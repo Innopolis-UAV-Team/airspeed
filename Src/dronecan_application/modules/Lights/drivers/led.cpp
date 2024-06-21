@@ -1,37 +1,37 @@
 /***
- * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
-***/ 
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine@gmail.com>
+ * Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+ ***/
 
-#include "periphery/led/led.hpp"
+#include "led.hpp"
+
 #include "main.h"
-
 
 Rgb565Color Rgb565Color::from_rgb_simple_color(RgbSimpleColor color) {
     switch (color) {
-    case RgbSimpleColor::RED_COLOR:
-        return Rgb565Color{31, 0, 0};
+        case RgbSimpleColor::RED_COLOR:
+            return Rgb565Color{31, 0, 0};
 
-    case RgbSimpleColor::GREEN_COLOR:
-        return Rgb565Color{0, 63, 0};
+        case RgbSimpleColor::GREEN_COLOR:
+            return Rgb565Color{0, 63, 0};
 
-    case RgbSimpleColor::BLUE_COLOR:
-        return Rgb565Color{0, 0, 31};
+        case RgbSimpleColor::BLUE_COLOR:
+            return Rgb565Color{0, 0, 31};
 
-    case RgbSimpleColor::MAGENTA_COLOR:
-        return Rgb565Color{31, 0, 31};
+        case RgbSimpleColor::MAGENTA_COLOR:
+            return Rgb565Color{31, 0, 31};
 
-    case RgbSimpleColor::YELLOW_COLOR:
-        return Rgb565Color{31, 63, 0};
+        case RgbSimpleColor::YELLOW_COLOR:
+            return Rgb565Color{31, 63, 0};
 
-    case RgbSimpleColor::CYAN_COLOR:
-        return Rgb565Color{0, 63, 31};
+        case RgbSimpleColor::CYAN_COLOR:
+            return Rgb565Color{0, 63, 31};
 
-    case RgbSimpleColor::WHITE_COLOR:
-        return Rgb565Color{31, 63, 31};
+        case RgbSimpleColor::WHITE_COLOR:
+            return Rgb565Color{31, 63, 31};
 
-    default:
-        return Rgb565Color{0, 0, 0};
+        default:
+            return Rgb565Color{0, 0, 0};
     }
 }
 
@@ -51,7 +51,7 @@ void RgbLedInterface::spin(Rgb565Color color) {
     } else {
         _toggle_flag = (HAL_GetTick() % toggle_period_ms) > duty_cycle_ms;
     }
-    set(_toggle_flag ? Rgb565Color{0,0,0} : color);
+    set(_toggle_flag ? Rgb565Color{0, 0, 0} : color);
 }
 
 void RgbLedInterface::reset(LedColor color) {
@@ -73,20 +73,21 @@ void PwmRgbLedDriver::init() {
     PwmPeriphery::init(blue_pin);
 }
 
-PwmRgbLedDriver::PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin, PwmPin blue_pwm_pin) {
-        red_pin=red_pwm_pin;
-        green_pin=green_pwm_pin;
-        blue_pin=blue_pwm_pin;
+PwmRgbLedDriver::PwmRgbLedDriver(PwmPin red_pwm_pin, PwmPin green_pwm_pin,
+                                 PwmPin blue_pwm_pin) {
+    red_pin = red_pwm_pin;
+    green_pin = green_pwm_pin;
+    blue_pin = blue_pwm_pin;
 
-        red_max = 31;
-        green_max = 63;
-        blue_max = 31;
-        init();
-};
+    red_max = 31;
+    green_max = 63;
+    blue_max = 31;
+    init();
+}
 
 void PwmRgbLedDriver::apply() {
     red_ticks = float(_current_rgb565_color.red * intensity) / (red_intensity_div * red_max);
-    green_ticks = float(_current_rgb565_color.green * intensity) / (green_intensity_div * green_max);
+    green_ticks = float(_current_rgb565_color.green * intensity)/(green_intensity_div * green_max);
     blue_ticks = float(_current_rgb565_color.blue * intensity) / (blue_intensity_div * blue_max);
 
     PwmPeriphery::set_duty_cycle_pct(red_pin, red_ticks);
@@ -101,11 +102,12 @@ void PwmRgbLedDriver::set_intensity(uint8_t intensity_val) {
 
     intensity = intensity_val;
     red_ticks = float(_current_rgb565_color.red * intensity) / (red_intensity_div * red_max);
-    green_ticks = float(_current_rgb565_color.green * intensity) / (green_intensity_div * green_max);
+    green_ticks = float(_current_rgb565_color.green * intensity) / (green_intensity_div*green_max);
     blue_ticks = float(_current_rgb565_color.blue * intensity) / (blue_intensity_div * blue_max);
 }
 
-GPIORgbLedDriver::GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin, GPIOPin blue_gpio_pin) {
+GPIORgbLedDriver::GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin,
+                                   GPIOPin blue_gpio_pin) {
     red_pin = red_gpio_pin;
     green_pin = green_gpio_pin;
     blue_pin = blue_gpio_pin;
@@ -115,10 +117,16 @@ GPIORgbLedDriver::GPIORgbLedDriver(GPIOPin red_gpio_pin, GPIOPin green_gpio_pin,
 }
 
 void GPIORgbLedDriver::apply() {
-    if (_current_rgb565_color.red)  GPIOPeripheryInverted::set(red_pin);
-    else GPIOPeripheryInverted::reset(red_pin);
-    if (_current_rgb565_color.green) GPIOPeripheryInverted::set(green_pin);
-    else GPIOPeripheryInverted::reset(green_pin);
-    if (_current_rgb565_color.blue) GPIOPeripheryInverted::set(blue_pin);
-    else GPIOPeripheryInverted::reset(blue_pin);
+    if (_current_rgb565_color.red)
+        GPIOPeripheryInverted::set(red_pin);
+    else
+        GPIOPeripheryInverted::reset(red_pin);
+    if (_current_rgb565_color.green)
+        GPIOPeripheryInverted::set(green_pin);
+    else
+        GPIOPeripheryInverted::reset(green_pin);
+    if (_current_rgb565_color.blue)
+        GPIOPeripheryInverted::set(blue_pin);
+    else
+        GPIOPeripheryInverted::reset(blue_pin);
 }

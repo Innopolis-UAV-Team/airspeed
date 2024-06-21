@@ -1,10 +1,9 @@
 /***
- * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
-***/ 
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine@gmail.com>
+ * Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+ ***/
 
-#include "CircuitStatusModule.hpp"
-
+#include "CircuitStatus.hpp"
 
 CircuitStatusModule CircuitStatusModule::instance = CircuitStatusModule();
 bool CircuitStatusModule::instance_initialized = false;
@@ -12,7 +11,7 @@ Logger CircuitStatusModule::logger = Logger("CircuitStatus");
 
 CircuitStatusModule& CircuitStatusModule::get_instance() {
     if (!instance_initialized) {
-        instance_initialized=true;
+        instance_initialized = true;
         instance.init();
     }
     return instance;
@@ -46,16 +45,15 @@ void CircuitStatusModule::spin_once() {
         tem_raw = adc.get(AdcChannel::ADC_TEMPERATURE);
         temp = AdcPeriphery::stm32Temperature(tem_raw);
         temperature_status.temperature = temp;
-        
-        publish_error = dronecan_equipment_temperature_publish(&temperature_status, &temperature_transfer_id);
-        temperature_transfer_id ++;
+        publish_error = dronecan_equipment_temperature_publish(
+            &temperature_status, &temperature_transfer_id);
+        temperature_transfer_id++;
         next_temp_pub_ms += 1000;
-
     }
-    
+
     if (HAL_GetTick() > next_status_pub_ms) {
         v5_raw = adc.get(AdcChannel::ADC_5V);
-        v5_f =  AdcPeriphery::stm32Voltage5V(v5_raw);
+        v5_f = AdcPeriphery::stm32Voltage5V(v5_raw);
 
         vol_raw = adc.get(AdcChannel::ADC_VIN);
         cur_raw = adc.get(AdcChannel::ADC_CURRENT);
@@ -63,12 +61,11 @@ void CircuitStatusModule::spin_once() {
         circuit_status.voltage = AdcPeriphery::stm32Voltage(vol_raw);
         circuit_status.current = AdcPeriphery::stm32Current(cur_raw);
 
-        publish_error = dronecan_equipment_circuit_status_publish(&circuit_status, &circuit_status_transfer_id);
-        circuit_status_transfer_id ++;
+        publish_error = dronecan_equipment_circuit_status_publish(
+            &circuit_status, &circuit_status_transfer_id);
+        circuit_status_transfer_id++;
         next_status_pub_ms += 1000;
-
     }
-    
+
     circuit_status.error_flags = ERROR_FLAG_CLEAR;
 }
-

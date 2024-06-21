@@ -1,6 +1,6 @@
 /***
  * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine@gmail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+ * Distributed under the terms of the GPL v3 license, available in the file LICENSE.
 ***/ 
 
 #include "application.hpp"
@@ -8,12 +8,12 @@
 #include "dronecan.h"
 #include "logger.hpp"
 #include "main.h"
-#include "modules/CircuitStatusModule.hpp"
-#include "modules/LightsModule.hpp"
+#include "modules/CircuitStatus/CircuitStatus.hpp"
+#include "modules/Lights/Lights.hpp"
 #include "modules/DifferentialPressure/DifferentialPressure.hpp"
 #include "modules/RangeFinder/RangeFinder.hpp"
-#include "params.hpp"
 #include "modules/PWM/PWMModule.hpp"
+#include "params.hpp"
 
 #ifdef HAL_IWDG_MODULE_ENABLED
 extern IWDG_HandleTypeDef hiwdg;
@@ -60,6 +60,7 @@ void application_entry_point() {
                 }
             }
         }
+
         uavcanSpinOnce();
 
 #ifdef HAL_IWDG_MODULE_ENABLED

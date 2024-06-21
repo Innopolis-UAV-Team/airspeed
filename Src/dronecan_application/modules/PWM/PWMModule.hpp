@@ -1,6 +1,6 @@
 /***
- * Copyright (C) 2024 Anastasiia Stepanova  <asiiapine96@gmail.com>
- *  Distributed under the terms of the GPL v3 license, available in the file LICENSE.
+ * Copyright (C) 2024 Anastasiia Stepanova  <asiiapineil.com>
+ * Distributed under the terms of the GPL v3 license, available in the file LICENSE.
 ***/
 
 #ifndef SRC_DRONECAN_APPLICATION_MODULES_PWMMODULE_HPP_
